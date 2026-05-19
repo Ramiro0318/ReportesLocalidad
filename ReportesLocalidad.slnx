@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="ReportesLocalidadApi/ReportesLocalidadApi.csproj" Id="af5485f4-431d-44af-9e6a-615dc94904da" />
+  <Project Path="ReportesLocalidadApp/ReportesLocalidadApp.csproj" />
+</Solution>
