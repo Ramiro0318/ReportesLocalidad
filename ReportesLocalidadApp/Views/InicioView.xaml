@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ReportesLocalidadApp.Views.InicioView"
+             Title="InicioView" Shell.NavBarIsVisible="False">
+    <Grid RowDefinitions="auto,*,auto" BackgroundColor="#0F0F0F">
+        <!--Parte del encabezado-->
+        <Grid Grid.Row="0" BackgroundColor="#0F4C81" Padding="18,28,18,18" ColumnDefinitions="*, auto">
+            <VerticalStackLayout Spacing="0" VerticalOptions="Center">
+                <Label Text="Buenos Días" TextColor="LightGray" FontSize="15"></Label>
+                <Label Text="Carlos Hernandez" TextColor="White" FontSize="20" FontAttributes="Bold"></Label>
+            </VerticalStackLayout>
+
+            <Grid Grid.Column="1" WidthRequest="44" HeightRequest="44" BackgroundColor="#2D6698" VerticalOptions="Center" HorizontalOptions="End">
+                <Grid.Clip>
+                    <RoundRectangleGeometry CornerRadius="14" Rect="0,0,44,44"></RoundRectangleGeometry>
+                </Grid.Clip>
+
+                <Image Source="noti.png" HeightRequest="25"></Image>
+                <Border Padding="0" WidthRequest="15" HeightRequest="15" StrokeShape="RoundRectangle 10" BackgroundColor="#F05A2A" Stroke="Transparent" HorizontalOptions="End" VerticalOptions="Start" Margin="0,1,1,0">
+                    <Label Text="3" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontSize="10"></Label>
+                </Border>
+            </Grid>
+        </Grid>
+        
+        <!--aqui van los Reportes-->
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="14,16" Spacing="10">
+                <Grid ColumnDefinitions="*,auto">
+                    <Label Text="Reportes de la comunidad" TextColor="#E6E6C7" FontSize="15" FontAttributes="Bold"></Label>
+                </Grid>
+                
+                <!--Reporte 1-->
+                <Border Padding="14" StrokeShape="RoundRectangle 12" BackgroundColor="#2B2B29" Stroke="#4A4A45">
+
+                    <Grid ColumnDefinitions="52,*" ColumnSpacing="12">
+
+                        <Border WidthRequest="42" HeightRequest="42" StrokeShape="RoundRectangle 10"
+                           Padding="0" BackgroundColor="#FFF1E8" Stroke="Transparent" VerticalOptions="Center">
+
+                            <Label Text="Icono" TextColor="#E85B2A" FontSize="10"
+                               HorizontalTextAlignment="Center" VerticalTextAlignment="Center"></Label>
+                        </Border>
+
+                        <VerticalStackLayout Grid.Column="1" Spacing="3" VerticalOptions="Center">
+                            <Label Text="Bache peligroso" TextColor="White" FontSize="15" FontAttributes="Bold"></Label>
+                            <Label Text="Av. Juárez esq. Hidalgo" TextColor="White" FontSize="12"></Label>
+                            <Label Text="IconoReloj  Hace 2 horas" TextColor="#D8D8D8" FontSize="11"></Label>
+                        </VerticalStackLayout>
+                    </Grid>
+                </Border>
+                <Border Padding="14" StrokeShape="RoundRectangle 12" BackgroundColor="#2B2B29" Stroke="#4A4A45">
+
+                    <Grid ColumnDefinitions="52,*" ColumnSpacing="12">
+
+                        <Border WidthRequest="42" HeightRequest="42" StrokeShape="RoundRectangle 10"
+           Padding="0" BackgroundColor="#FFF1E8" Stroke="Transparent" VerticalOptions="Center">
+
+                            <Label Text="Icono" TextColor="#E85B2A" FontSize="10"
+               HorizontalTextAlignment="Center" VerticalTextAlignment="Center"></Label>
+                        </Border>
+
+                        <VerticalStackLayout Grid.Column="1" Spacing="3" VerticalOptions="Center">
+                            <Label Text="Bache peligroso" TextColor="White" FontSize="15" FontAttributes="Bold"></Label>
+                            <Label Text="Av. Juárez esq. Hidalgo" TextColor="White" FontSize="12"></Label>
+                            <Label Text="IconoReloj  Hace 2 horas" TextColor="#D8D8D8" FontSize="11"></Label>
+                        </VerticalStackLayout>
+                    </Grid>
+                </Border>
+                <Border Padding="14" StrokeShape="RoundRectangle 12" BackgroundColor="#2B2B29" Stroke="#4A4A45">
+
+                    <Grid ColumnDefinitions="52,*" ColumnSpacing="12">
+
+                        <Border WidthRequest="42" HeightRequest="42" StrokeShape="RoundRectangle 10"
+           Padding="0" BackgroundColor="#FFF1E8" Stroke="Transparent" VerticalOptions="Center">
+
+                            <Label Text="Icono" TextColor="#E85B2A" FontSize="10"
+               HorizontalTextAlignment="Center" VerticalTextAlignment="Center"></Label>
+                        </Border>
+
+                        <VerticalStackLayout Grid.Column="1" Spacing="3" VerticalOptions="Center">
+                            <Label Text="Bache peligroso" TextColor="White" FontSize="15" FontAttributes="Bold"></Label>
+                            <Label Text="Av. Juárez esq. Hidalgo" TextColor="White" FontSize="12"></Label>
+                            <Label Text="IconoReloj  Hace 2 horas" TextColor="#D8D8D8" FontSize="11"></Label>
+                        </VerticalStackLayout>
+                    </Grid>
+                </Border>
+                <Border Padding="14" StrokeShape="RoundRectangle 12" BackgroundColor="#2B2B29" Stroke="#4A4A45">
+
+                    <Grid ColumnDefinitions="52,*" ColumnSpacing="12">
+
+                        <Border WidthRequest="42" HeightRequest="42" StrokeShape="RoundRectangle 10"
+           Padding="0" BackgroundColor="#FFF1E8" Stroke="Transparent" VerticalOptions="Center">
+
+                            <Label Text="Icono" TextColor="#E85B2A" FontSize="10"
+               HorizontalTextAlignment="Center" VerticalTextAlignment="Center"></Label>
+                        </Border>
+
+                        <VerticalStackLayout Grid.Column="1" Spacing="3" VerticalOptions="Center">
+                            <Label Text="Bache peligroso" TextColor="White" FontSize="15" FontAttributes="Bold"></Label>
+                            <Label Text="Av. Juárez esq. Hidalgo" TextColor="White" FontSize="12"></Label>
+                            <Label Text="IconoReloj  Hace 2 horas" TextColor="#D8D8D8" FontSize="11"></Label>
+                        </VerticalStackLayout>
+                    </Grid>
+                </Border>
+
+            </VerticalStackLayout>
+        </ScrollView>
+        
+        <!--Menu estatico-->
+        <Grid Grid.Row="2" HeightRequest="70" BackgroundColor="#2B2B29" ColumnDefinitions="*,*,*,*">
+            <VerticalStackLayout Grid.Column="0" HorizontalOptions="Center" VerticalOptions="Center" Spacing="2">
+                <Image Source="inicio.png"  WidthRequest="25"></Image>
+                <Label Text="Inicio" TextColor="#F05A2A" FontSize="11" HorizontalTextAlignment="Center"></Label>
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Grid.Column="1" HorizontalOptions="Center" VerticalOptions="Center" Spacing="2">
+                <Image Source="agregar.png"  WidthRequest="25"></Image>
+                <Label Text="Agregar" TextColor="White" FontSize="11" HorizontalTextAlignment="Center"></Label>
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Grid.Column="2" HorizontalOptions="Center" VerticalOptions="Center" Spacing="2">
+                <Image Source="reporte.png"  WidthRequest="25"></Image>
+                <Label Text="Mis reprotes" TextColor="White" FontSize="11" HorizontalTextAlignment="Center"></Label>
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Grid.Column="3" HorizontalOptions="Center" VerticalOptions="Center" Spacing="2">
+                <Image Source="perfil.png"  WidthRequest="30"></Image>
+                <Label Text="Perfil" TextColor="White" FontSize="11" HorizontalTextAlignment="Center"></Label>
+            </VerticalStackLayout>
+        </Grid>
+    </Grid>
+
+</ContentPage>
