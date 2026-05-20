@@ -3,7 +3,7 @@ using ReportesLocalidadApi.Models.DTOs;
 
 namespace ReportesLocalidadApi.Validators
 {
-    public class EditarReporteValidator : AbstractValidator<SubirReporteDto>
+    public class EditarReporteValidator : AbstractValidator<EditarReporteDto>
     {
         public EditarReporteValidator()
         {
