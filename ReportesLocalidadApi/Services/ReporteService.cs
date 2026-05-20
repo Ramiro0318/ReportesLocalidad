@@ -102,6 +102,41 @@ public class ReporteService
         };
     }
 
+
+    public async Task<ApiResponse<ReporteAEditarDto>> GetReporteEditarAsync(int id)
+    {
+        var reporte = await _context.Reportes
+            .AsNoTracking()
+            .Where(reporte => reporte.Id == id)
+            .Select(reporte => new ReporteAEditarDto
+            {
+                Id = reporte.Id,
+                Titulo = reporte.Titulo,
+                Descripcion = reporte.Descripcion,
+                Direccion = reporte.Direccion,
+                ImgUrl = reporte.ImgUrl,
+                IdUsuario = reporte.IdUsuario,
+                IdCategoria = reporte.IdCategoria
+            })
+            .FirstOrDefaultAsync();
+
+        if (reporte is null)
+        {
+            return new ApiResponse<ReporteAEditarDto>
+            {
+                Success = false,
+                Message = "Reporte no encontrado."
+            };
+        }
+
+        return new ApiResponse<ReporteAEditarDto>
+        {
+            Success = true,
+            Message = "Reporte obtenido para edicion.",
+            Data = reporte
+        };
+    }
+
     public async Task<ApiResponse<Reportes>> EditarAsync(int id, EditarReporteDto editarReporteDto)
     {
         var reporte = await _context.Reportes
@@ -154,6 +189,30 @@ public class ReporteService
         {
             Success = true,
             Message = "Reporte editado correctamente.",
+            Data = reporte
+        };
+    }
+
+    public async Task<ApiResponse<Reportes>> EliminarAsync(int id)
+    {
+        var reporte = await _context.Reportes.FirstOrDefaultAsync(reporte => reporte.Id == id);
+
+        if (reporte is null)
+        {
+            return new ApiResponse<Reportes>
+            {
+                Success = false,
+                Message = "Reporte no encontrado."
+            };
+        }
+
+        _reporteRepository.Delete(reporte);
+        await _reporteRepository.SaveChangesAsync();
+
+        return new ApiResponse<Reportes>
+        {
+            Success = true,
+            Message = "Reporte eliminao correctamente.",
             Data = reporte
         };
     }

@@ -43,10 +43,23 @@ public class ReportesController : ControllerBase
     }
 
 
-    [HttpGet("obtenerReporte/{id}")]
+    [HttpGet("getReporte/{id}")]
     public async Task<IActionResult> GetById(int id)
     {
         var respuesta = await _reporteService.GetByIdAsync(id);
+
+        if (!respuesta.Success)
+        {
+            return NotFound(respuesta);
+        }
+
+        return Ok(respuesta);
+    }
+
+    [HttpGet("getReporteEditar/{id}")]
+    public async Task<IActionResult> GetReporteEditar(int id)
+    {
+        var respuesta = await _reporteService.GetReporteEditarAsync(id);
 
         if (!respuesta.Success)
         {
@@ -101,6 +114,19 @@ public class ReportesController : ControllerBase
     public async Task<IActionResult> GetReportes([FromQuery] int skip = 0, [FromQuery] int take = 50)
     {
         var respuesta = await _reporteService.GetReportesAsync(skip, take);
+
+        return Ok(respuesta);
+    }
+
+
+    [HttpDelete("eliminarReporte/{id}")]
+    public async Task<IActionResult> Eliminar(int id)
+    {
+        var respuesta = await _reporteService.EliminarAsync(id);
+        if (!respuesta.Success)
+        {
+            return BadRequest(respuesta);
+        }
 
         return Ok(respuesta);
     }
