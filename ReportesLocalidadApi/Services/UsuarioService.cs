@@ -22,18 +22,6 @@ public class UsuarioService
 
     public async Task<ApiResponse<UsuarioRespuestaDto>> RegistrarAsync(RegistroDto registroDto)
     {
-        var usuarioExiste = await _context.Usuarios
-            .AnyAsync(usuario => usuario.NombreUsuario == registroDto.NombreUsuario);
-
-        if (usuarioExiste)
-        {
-            return new ApiResponse<UsuarioRespuestaDto>
-            {
-                Success = false,
-                Message = "Ya existe un usuario con ese nombre."
-            };
-        }
-
         var usuario = _mapper.Map<Usuarios>(registroDto);
 
         usuario.IdRol = 1;
