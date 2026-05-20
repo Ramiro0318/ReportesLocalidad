@@ -24,6 +24,7 @@ builder.Services.AddDbContext<ReportesLocalidadContext>(options =>
 
 builder.Services.AddScoped(typeof(Repository<>));
 builder.Services.AddScoped<ImageService>();
+builder.Services.AddScoped<UsuarioService>();
 
 var app = builder.Build();
 
