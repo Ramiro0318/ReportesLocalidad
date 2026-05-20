@@ -1,10 +1,25 @@
+using Microsoft.EntityFrameworkCore;
+using ReportesLocalidadApi.Models;
+using ReportesLocalidadApi.Models.Entities;
+using ReportesLocalidadApi.Repositories;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+if (string.IsNullOrWhiteSpace(connectionString))
+{
+    throw new InvalidOperationException("No se encontro la cadena de conexion DefaultConnection.");
+}
+
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+builder.Services.AddDbContext<ReportesLocalidadContext>(options =>
+    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+
+builder.Services.AddScoped(typeof(Repository<>));
 
 var app = builder.Build();
 
