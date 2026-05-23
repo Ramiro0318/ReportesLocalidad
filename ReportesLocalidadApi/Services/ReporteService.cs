@@ -8,23 +8,22 @@ namespace ReportesLocalidadApi.Services;
 
 public class ReporteService
 {
-    private readonly ReportesLocalidadContext _context;
-    private readonly Repository<Reportes> _reporteRepository;
-    private readonly ImageService _imageService;
-    private readonly IMapper _mapper;
+    private readonly ReportesLocalidadContext context;
+    private readonly Repository<Reportes> reporteRepository;
+    private readonly ImageService imageService;
+    private readonly IMapper mapper;
 
     public ReporteService(ReportesLocalidadContext context, Repository<Reportes> reporteRepository, ImageService imageService, IMapper mapper)
     {
-        _context = context;
-        _reporteRepository = reporteRepository;
-        _imageService = imageService;
-        _mapper = mapper;
+        this.context = context;
+        this.reporteRepository = reporteRepository;
+        this.imageService = imageService;
+        this.mapper = mapper;
     }
 
     public async Task<ApiResponse<Reportes>> CrearAsync(SubirReporteDto subirReporteDto)
     {
-        var usuarioExiste = await _context.Usuarios
-            .AnyAsync(usuario => usuario.Id == subirReporteDto.IdUsuario);
+        var usuarioExiste = await context.Usuarios.AnyAsync(usuario => usuario.Id == subirReporteDto.IdUsuario);
 
         if (!usuarioExiste)
         {
@@ -35,8 +34,7 @@ public class ReporteService
             };
         }
 
-        var categoriaExiste = await _context.Categorias
-            .AnyAsync(categoria => categoria.Id == subirReporteDto.IdCategoria);
+        var categoriaExiste = await context.Categorias.AnyAsync(categoria => categoria.Id == subirReporteDto.IdCategoria);
 
         if (!categoriaExiste)
         {
@@ -49,8 +47,7 @@ public class ReporteService
 
         if (!string.IsNullOrWhiteSpace(subirReporteDto.ClientRequestId))
         {
-            var reporteDuplicado = await _context.Reportes
-                .AnyAsync(reporte => reporte.ClientRequestId == subirReporteDto.ClientRequestId);
+            var reporteDuplicado = await context.Reportes.AnyAsync(reporte => reporte.ClientRequestId == subirReporteDto.ClientRequestId);
 
             if (reporteDuplicado)
             {
@@ -62,14 +59,14 @@ public class ReporteService
             }
         }
 
-        var reporte = _mapper.Map<Reportes>(subirReporteDto);
+        var reporte = mapper.Map<Reportes>(subirReporteDto);
 
         reporte.FechaSubida = DateTime.Now;
         reporte.IdEstado = 1;
-        reporte.ImgUrl = await _imageService.GuardarImagenBase64Async(subirReporteDto.Foto);
+        reporte.ImgUrl = await imageService.GuardarImagenBase64Async(subirReporteDto.Foto);
 
-        await _reporteRepository.AddAsync(reporte);
-        await _reporteRepository.SaveChangesAsync();
+        await reporteRepository.AddAsync(reporte);
+        await reporteRepository.SaveChangesAsync();
 
         return new ApiResponse<Reportes>
         {
@@ -79,11 +76,10 @@ public class ReporteService
         };
     }
 
+
     public async Task<ApiResponse<Reportes>> GetByIdAsync(int id)
     {
-        var reporte = await _context.Reportes
-            .AsNoTracking()
-            .FirstOrDefaultAsync(reporte => reporte.Id == id);
+        var reporte = await context.Reportes.AsNoTracking().FirstOrDefaultAsync(reporte => reporte.Id == id);
 
         if (reporte is null)
         {
@@ -105,9 +101,7 @@ public class ReporteService
 
     public async Task<ApiResponse<ReporteAEditarDto>> GetReporteEditarAsync(int id)
     {
-        var reporte = await _context.Reportes
-            .AsNoTracking()
-            .Where(reporte => reporte.Id == id)
+        var reporte = await context.Reportes.AsNoTracking().Where(reporte => reporte.Id == id)
             .Select(reporte => new ReporteAEditarDto
             {
                 Id = reporte.Id,
@@ -117,8 +111,7 @@ public class ReporteService
                 ImgUrl = reporte.ImgUrl,
                 IdUsuario = reporte.IdUsuario,
                 IdCategoria = reporte.IdCategoria
-            })
-            .FirstOrDefaultAsync();
+            }).FirstOrDefaultAsync();
 
         if (reporte is null)
         {
@@ -139,8 +132,7 @@ public class ReporteService
 
     public async Task<ApiResponse<Reportes>> EditarAsync(int id, EditarReporteDto editarReporteDto)
     {
-        var reporte = await _context.Reportes
-            .FirstOrDefaultAsync(reporte => reporte.Id == id);
+        var reporte = await context.Reportes.FirstOrDefaultAsync(reporte => reporte.Id == id);
 
         if (reporte is null)
         {
@@ -160,8 +152,7 @@ public class ReporteService
             };
         }
 
-        var categoriaExiste = await _context.Categorias
-            .AnyAsync(categoria => categoria.Id == editarReporteDto.IdCategoria);
+        var categoriaExiste = await context.Categorias.AnyAsync(categoria => categoria.Id == editarReporteDto.IdCategoria);
 
         if (!categoriaExiste)
         {
@@ -179,11 +170,11 @@ public class ReporteService
 
         if (!string.IsNullOrWhiteSpace(editarReporteDto.Foto))
         {
-            reporte.ImgUrl = await _imageService.GuardarImagenBase64Async(editarReporteDto.Foto);
+            reporte.ImgUrl = await imageService.GuardarImagenBase64Async(editarReporteDto.Foto);
         }
 
-        _reporteRepository.Update(reporte);
-        await _reporteRepository.SaveChangesAsync();
+        reporteRepository.Update(reporte);
+        await reporteRepository.SaveChangesAsync();
 
         return new ApiResponse<Reportes>
         {
@@ -193,9 +184,29 @@ public class ReporteService
         };
     }
 
-    public async Task<ApiResponse<Reportes>> EliminarAsync(int id)
+    public async Task<ApiResponse<Reportes>> CambiarEstadoAsync(int id, CambiarEstadoReporteDto cambiarEstadoDto)
     {
-        var reporte = await _context.Reportes.FirstOrDefaultAsync(reporte => reporte.Id == id);
+        var usuario = await context.Usuarios.FirstOrDefaultAsync(usuario => usuario.Id == cambiarEstadoDto.IdUsuario);
+
+        if (usuario is null)
+        {
+            return new ApiResponse<Reportes>
+            {
+                Success = false,
+                Message = "Usuario no encontrado."
+            };
+        }
+
+        if (usuario.IdRol != 2)
+        {
+            return new ApiResponse<Reportes>
+            {
+                Success = false,
+                Message = "Solo un administrador puede cambiar el estado del reporte."
+            };
+        }
+
+        var reporte = await context.Reportes.FirstOrDefaultAsync(reporte => reporte.Id == id);
 
         if (reporte is null)
         {
@@ -206,22 +217,82 @@ public class ReporteService
             };
         }
 
-        _reporteRepository.Delete(reporte);
-        await _reporteRepository.SaveChangesAsync();
+        var estadoExiste = await context.Estados.AnyAsync(estado => estado.Id == cambiarEstadoDto.IdEstado);
+
+        if (!estadoExiste)
+        {
+            return new ApiResponse<Reportes>
+            {
+                Success = false,
+                Message = "Estado no encontrado."
+            };
+        }
+
+        reporte.IdEstado = cambiarEstadoDto.IdEstado;
+        reporte.FechaEdicion = DateTime.Now;
+
+        reporteRepository.Update(reporte);
+        await reporteRepository.SaveChangesAsync();
 
         return new ApiResponse<Reportes>
         {
             Success = true,
-            Message = "Reporte eliminao correctamente.",
+            Message = "Estado del reporte actualizado correctamente.",
             Data = reporte
         };
     }
+
+
+    public async Task<ApiResponse<Reportes>> EliminarAsync(int id, int idUsuario)
+    {
+        var usuario = await context.Usuarios.FirstOrDefaultAsync(usuario => usuario.Id == idUsuario);
+
+        if (usuario is null)
+        {
+            return new ApiResponse<Reportes>
+            {
+                Success = false,
+                Message = "Usuario no encontrado."
+            };
+        }
+
+        var reporte = await context.Reportes.FirstOrDefaultAsync(reporte => reporte.Id == id);
+        if (reporte is null)
+        {
+            return new ApiResponse<Reportes>
+            {
+                Success = false,
+                Message = "Reporte no encontrado."
+            };
+        }
+
+
+        if (reporte.IdUsuario != idUsuario && usuario.IdRol != 2)
+        {
+            return new ApiResponse<Reportes>
+            {
+                Success = false,
+                Message = "No puedes eliminar un reporte de otro usuario."
+            };
+        }
+
+        reporteRepository.Delete(reporte);
+        await reporteRepository.SaveChangesAsync();
+
+        return new ApiResponse<Reportes>
+        {
+            Success = true,
+            Message = "Reporte eliminado correctamente.",
+            Data = reporte
+        };
+    }
+
 
     public async Task<ApiResponse<List<ReportePropioDto>>> GetByUsuarioAsync(int idUsuario, int cantidad = 50)
     {
         cantidad = Math.Clamp(cantidad, 1, 25);
 
-        var usuarioExiste = await _context.Usuarios
+        var usuarioExiste = await context.Usuarios
             .AnyAsync(usuario => usuario.Id == idUsuario);
 
         if (!usuarioExiste)
@@ -233,9 +304,7 @@ public class ReporteService
             };
         }
 
-        var reportes = await _context.Reportes
-            .AsNoTracking()
-            .Where(reporte => reporte.IdUsuario == idUsuario)
+        var reportes = await context.Reportes.AsNoTracking().Where(reporte => reporte.IdUsuario == idUsuario)
             .OrderByDescending(reporte => reporte.FechaEdicion ?? reporte.FechaSubida)
             .Take(cantidad)
             .Select(reporte => new ReportePropioDto
@@ -246,8 +315,7 @@ public class ReporteService
                 FechaEdicion = reporte.FechaEdicion,
                 IdEstado = reporte.IdEstado,
                 IdCategoria = reporte.IdCategoria
-            })
-            .ToListAsync();
+            }).ToListAsync();
 
         return new ApiResponse<List<ReportePropioDto>>
         {
@@ -262,8 +330,7 @@ public class ReporteService
         skip = Math.Max(skip, 0);
         take = Math.Clamp(take, 1, 50);
 
-        var reportes = await _context.Reportes
-            .AsNoTracking()
+        var reportes = await context.Reportes.AsNoTracking()
             .OrderByDescending(reporte => reporte.FechaEdicion ?? reporte.FechaSubida)
             .Skip(skip)
             .Take(take)
@@ -276,8 +343,7 @@ public class ReporteService
                 FechaEdicion = reporte.FechaEdicion,
                 IdEstado = reporte.IdEstado,
                 IdCategoria = reporte.IdCategoria
-            })
-            .ToListAsync();
+            }).ToListAsync();
 
         return new ApiResponse<List<ReporteGeneralDto>>
         {

@@ -36,3 +36,9 @@ public class EditarReporteDto
     public int IdUsuario { get; set; }
     public int IdCategoria { get; set; }
 }
+
+public class CambiarEstadoReporteDto
+{
+    public int IdEstado { get; set; }
+    public int IdUsuario { get; set; }
+}

@@ -1,3 +1,4 @@
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using ReportesLocalidadApi.Models.DTOs;
 using ReportesLocalidadApi.Services;
@@ -86,6 +87,31 @@ public class ReportesController : ControllerBase
         }
 
         var respuesta = await _reporteService.EditarAsync(id, editarReporteDto);
+
+        if (!respuesta.Success)
+        {
+            return BadRequest(respuesta);
+        }
+
+        return Ok(respuesta);
+    }
+
+    [HttpPut("cambiarEstado/{id}")]
+    public async Task<IActionResult> CambiarEstado(int id, [FromBody] CambiarEstadoReporteDto cambiarestadoDto)
+    {
+        var validator = new CambiarEstadoValidator();
+        var validationResult = await validator.ValidateAsync(cambiarestadoDto);
+
+        if (!validationResult.IsValid)
+        {
+            return BadRequest(new ApiResponse<object>
+            {
+                Success = false,
+                Message = validationResult.Errors.First().ErrorMessage
+            });
+        }
+
+        var respuesta = await _reporteService.CambiarEstadoAsync(id, cambiarestadoDto);
 
         if (!respuesta.Success)
         {
