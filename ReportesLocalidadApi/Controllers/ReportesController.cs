@@ -146,9 +146,9 @@ public class ReportesController : ControllerBase
 
 
     [HttpDelete("eliminarReporte/{id}")]
-    public async Task<IActionResult> Eliminar(int id)
+    public async Task<IActionResult> Eliminar(int id, [FromQuery] int idUsuario)
     {
-        var respuesta = await _reporteService.EliminarAsync(id);
+        var respuesta = await _reporteService.EliminarAsync(id, idUsuario);
         if (!respuesta.Success)
         {
             return BadRequest(respuesta);

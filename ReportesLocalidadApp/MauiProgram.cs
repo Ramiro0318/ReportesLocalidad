@@ -21,7 +21,7 @@ namespace ReportesLocalidadApp
                 BaseAddress = new Uri("http://localhost:5027/")
             });
             builder.Services.AddSingleton<AuthService>();
-            builder.Services.AddTransient<ReportesApiService>();
+            builder.Services.AddTransient<ReportesService>();
 
 #if DEBUG
             builder.Logging.AddDebug();

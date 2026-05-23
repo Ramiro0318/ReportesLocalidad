@@ -3,12 +3,12 @@ using ReportesLocalidadApp.Models.DTOs;
 
 namespace ReportesLocalidadApp.Services;
 
-public class ReportesApiService
+public class ReportesService
 {
     private readonly HttpClient http;
     private const string Endpoint = "api/reportes";
 
-    public ReportesApiService(HttpClient http)
+    public ReportesService(HttpClient http)
     {
         this.http = http;
     }
