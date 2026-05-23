@@ -71,4 +71,10 @@ namespace ReportesLocalidadApp.Models.DTOs
         public string NombreUsuario { get; set; } = string.Empty;
     }
 
+    public class CambiarEstadoReporteDto
+    {
+        public int IdEstado { get; set; }
+        public int IdUsuario { get; set; }
+    }
+
 }

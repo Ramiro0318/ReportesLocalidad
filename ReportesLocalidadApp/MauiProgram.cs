@@ -16,8 +16,12 @@ namespace ReportesLocalidadApp
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
 
-            builder.Services.AddSingleton<SessionService>();
-            builder.Services.AddSingleton<ConnectivityService>();
+            builder.Services.AddSingleton(new HttpClient
+            {
+                BaseAddress = new Uri("http://localhost:5027/")
+            });
+            builder.Services.AddSingleton<AuthService>();
+            builder.Services.AddTransient<ReportesApiService>();
 
 #if DEBUG
             builder.Logging.AddDebug();
