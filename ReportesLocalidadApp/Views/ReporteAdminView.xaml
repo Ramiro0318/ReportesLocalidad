@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ReportesLocalidadApp.Views.ReporteAdminView"
+             Title="ReporteAdminView" Shell.NavBarIsVisible="False">
+    <Grid RowDefinitions="Auto,*" BackgroundColor="#0F0F0F" Padding="10">
+        <Border WidthRequest="38" Grid.Row="0" Grid.Column="0" HeightRequest="38" StrokeShape="RoundRectangle 12"
+             BackgroundColor="#2B2B29" Stroke="#4A4A45" Padding="0" VerticalOptions="Center" HorizontalOptions="Start">
+            <Label Grid.Row="0" Text="⬅️" TextColor="White" FontSize="14" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"></Label>
+        </Border>
+
+        <Label Text="Bache peligroso" TextColor="White" FontSize="20"
+            FontAttributes="Bold" HorizontalTextAlignment="Center"
+            VerticalTextAlignment="Center"></Label>
+
+        <ScrollView Grid.Row="1" Margin="0,20,0,0">
+            <VerticalStackLayout Spacing="10">
+
+                <Border StrokeShape="roundrectangle 14" BackgroundColor="#2b2b29" Stroke="#4a4a45"
+                 HeightRequest="230" Padding="0">
+                    <Grid>
+                        <Image Aspect="Fill"></Image>
+                        <Label Text="Imagen del reporte" TextColor="LightGray"
+                            HorizontalOptions="Center" VerticalOptions="Center"></Label>
+                    </Grid>
+                </Border>
+
+                <Label Text="Ubicación" TextColor="White" FontSize="15" FontAttributes="Bold"></Label>
+                <Border StrokeShape="RoundRectangle 12" BackgroundColor="#2B2B29" Stroke="#4A4A45"
+                     Padding="14" HeightRequest="90">
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                        <Label Text="IconoUbicacion" TextColor="#F05A2A"
+                            FontSize="15" VerticalOptions="Center"></Label>
+                        <VerticalStackLayout Grid.Column="1" Spacing="4" VerticalOptions="Center">
+                            <Label Text="Av. Juárez esq. Hidalgo"
+                                TextColor="White" FontSize="13"
+                                FontAttributes="Bold"></Label>
+
+                            <Label Text="Nueva Rosita, Coahuila" TextColor="LightGray"
+                                FontSize="12"></Label>
+                        </VerticalStackLayout>
+                    </Grid>
+                </Border>
+
+                <Label Text="Descripción" TextColor="White"
+                    FontSize="15" FontAttributes="Bold"></Label>
+                <Border StrokeShape="RoundRectangle 12" BackgroundColor="#2B2B29"
+                     Stroke="#4A4A45" Padding="14">
+
+                    <Label Text="El reporte indica un bache peligroso sobre la avenida principal. Representa riesgo para vehículos y peatones, especialmente durante la noche."
+                        TextColor="#E6E6E6" FontSize="13" LineBreakMode="WordWrap"></Label>
+                </Border>
+
+                <Border StrokeThickness="1" StrokeShape="RoundRectangle 8" Padding="10" Margin="0,10,0,0">
+                    <Grid RowDefinitions="auto,*,*">
+                        <Picker Margin="10" Title="Marcar como:" TextColor="White" BackgroundColor="Transparent">
+                        <Picker.ItemsSource>
+                                <x:Array Type="{x:Type x:String}">
+                                <x:String>Trabajando</x:String>
+                                <x:String>Resuelto</x:String>
+                            </x:Array>
+                        </Picker.ItemsSource>
+                    </Picker>
+                        <Button Grid.Row="1" Text="Confirmar" HeightRequest="50" CornerRadius="15" 
+                            FontAttributes="Bold" Margin="0,10,0,0"
+                            BackgroundColor="#1E4BE3"
+                            TextColor="White">
+                        </Button>
+
+                        <Button Grid.Row="2" Text="Eliminar" HeightRequest="50" CornerRadius="15" 
+                            FontAttributes="Bold" Margin="0,10,0,0"
+                            BackgroundColor="#FF122E"
+                            TextColor="White">
+                        </Button>
+                        
+                    </Grid>
+                </Border>
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

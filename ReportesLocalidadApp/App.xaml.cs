@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using ReportesLocalidadApp.Views;
 
 namespace ReportesLocalidadApp
 {
@@ -6,7 +7,7 @@ namespace ReportesLocalidadApp
     {
         public App()
         {
-            InitializeComponent();
+            InitializeComponent();          
         }
 
         protected override Window CreateWindow(IActivationState? activationState)
