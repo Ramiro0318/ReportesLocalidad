@@ -9,4 +9,14 @@ public partial class MisReportesView : ContentPage
 		InitializeComponent();
 		BindingContext = viewModel;
 	}   
+
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+
+        if (BindingContext is MainViewModel viewModel && viewModel.MisReportes.Count == 0)
+        {
+            await viewModel.CargarMisReportesCommand.ExecuteAsync(null);
+        }
+    }
 }

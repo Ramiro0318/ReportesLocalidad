@@ -75,6 +75,15 @@
                     TextColor="White" Command="{Binding LoginCommand}">
                     </Button>
 
+                    <Button Text="Crear cuenta"
+                            HeightRequest="50"
+                            CornerRadius="15"
+                            FontAttributes="Bold"
+                            BackgroundColor="#2B2B29"
+                            TextColor="White"
+                            Command="{Binding IrRegistroCommand}">
+                    </Button>
+
                     <ActivityIndicator IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}" Color="#F54927" />
 
                 </VerticalStackLayout>

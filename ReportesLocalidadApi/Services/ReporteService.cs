@@ -288,9 +288,10 @@ public class ReporteService
     }
 
 
-    public async Task<ApiResponse<List<ReportePropioDto>>> GetByUsuarioAsync(int idUsuario, int cantidad = 50)
+    public async Task<ApiResponse<List<ReportePropioDto>>> GetByUsuarioAsync(int idUsuario, int skip = 0, int take = 50)
     {
-        cantidad = Math.Clamp(cantidad, 1, 25);
+        skip = Math.Max(skip, 0);
+        take = Math.Clamp(take, 1, 50);
 
         var usuarioExiste = await context.Usuarios
             .AnyAsync(usuario => usuario.Id == idUsuario);
@@ -306,7 +307,8 @@ public class ReporteService
 
         var reportes = await context.Reportes.AsNoTracking().Where(reporte => reporte.IdUsuario == idUsuario)
             .OrderByDescending(reporte => reporte.FechaEdicion ?? reporte.FechaSubida)
-            .Take(cantidad)
+            .Skip(skip)
+            .Take(take)
             .Select(reporte => new ReportePropioDto
             {
                 Id = reporte.Id,

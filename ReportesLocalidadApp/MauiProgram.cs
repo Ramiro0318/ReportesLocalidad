@@ -27,6 +27,7 @@ namespace ReportesLocalidadApp
             builder.Services.AddSingleton<MainViewModel>();
             builder.Services.AddTransient<AuthViewModel>();
             builder.Services.AddTransient<LoginView>();
+            builder.Services.AddTransient<RegistroView>();
             builder.Services.AddTransient<InicioView>();
             builder.Services.AddTransient<AgregarReporteView>();
             builder.Services.AddTransient<MisReportesView>();

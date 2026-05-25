@@ -78,11 +78,11 @@ public class ReportesService
         }
     }
 
-    public async Task<ApiResponse<List<ReportePropioDto>>?> GetByUsuarioAsync(int idUsuario, int cantidad = 25)
+    public async Task<ApiResponse<List<ReportePropioDto>>?> GetByUsuarioAsync(int idUsuario, int skip = 0, int take = 50)
     {
         try
         {
-            var result = await http.GetFromJsonAsync<ApiResponse<List<ReportePropioDto>>>($"{Endpoint}/getByUsuario/{idUsuario}?cantidad={cantidad}");
+            var result = await http.GetFromJsonAsync<ApiResponse<List<ReportePropioDto>>>($"{Endpoint}/getByUsuario/{idUsuario}?skip={skip}&take={take}");
 
             return result;
         }

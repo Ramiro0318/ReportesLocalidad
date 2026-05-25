@@ -45,16 +45,22 @@
                                     <TapGestureRecognizer></TapGestureRecognizer>
                                 </Border.GestureRecognizers>
                                 <Grid ColumnDefinitions="52,*,Auto" ColumnSpacing="12">
+
                                     <Border WidthRequest="42" HeightRequest="42" StrokeShape="RoundRectangle 10" Padding="0" BackgroundColor="#FFF1E8" Stroke="Transparent" VerticalOptions="Center">
-                                        <Label Text="Icono" TextColor="#E85B2A" FontSize="10" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" ></Label>
+                                        <Label Text="{Binding IdCategoria}" TextColor="#E85B2A" FontSize="10" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" ></Label>
                                     </Border>
+
                                     <VerticalStackLayout Grid.Column="1" Spacing="3" VerticalOptions="Center">
-                                        <Label Text="Bache peligroso" TextColor="White" FontSize="15" FontAttributes="Bold"></Label>
-                                        <Label Text="Av. Juárez esq. Hidalgo" TextColor="White" FontSize="12" />
-                                        <Label Text="IconoReloj  Hace 2 horas" TextColor="#D8D8D8" FontSize="11"></Label>
+
+                                        <Label Text="{Binding Titulo}" TextColor="White" FontSize="15" FontAttributes="Bold"></Label>
+
+                                        <Label Text="{Binding NombreUsuario}" TextColor="White" FontSize="12" />
+
+                                        <Label Text="{Binding FechaSubida}" TextColor="#D8D8D8" FontSize="11"></Label>
                                     </VerticalStackLayout>
+
                                     <Border Grid.Column="2" BackgroundColor="#FFE9A8" Stroke="Transparent" Padding="10,4" HorizontalOptions="End" VerticalOptions="Start" StrokeShape="RoundRectangle 20">
-                                        <Label Text="Pendiente" TextColor="#7A5200" FontSize="11" FontAttributes="Bold" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"></Label>
+                                        <Label Text="{Binding IdEstado}" TextColor="#7A5200" FontSize="11" FontAttributes="Bold" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"></Label>
                                     </Border>
                                 </Grid>
                             </Border>

@@ -9,4 +9,14 @@ public partial class InicioView : ContentPage
 		InitializeComponent();
 		BindingContext = viewModel;
 	}    
+
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+
+        if (BindingContext is MainViewModel viewModel && viewModel.Reportes.Count == 0)
+        {
+            await viewModel.CargarReportesCommand.ExecuteAsync(null);
+        }
+    }
 }

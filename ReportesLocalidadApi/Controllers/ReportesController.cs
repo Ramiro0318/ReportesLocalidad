@@ -123,9 +123,9 @@ public class ReportesController : ControllerBase
 
 
     [HttpGet("getByUsuario/{idUsuario}/")]
-    public async Task<IActionResult> GetByUsuario(int idUsuario, [FromQuery] int cantidad = 25)
+    public async Task<IActionResult> GetByUsuario(int idUsuario, [FromQuery] int skip = 0, [FromQuery] int take = 50)
     {
-        var respuesta = await _reporteService.GetByUsuarioAsync(idUsuario, cantidad);
+        var respuesta = await _reporteService.GetByUsuarioAsync(idUsuario, skip, take);
 
         if (!respuesta.Success)
         {
