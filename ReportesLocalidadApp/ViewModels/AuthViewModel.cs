@@ -4,7 +4,7 @@ using ReportesLocalidadApp.Services;
 
 namespace ReportesLocalidadApp.ViewModels;
 
-public partial class LoginViewModel : MainViewModel
+public partial class AuthViewModel : MainViewModel
 {
     private readonly AuthService authService;
 
@@ -14,7 +14,10 @@ public partial class LoginViewModel : MainViewModel
     [ObservableProperty]
     private string password = string.Empty;
 
-    public LoginViewModel(AuthService authService)
+    [ObservableProperty]
+    private string confirmarPassword = string.Empty;
+
+    public AuthViewModel(AuthService authService)
     {
         this.authService = authService;
     }
@@ -23,6 +26,12 @@ public partial class LoginViewModel : MainViewModel
     private async Task IrRegistro()
     {
         await Shell.Current.GoToAsync("registro");
+    }
+
+    [RelayCommand]
+    private async Task IrLogin()
+    {
+        await Shell.Current.GoToAsync("..");
     }
 
     [RelayCommand]
@@ -67,6 +76,52 @@ public partial class LoginViewModel : MainViewModel
             else
             {
                 await Shell.Current.GoToAsync("//reportes");
+            }
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
+    [RelayCommand]
+    private async Task Registrar()
+    {
+        if (IsBusy)
+        {
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(NombreUsuario) || string.IsNullOrWhiteSpace(Password))
+        {
+            Mensaje = "Ingrese usuario y contrasena.";
+            return;
+        }
+
+        if (Password != ConfirmarPassword)
+        {
+            Mensaje = "Las contrasenas no coinciden.";
+            return;
+        }
+
+        try
+        {
+            IsBusy = true;
+            Mensaje = string.Empty;
+
+            var respuesta = await authService.RegistrarAsync(NombreUsuario, Password);
+
+            if (respuesta is null)
+            {
+                Mensaje = "No se pudo conectar con la API.";
+                return;
+            }
+
+            Mensaje = respuesta.Message;
+
+            if (respuesta.Success)
+            {
+                await Shell.Current.GoToAsync("..");
             }
         }
         finally

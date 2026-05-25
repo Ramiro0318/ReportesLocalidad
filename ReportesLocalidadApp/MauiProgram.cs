@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Logging;
 using ReportesLocalidadApp.Services;
 using ReportesLocalidadApp.ViewModels;
+using ReportesLocalidadApp.Views;
 
 namespace ReportesLocalidadApp
 {
@@ -23,8 +24,16 @@ namespace ReportesLocalidadApp
             });
             builder.Services.AddSingleton<AuthService>();
             builder.Services.AddTransient<ReportesService>();
-            builder.Services.AddTransient<LoginViewModel>();
-            builder.Services.AddTransient<RegistroViewModel>();
+            builder.Services.AddSingleton<MainViewModel>();
+            builder.Services.AddTransient<AuthViewModel>();
+            builder.Services.AddTransient<LoginView>();
+            builder.Services.AddTransient<InicioView>();
+            builder.Services.AddTransient<AgregarReporteView>();
+            builder.Services.AddTransient<MisReportesView>();
+            builder.Services.AddTransient<PerfilView>();
+            builder.Services.AddTransient<ReporteView>();
+            builder.Services.AddTransient<ReportesAdminView>();
+            builder.Services.AddTransient<ReporteAdminView>();
 
 #if DEBUG
             builder.Logging.AddDebug();

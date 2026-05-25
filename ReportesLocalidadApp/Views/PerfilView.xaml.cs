@@ -1,9 +1,12 @@
+using ReportesLocalidadApp.ViewModels;
+
 namespace ReportesLocalidadApp.Views;
 
 public partial class PerfilView : ContentPage
 {
-	public PerfilView()
+	public PerfilView(MainViewModel viewModel)
 	{
 		InitializeComponent();
+		BindingContext = viewModel;
 	}
 }

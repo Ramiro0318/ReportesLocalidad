@@ -14,7 +14,7 @@
               Margin="10,0,0,10" BackgroundColor="#50000000" HorizontalOptions="Start"
               StrokeThickness="0 " StrokeShape="RoundRectangle 14">
             <Border.GestureRecognizers>
-                <TapGestureRecognizer></TapGestureRecognizer>
+                <TapGestureRecognizer Command="{Binding IrInicioCommand}"></TapGestureRecognizer>
             </Border.GestureRecognizers>
             <Label Text="⬅️" HorizontalOptions="Center" VerticalOptions="Center" VerticalTextAlignment="Center" FontSize="20">
             </Label>

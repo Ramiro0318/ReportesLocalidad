@@ -77,7 +77,7 @@
         <Grid Grid.Row="2" HeightRequest="70" BackgroundColor="#2B2B29" ColumnDefinitions="*,*,*,*">
             <VerticalStackLayout Grid.Column="0" HorizontalOptions="Center" VerticalOptions="Center" Spacing="2">
                 <VerticalStackLayout.GestureRecognizers>
-                    <TapGestureRecognizer></TapGestureRecognizer>
+                    <TapGestureRecognizer Command="{Binding IrInicioCommand}"></TapGestureRecognizer>
                 </VerticalStackLayout.GestureRecognizers>
                 <Image Source="inicio.png"  WidthRequest="25"></Image>
                 <Label Text="Inicio" TextColor="#F05A2A" FontSize="11" HorizontalTextAlignment="Center"></Label>
@@ -85,7 +85,7 @@
 
             <VerticalStackLayout Grid.Column="1" HorizontalOptions="Center" VerticalOptions="Center" Spacing="2">
                 <VerticalStackLayout.GestureRecognizers>
-                    <TapGestureRecognizer></TapGestureRecognizer>
+                    <TapGestureRecognizer Command="{Binding IrAgregarReporteCommand}"></TapGestureRecognizer>
                 </VerticalStackLayout.GestureRecognizers>
                 <Image Source="agregar.png"  WidthRequest="25"></Image>
                 <Label Text="Agregar" TextColor="White" FontSize="11" HorizontalTextAlignment="Center"></Label>
@@ -93,13 +93,16 @@
 
             <VerticalStackLayout Grid.Column="2" HorizontalOptions="Center" VerticalOptions="Center" Spacing="2">
                 <VerticalStackLayout.GestureRecognizers>
-                    <TapGestureRecognizer></TapGestureRecognizer>
+                    <TapGestureRecognizer Command="{Binding IrMisReportesCommand}"></TapGestureRecognizer>
                 </VerticalStackLayout.GestureRecognizers>
                 <Image Source="reporte.png"  WidthRequest="25"></Image>
                 <Label Text="Mis reprotes" TextColor="White" FontSize="11" HorizontalTextAlignment="Center"></Label>
             </VerticalStackLayout>
 
             <VerticalStackLayout Grid.Column="3" HorizontalOptions="Center" VerticalOptions="Center" Spacing="2">
+                <VerticalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding IrPerfilCommand}"></TapGestureRecognizer>
+                </VerticalStackLayout.GestureRecognizers>
                 <Image Source="perfil.png"  WidthRequest="30"></Image>
                 <Label Text="Perfil" TextColor="White" FontSize="11" HorizontalTextAlignment="Center"></Label>
             </VerticalStackLayout>

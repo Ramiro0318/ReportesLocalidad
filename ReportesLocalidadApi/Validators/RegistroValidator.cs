@@ -17,7 +17,7 @@ namespace ReportesLocalidadApi.Validators
                 MinimumLength(6).WithMessage("La contraseña tiene que tener entre 6 y 30 caracteres.").
                 MaximumLength(30).WithMessage("La contraseña tiene que tener entre 6 y 30 caracteres.");
 
-            RuleFor(x => x.IdRol).Equal(1).WithMessage("Rol no válido");
+            RuleFor(x => x.IdRol).Equal(2).WithMessage("Rol no válido");
         }
     }
 }

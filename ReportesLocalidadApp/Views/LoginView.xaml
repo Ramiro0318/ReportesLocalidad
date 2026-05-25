@@ -52,7 +52,7 @@
                         <Label Text="USUARIO" FontSize="12" FontAttributes="Bold" TextColor="#80FFFFFF"></Label>
                         <Entry Placeholder="Ej. Carlos" TextColor="White" Margin="0" 
                        PlaceholderColor="#40FFFFFF"
-                       HeightRequest="50" BackgroundColor="#14FFFFFF" Text="{Binding LoginDTO.Usuario}">
+                       HeightRequest="50" BackgroundColor="#14FFFFFF" Text="{Binding NombreUsuario}">
                         </Entry>
                     </VerticalStackLayout>
 
@@ -60,11 +60,11 @@
                         <Label Text="CONTRASEÑA" FontSize="12" FontAttributes="Bold" TextColor="#80FFFFFF"></Label>
                         <Entry IsPassword="True" Placeholder="••••••••" TextColor="White" 
                        PlaceholderColor="#40FFFFFF" HeightRequest="50"
-                       BackgroundColor="#14FFFFFF" Text="{Binding LoginDTO.Contrasena}">
+                       BackgroundColor="#14FFFFFF" Text="{Binding Password}">
                         </Entry>
                     </VerticalStackLayout>
 
-                    <Label Grid.Row="2" Text="{Binding Error}" HorizontalTextAlignment="Center"
+                    <Label Grid.Row="2" Text="{Binding Mensaje}" HorizontalTextAlignment="Center"
                     HorizontalOptions="Center"
                     LineBreakMode="WordWrap" FontSize="15" TextColor="#90FFFFFF" ></Label>
 
@@ -74,6 +74,8 @@
                     BackgroundColor="#F54927"
                     TextColor="White" Command="{Binding LoginCommand}">
                     </Button>
+
+                    <ActivityIndicator IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}" Color="#F54927" />
 
                 </VerticalStackLayout>
             </ScrollView>
