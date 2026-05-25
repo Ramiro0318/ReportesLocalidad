@@ -4,9 +4,15 @@ using ReportesLocalidadApp.Services;
 
 namespace ReportesLocalidadApp.ViewModels;
 
-public partial class AuthViewModel : MainViewModel
+public partial class AuthViewModel : ObservableObject
 {
     private readonly AuthService authService;
+
+    [ObservableProperty]
+    private bool isBusy;
+
+    [ObservableProperty]
+    private string mensaje = string.Empty;
 
     [ObservableProperty]
     private string nombreUsuario = string.Empty;
@@ -71,11 +77,11 @@ public partial class AuthViewModel : MainViewModel
 
             if (respuesta.Data.IdRol == 2)
             {
-                await Shell.Current.GoToAsync("//adminReportes");
+                await Shell.Current.GoToAsync("adminReportes");
             }
             else
             {
-                await Shell.Current.GoToAsync("//reportes");
+                await Shell.Current.GoToAsync("reportes");
             }
         }
         finally

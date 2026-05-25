@@ -12,14 +12,4 @@
         ContentTemplate="{DataTemplate views:LoginView}"
         Route="login" />
 
-    <ShellContent
-        Title="Reportes"
-        ContentTemplate="{DataTemplate views:InicioView}"
-        Route="reportes" />
-
-    <ShellContent
-        Title="Admin"
-        ContentTemplate="{DataTemplate views:ReportesAdminView}"
-        Route="adminReportes" />
-
 </Shell>

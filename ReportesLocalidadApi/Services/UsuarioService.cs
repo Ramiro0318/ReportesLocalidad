@@ -45,8 +45,7 @@ public class UsuarioService
 
     public async Task<ApiResponse<UsuarioRespuestaDto>> LoginAsync(LoginDto loginDto)
     {
-        var usuario = await _context.Usuarios
-            .FirstOrDefaultAsync(usuario => usuario.NombreUsuario == loginDto.NombreUsuario);
+        var usuario = await _context.Usuarios.FirstOrDefaultAsync(usuario => usuario.NombreUsuario == loginDto.NombreUsuario);
 
         if (usuario is null)
         {
