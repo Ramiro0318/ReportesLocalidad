@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ReportesLocalidadApp.Views.MisReportesView"
+             Title="MisReportesView" Shell.NavBarIsVisible="False">
+    <Grid RowDefinitions="auto,*,auto" BackgroundColor="#0F0F0F">
+        <Grid Grid.Row="0" Padding="20,20,20,20" ColumnDefinitions="*, auto">
+            <Grid.Background>
+                <LinearGradientBrush StartPoint="1,1" EndPoint="0,0">
+                    <GradientStop Color="#f05a3c" Offset="0.1"></GradientStop>
+                    <GradientStop Color="#F54927" Offset="0.8"></GradientStop>
+                </LinearGradientBrush>
+            </Grid.Background>
+            <VerticalStackLayout VerticalOptions="Center">
+                <Label Text="Mis reportes" TextColor="White" FontSize="20" FontAttributes="Bold"></Label>
+            </VerticalStackLayout>
+        </Grid>
+        
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="14,16" Spacing="10">
+
+                <!--Reporte 1-->
+                <CollectionView ItemsSource="{Binding MisReportes}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Border Padding="14" StrokeShape="RoundRectangle 12" BackgroundColor="#2B2B29" Stroke="#4A4A45">
+                                <Grid ColumnDefinitions="52,*,Auto" ColumnSpacing="12">
+
+                                    <Border WidthRequest="42" HeightRequest="42" StrokeShape="RoundRectangle 10" Padding="0" BackgroundColor="#FFF1E8" Stroke="Transparent" VerticalOptions="Center">
+                                        <Label Text="Icono" TextColor="#E85B2A" FontSize="10" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" ></Label>
+                                    </Border>
+
+                                    <VerticalStackLayout Grid.Column="1" Spacing="3" VerticalOptions="Center">
+
+                                        <Label Text="Bache peligroso" TextColor="White" FontSize="15" FontAttributes="Bold"></Label>
+
+                                        <Label Text="Av. Juárez esq. Hidalgo" TextColor="White" FontSize="12" />
+
+                                        <Label Text="IconoReloj  Hace 2 horas" TextColor="#D8D8D8" FontSize="11"></Label>
+                                    </VerticalStackLayout>
+
+                                    <Border Grid.Column="2" BackgroundColor="#FFE9A8" Stroke="Transparent" Padding="10,4" HorizontalOptions="End" VerticalOptions="Start" StrokeShape="RoundRectangle 20">
+                                        <Label Text="Pendiente" TextColor="#7A5200" FontSize="11" FontAttributes="Bold" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"></Label>
+                                    </Border>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+                <!--<Border Padding="14" StrokeShape="RoundRectangle 12" BackgroundColor="#2B2B29" Stroke="#4A4A45">
+                    <Grid ColumnDefinitions="52,*,Auto" ColumnSpacing="12">
+
+                        <Border WidthRequest="42" HeightRequest="42" StrokeShape="RoundRectangle 10" Padding="0" BackgroundColor="#FFF1E8" Stroke="Transparent" VerticalOptions="Center">
+                            <Label Text="Icono" TextColor="#E85B2A" FontSize="10" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" ></Label>
+                        </Border>
+
+                        <VerticalStackLayout Grid.Column="1" Spacing="3"
+                                VerticalOptions="Center">
+
+                            <Label Text="Bache peligroso" TextColor="White" FontSize="15" FontAttributes="Bold"></Label>
+
+                            <Label Text="Av. Juárez esq. Hidalgo" TextColor="White" FontSize="12" />
+
+                            <Label Text="IconoReloj  Hace 2 horas" TextColor="#D8D8D8" FontSize="11"></Label>
+                        </VerticalStackLayout>
+
+                        <Border Grid.Column="2" BackgroundColor="#FFE9A8" Stroke="Transparent" Padding="10,4" HorizontalOptions="End" VerticalOptions="Start" StrokeShape="RoundRectangle 20">
+                            <Label Text="Pendiente" TextColor="#7A5200" FontSize="11" FontAttributes="Bold" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"></Label>
+                        </Border>
+                    </Grid>
+                </Border>-->
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!--Menu estatico-->
+        <Grid Grid.Row="2" HeightRequest="70" BackgroundColor="#2B2B29" ColumnDefinitions="*,*,*,*">
+            <VerticalStackLayout Grid.Column="0" HorizontalOptions="Center" VerticalOptions="Center" Spacing="2">
+                <VerticalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer></TapGestureRecognizer>
+                </VerticalStackLayout.GestureRecognizers>
+                <Image Source="inicio.png"  WidthRequest="25"></Image>
+                <Label Text="Inicio" TextColor="#F05A2A" FontSize="11" HorizontalTextAlignment="Center"></Label>
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Grid.Column="1" HorizontalOptions="Center" VerticalOptions="Center" Spacing="2">
+                <VerticalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer></TapGestureRecognizer>
+                </VerticalStackLayout.GestureRecognizers>
+                <Image Source="agregar.png"  WidthRequest="25"></Image>
+                <Label Text="Agregar" TextColor="White" FontSize="11" HorizontalTextAlignment="Center"></Label>
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Grid.Column="2" HorizontalOptions="Center" VerticalOptions="Center" Spacing="2">
+                <VerticalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer></TapGestureRecognizer>
+                </VerticalStackLayout.GestureRecognizers>
+                <Image Source="reporte.png"  WidthRequest="25"></Image>
+                <Label Text="Mis reprotes" TextColor="White" FontSize="11" HorizontalTextAlignment="Center"></Label>
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Grid.Column="3" HorizontalOptions="Center" VerticalOptions="Center" Spacing="2">
+                <Image Source="perfil.png"  WidthRequest="30"></Image>
+                <Label Text="Perfil" TextColor="White" FontSize="11" HorizontalTextAlignment="Center"></Label>
+            </VerticalStackLayout>
+        </Grid>
+    </Grid>
+</ContentPage>
