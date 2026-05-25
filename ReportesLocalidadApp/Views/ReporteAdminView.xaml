@@ -23,7 +23,7 @@
                 <Border StrokeShape="RoundRectangle 14" BackgroundColor="#2B2B29" Stroke="#4A4A45"
                         HeightRequest="230" Padding="0">
                     <Grid>
-                        <Image Aspect="Fill"></Image>
+                        <Image Source="{Binding ImagenDetalleUrl}" Aspect="AspectFill"></Image>
                         <Label Text="Imagen del reporte" TextColor="LightGray"
                                HorizontalOptions="Center" VerticalOptions="Center"></Label>
                     </Grid>
@@ -71,24 +71,25 @@
 
                 <Border StrokeThickness="1" StrokeShape="RoundRectangle 8" Padding="10" Margin="0,10,0,0">
                     <Grid RowDefinitions="auto,*,*">
-                        <Picker Margin="10" Title="Marcar como:" TextColor="White" BackgroundColor="Transparent">
-                            <Picker.ItemsSource>
-                                <x:Array Type="{x:Type x:String}">
-                                    <x:String>Trabajando</x:String>
-                                    <x:String>Resuelto</x:String>
-                                </x:Array>
-                            </Picker.ItemsSource>
+                        <Picker Margin="10"
+                                Title="Marcar como:"
+                                TextColor="White"
+                                BackgroundColor="Transparent"
+                                ItemsSource="{Binding EstadosDisponibles}"
+                                SelectedItem="{Binding EstadoSeleccionado}">
                         </Picker>
                         <Button Grid.Row="1" Text="Confirmar" HeightRequest="50" CornerRadius="15"
                                 FontAttributes="Bold" Margin="0,10,0,0"
                                 BackgroundColor="#1E4BE3"
-                                TextColor="White">
+                                TextColor="White"
+                                Command="{Binding CambiarEstadoReporteCommand}">
                         </Button>
 
                         <Button Grid.Row="2" Text="Eliminar" HeightRequest="50" CornerRadius="15"
                                 FontAttributes="Bold" Margin="0,10,0,0"
                                 BackgroundColor="#FF122E"
-                                TextColor="White">
+                                TextColor="White"
+                                Command="{Binding EliminarReporteAdminCommand}">
                         </Button>
 
                     </Grid>

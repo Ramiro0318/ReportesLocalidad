@@ -10,8 +10,10 @@ public partial class MainViewModel : ObservableObject
 {
     private readonly ReportesService reportesService;
     private readonly AuthService authService;
+    private readonly FotoService fotoService;
     private readonly List<ReporteGeneralDto> reportesCargados = new();
     private readonly List<ReportePropioDto> reportesPropiosCargados = new();
+    private string? fotoBase64;
     private int reportesSaltados;
     private int reportesPropiosSaltados;
     private int elementosMostrados;
@@ -19,17 +21,33 @@ public partial class MainViewModel : ObservableObject
     private const int CargaInicial = 50;
     private const int CantidadVisible = 25;
 
-    public MainViewModel(ReportesService reportesService, AuthService authService)
+    public MainViewModel(ReportesService reportesService, AuthService authService, FotoService fotoService)
     {
         this.reportesService = reportesService;
         this.authService = authService;
+        this.fotoService = fotoService;
         Reportes = new ObservableCollection<ReporteGeneralDto>();
         MisReportes = new ObservableCollection<ReportePropioDto>();
     }
 
     public ObservableCollection<ReporteGeneralDto> Reportes { get; }
     public ObservableCollection<ReportePropioDto> MisReportes { get; }
-    public List<Categorias> CategoriasDisponibles { get; } = Enum.GetValues<Categorias>().ToList();
+    public List<string> CategoriasDisponibles { get; } = new()
+    {
+        "Bache",
+        "Fuga de agua",
+        "Basura",
+        "Alumbrado publico",
+        "Accidente",
+        "Otro"
+    };
+
+    public List<string> EstadosDisponibles { get; } = new()
+    {
+        "Pendiente",
+        "En progreso",
+        "Resuelto"
+    };
 
     [ObservableProperty]
     private bool isBusy;
@@ -44,10 +62,16 @@ public partial class MainViewModel : ObservableObject
     private string descripcionReporte = string.Empty;
 
     [ObservableProperty]
-    private Categorias categoriaSeleccionada = Categorias.Bache;
+    private string categoriaSeleccionada = "Bache";
+
+    [ObservableProperty]
+    private string? rutaImagen;
 
     [ObservableProperty]
     private ReporteDetalleDto? reporteDetalle;
+
+    [ObservableProperty]
+    private string? imagenDetalleUrl;
 
     [ObservableProperty]
     private bool puedeEditarReporte;
@@ -65,7 +89,10 @@ public partial class MainViewModel : ObservableObject
     private string descripcionDetalle = string.Empty;
 
     [ObservableProperty]
-    private Categorias categoriaDetalle = Categorias.Bache;
+    private string categoriaDetalle = "Bache";
+
+    [ObservableProperty]
+    private string estadoSeleccionado = "Pendiente";
 
     [RelayCommand]
     private async Task CargarReportes()
@@ -293,6 +320,38 @@ public partial class MainViewModel : ObservableObject
     }
 
     [RelayCommand]
+    private async Task TomarFoto()
+    {
+        var resultado = await fotoService.TomarFotoAsync();
+
+        if (resultado is null)
+        {
+            Mensaje = "No se pudo tomar la foto.";
+            return;
+        }
+
+        RutaImagen = resultado.Value.RutaImagen;
+        fotoBase64 = resultado.Value.FotoBase64;
+        Mensaje = "Fotografia tomada correctamente.";
+    }
+
+    [RelayCommand]
+    private async Task SeleccionarFoto()
+    {
+        var resultado = await fotoService.SeleccionarFotoAsync();
+
+        if (resultado is null)
+        {
+            Mensaje = "No se pudo seleccionar la foto.";
+            return;
+        }
+
+        RutaImagen = resultado.Value.RutaImagen;
+        fotoBase64 = resultado.Value.FotoBase64;
+        Mensaje = "Fotografia seleccionada correctamente.";
+    }
+
+    [RelayCommand]
     private async Task CrearReporte()
     {
         if (IsBusy)
@@ -330,9 +389,9 @@ public partial class MainViewModel : ObservableObject
                 Titulo = TituloReporte.Trim(),
                 Descripcion = DescripcionReporte.Trim(),
                 Direccion = null,
-                Foto = null,
+                Foto = fotoBase64,
                 IdUsuario = idUsuario,
-                IdCategoria = (int)CategoriaSeleccionada,
+                IdCategoria = ObtenerIdCategoria(CategoriaSeleccionada),
                 ClientRequestId = Guid.NewGuid().ToString()
             };
 
@@ -354,7 +413,9 @@ public partial class MainViewModel : ObservableObject
 
             TituloReporte = string.Empty;
             DescripcionReporte = string.Empty;
-            CategoriaSeleccionada = Categorias.Bache;
+            CategoriaSeleccionada = "Bache";
+            RutaImagen = null;
+            fotoBase64 = null;
             Mensaje = respuesta.Message;
 
             await Shell.Current.GoToAsync("reportes");
@@ -474,7 +535,49 @@ public partial class MainViewModel : ObservableObject
         CamposSoloLectura = true;
         TituloDetalle = reporte.Titulo;
         DescripcionDetalle = reporte.Descripcion;
-        CategoriaDetalle = (Categorias)reporte.IdCategoria;
+        CategoriaDetalle = ObtenerTextoCategoria(reporte.IdCategoria);
+        EstadoSeleccionado = ObtenerTextoEstado(reporte.IdEstado);
+        ImagenDetalleUrl = reportesService.ObtenerUrlImagen(reporte.ImgUrl);
+        RutaImagen = null;
+        fotoBase64 = null;
+    }
+
+    private string ObtenerTextoCategoria(int idCategoria)
+    {
+        if (idCategoria == (int)Categorias.Bache) return "Bache";
+        if (idCategoria == (int)Categorias.Fuga_de_agua) return "Fuga de agua";
+        if (idCategoria == (int)Categorias.Basura) return "Basura";
+        if (idCategoria == (int)Categorias.Alumbrado_Publico) return "Alumbrado publico";
+        if (idCategoria == (int)Categorias.Accidente) return "Accidente";
+        if (idCategoria == (int)Categorias.Otro) return "Otro";
+        return "Bache";
+    }
+
+    private int ObtenerIdCategoria(string categoria)
+    {
+        if (categoria == "Bache") return (int)Categorias.Bache;
+        if (categoria == "Fuga de agua") return (int)Categorias.Fuga_de_agua;
+        if (categoria == "Basura") return (int)Categorias.Basura;
+        if (categoria == "Alumbrado publico") return (int)Categorias.Alumbrado_Publico;
+        if (categoria == "Accidente") return (int)Categorias.Accidente;
+        if (categoria == "Otro") return (int)Categorias.Otro;
+        return (int)Categorias.Bache;
+    }
+
+    private string ObtenerTextoEstado(int idEstado)
+    {
+        if (idEstado == (int)Estados.Pendiente) return "Pendiente";
+        if (idEstado == (int)Estados.En_Progreso) return "En progreso";
+        if (idEstado == (int)Estados.Resuelto) return "Resuelto";
+        return "Pendiente";
+    }
+
+    private int ObtenerIdEstado(string estado)
+    {
+        if (estado == "Pendiente") return (int)Estados.Pendiente;
+        if (estado == "En progreso") return (int)Estados.En_Progreso;
+        if (estado == "Resuelto") return (int)Estados.Resuelto;
+        return (int)Estados.Pendiente;
     }
 
     [RelayCommand]
@@ -529,9 +632,9 @@ public partial class MainViewModel : ObservableObject
                 Titulo = TituloDetalle.Trim(),
                 Descripcion = DescripcionDetalle.Trim(),
                 Direccion = ReporteDetalle.Direccion,
-                Foto = null,
+                Foto = fotoBase64,
                 IdUsuario = idUsuario,
-                IdCategoria = (int)CategoriaDetalle
+                IdCategoria = ObtenerIdCategoria(CategoriaDetalle)
             };
 
             var respuesta = await reportesService.EditarReporteAsync(ReporteDetalle.Id, reporteEditado);
@@ -695,6 +798,111 @@ public partial class MainViewModel : ObservableObject
         if (reporteGeneralCargado is not null)
         {
             reportesCargados.Remove(reporteGeneralCargado);
+        }
+    }
+
+    [RelayCommand]
+    private async Task EliminarReporteAdmin()
+    {
+        if (IsBusy || ReporteDetalle is null)
+        {
+            return;
+        }
+
+        var confirmar = await Shell.Current.DisplayAlert("Eliminar reporte", "Esta seguro que quiere eliminar este reporte?", "Aceptar", "Cancelar");
+
+        if (!confirmar)
+        {
+            return;
+        }
+
+        try
+        {
+            IsBusy = true;
+            Mensaje = string.Empty;
+
+            var idUsuario = await authService.GetIdUsuarioAsync();
+
+            if (idUsuario == 0)
+            {
+                Mensaje = "No se encontro la sesion del usuario.";
+                return;
+            }
+
+            var respuesta = await reportesService.EliminarReporteAsync(ReporteDetalle.Id, idUsuario);
+
+            if (respuesta is null)
+            {
+                Mensaje = "No se pudo conectar con la API.";
+                return;
+            }
+
+            if (!respuesta.Success)
+            {
+                Mensaje = respuesta.Message;
+                return;
+            }
+
+            QuitarReporteDeListas(ReporteDetalle.Id);
+            ReporteDetalle = null;
+            Mensaje = respuesta.Message;
+            await Shell.Current.GoToAsync("adminReportes");
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
+    [RelayCommand]
+    private async Task CambiarEstadoReporte()
+    {
+        if (IsBusy || ReporteDetalle is null)
+        {
+            return;
+        }
+
+        try
+        {
+            IsBusy = true;
+            Mensaje = string.Empty;
+
+            var idUsuario = await authService.GetIdUsuarioAsync();
+
+            if (idUsuario == 0)
+            {
+                Mensaje = "No se encontro la sesion del usuario.";
+                return;
+            }
+
+            var cambiarEstadoDto = new CambiarEstadoReporteDto
+            {
+                IdEstado = ObtenerIdEstado(EstadoSeleccionado),
+                IdUsuario = idUsuario
+            };
+
+            var respuesta = await reportesService.CambiarEstadoAsync(ReporteDetalle.Id, cambiarEstadoDto);
+
+            if (respuesta is null)
+            {
+                Mensaje = "No se pudo conectar con la API.";
+                return;
+            }
+
+            if (!respuesta.Success || respuesta.Data is null)
+            {
+                Mensaje = respuesta.Message;
+                return;
+            }
+
+            PrepararDetalleReporte(respuesta.Data, false);
+            ActualizarReporteEnListas(respuesta.Data);
+            Mensaje = respuesta.Message;
+            await Shell.Current.GoToAsync("adminReportes");
+        }
+        finally
+        {
+            IsBusy = false;
         }
     }
 

@@ -23,6 +23,7 @@ namespace ReportesLocalidadApp
                 BaseAddress = new Uri("http://localhost:5027/")
             });
             builder.Services.AddSingleton<AuthService>();
+            builder.Services.AddSingleton<FotoService>();
             builder.Services.AddTransient<ReportesService>();
             builder.Services.AddSingleton<MainViewModel>();
             builder.Services.AddTransient<AuthViewModel>();

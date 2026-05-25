@@ -51,12 +51,18 @@
                 <Label Text="Evidencia fotografica" TextColor="White" FontAttributes="Bold" FontSize="15"></Label>
                 <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
                     <Border Grid.Column="0" Stroke="#4A4A45" StrokeShape="RoundRectangle 10" StrokeThickness="1" StrokeDashArray="4,3" BackgroundColor="#242421" Padding="12" HeightRequest="78">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding TomarFotoCommand}"></TapGestureRecognizer>
+                        </Border.GestureRecognizers>
                         <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="6">
                             <Label Text="Icono" TextColor="#E6E6C7" FontSize="12" HorizontalTextAlignment="Center"></Label>
                             <Label Text="Camara" TextColor="#E6E6C7" FontSize="12" HorizontalTextAlignment="Center"></Label>
                         </VerticalStackLayout>
                     </Border>
                     <Border Grid.Column="1" Stroke="#4A4A45" StrokeShape="RoundRectangle 10" StrokeThickness="1" StrokeDashArray="4,3" BackgroundColor="#242421" Padding="12" HeightRequest="78">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding SeleccionarFotoCommand}"></TapGestureRecognizer>
+                        </Border.GestureRecognizers>
                         <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="6">
                             <Label Text="Icono" TextColor="#E6E6C7" FontSize="12" HorizontalTextAlignment="Center"></Label>
                             <Label Text="Galeria" TextColor="#E6E6C7" FontSize="12" HorizontalTextAlignment="Center"></Label>
@@ -65,9 +71,11 @@
                 </Grid>
 
                 <Border Stroke="#4A4A45" StrokeShape="RoundRectangle 10" StrokeThickness="1" StrokeDashArray="4,3" BackgroundColor="#242421" Padding="12" HeightRequest="200">
-                    <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="6">
-                        <Label Text="Imagen" TextColor="#E6E6C7" FontSize="12" HorizontalTextAlignment="Center"></Label>
-                    </VerticalStackLayout>
+                    <Grid>
+                        <Image Source="{Binding RutaImagen}" Aspect="AspectFill"></Image>
+                        <Label Text="Imagen" TextColor="#E6E6C7" FontSize="12" HorizontalTextAlignment="Center"
+                               HorizontalOptions="Center" VerticalOptions="Center"></Label>
+                    </Grid>
                 </Border>
 
                 <Label Text="Ubicacion" TextColor="White" FontSize="15" FontAttributes="Bold"></Label>

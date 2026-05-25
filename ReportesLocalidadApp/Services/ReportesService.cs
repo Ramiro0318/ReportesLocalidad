@@ -13,6 +13,21 @@ public class ReportesService
         this.http = http;
     }
 
+    public string? ObtenerUrlImagen(string? imgUrl)
+    {
+        if (string.IsNullOrWhiteSpace(imgUrl))
+        {
+            return null;
+        }
+
+        if (imgUrl.StartsWith("http"))
+        {
+            return imgUrl;
+        }
+
+        return new Uri(http.BaseAddress!, imgUrl.TrimStart('/')).ToString();
+    }
+
     public async Task<ApiResponse<ReporteDetalleDto>?> CrearReporteAsync(SubirReporteDto subirReporteDto)
     {
         try
