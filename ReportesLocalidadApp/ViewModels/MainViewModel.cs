@@ -68,6 +68,12 @@ public partial class MainViewModel : ObservableObject
     private string? rutaImagen;
 
     [ObservableProperty]
+    private ImageSource? imagenSeleccionada;
+
+    [ObservableProperty]
+    private bool mostrarTextoImagen = true;
+
+    [ObservableProperty]
     private ReporteDetalleDto? reporteDetalle;
 
     [ObservableProperty]
@@ -331,6 +337,8 @@ public partial class MainViewModel : ObservableObject
         }
 
         RutaImagen = resultado.Value.RutaImagen;
+        ImagenSeleccionada = ImageSource.FromFile(resultado.Value.RutaImagen);
+        MostrarTextoImagen = false;
         fotoBase64 = resultado.Value.FotoBase64;
         Mensaje = "Fotografia tomada correctamente.";
     }
@@ -347,6 +355,8 @@ public partial class MainViewModel : ObservableObject
         }
 
         RutaImagen = resultado.Value.RutaImagen;
+        ImagenSeleccionada = ImageSource.FromFile(resultado.Value.RutaImagen);
+        MostrarTextoImagen = false;
         fotoBase64 = resultado.Value.FotoBase64;
         Mensaje = "Fotografia seleccionada correctamente.";
     }
@@ -415,6 +425,8 @@ public partial class MainViewModel : ObservableObject
             DescripcionReporte = string.Empty;
             CategoriaSeleccionada = "Bache";
             RutaImagen = null;
+            ImagenSeleccionada = null;
+            MostrarTextoImagen = true;
             fotoBase64 = null;
             Mensaje = respuesta.Message;
 
@@ -539,6 +551,8 @@ public partial class MainViewModel : ObservableObject
         EstadoSeleccionado = ObtenerTextoEstado(reporte.IdEstado);
         ImagenDetalleUrl = reportesService.ObtenerUrlImagen(reporte.ImgUrl);
         RutaImagen = null;
+        ImagenSeleccionada = null;
+        MostrarTextoImagen = true;
         fotoBase64 = null;
     }
 

@@ -55,9 +55,10 @@
                 <Border Stroke="#4A4A45" StrokeShape="RoundRectangle 10" StrokeThickness="1" StrokeDashArray="4,3" BackgroundColor="#242421" Padding="12" HeightRequest="160"
                         IsVisible="{Binding EstaEditandoReporte}">
                     <Grid>
-                        <Image Source="{Binding RutaImagen}" Aspect="AspectFill"></Image>
+                        <Image Source="{Binding ImagenSeleccionada}" Aspect="AspectFill"></Image>
                         <Label Text="Nueva imagen" TextColor="#E6E6C7" FontSize="12" HorizontalTextAlignment="Center"
-                               HorizontalOptions="Center" VerticalOptions="Center"></Label>
+                               HorizontalOptions="Center" VerticalOptions="Center"
+                               IsVisible="{Binding MostrarTextoImagen}"></Label>
                     </Grid>
                 </Border>
 

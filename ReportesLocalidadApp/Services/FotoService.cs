@@ -2,6 +2,8 @@ namespace ReportesLocalidadApp.Services;
 
 public class FotoService
 {
+    private const int MaxSizeBytes = 8 * 1024 * 1024;
+
     public async Task<(string RutaImagen, string FotoBase64)?> TomarFotoAsync()
     {
         try
@@ -51,6 +53,11 @@ public class FotoService
         {
             var extension = Path.GetExtension(photo.FileName).ToLower();
 
+            if (string.IsNullOrWhiteSpace(extension))
+            {
+                extension = ".jpg";
+            }
+
             if (extension != ".jpg" && extension != ".jpeg" && extension != ".png")
             {
                 return null;
@@ -59,12 +66,20 @@ public class FotoService
             var nombreArchivo = $"{Guid.NewGuid()}{extension}";
             var localFilePath = Path.Combine(FileSystem.CacheDirectory, nombreArchivo);
 
-            using var sourceStream = await photo.OpenReadAsync();
-            using var localFileStream = File.OpenWrite(localFilePath);
-            await sourceStream.CopyToAsync(localFileStream);
+            await using (var sourceStream = await photo.OpenReadAsync())
+            await using (var localFileStream = File.OpenWrite(localFilePath))
+            {
+                await sourceStream.CopyToAsync(localFileStream);
+            }
 
             var buffer = await File.ReadAllBytesAsync(localFilePath);
-            var base64 = Convert.ToBase64String(buffer);
+
+            if (buffer.Length > MaxSizeBytes)
+            {
+                return null;
+            }
+
+            var base64 = $"{ObtenerPrefijoBase64(extension)}{Convert.ToBase64String(buffer)}";
 
             return (localFilePath, base64);
         }
@@ -72,5 +87,15 @@ public class FotoService
         {
             return null;
         }
+    }
+
+    private string ObtenerPrefijoBase64(string extension)
+    {
+        if (extension == ".png")
+        {
+            return "data:image/png;base64,";
+        }
+
+        return "data:image/jpeg;base64,";
     }
 }

@@ -4,7 +4,7 @@ public class ImageService
 {
     private readonly IWebHostEnvironment _environment;
     private readonly string[] _formatosPermitidos = [".jpg", ".jpeg", ".png"];
-    private const int MaxSizeBytes = 2 * 1024 * 1024;
+    private const int MaxSizeBytes = 8 * 1024 * 1024;
 
     public ImageService(IWebHostEnvironment environment)
     {

@@ -63,7 +63,19 @@ public class ReporteService
 
         reporte.FechaSubida = DateTime.Now;
         reporte.IdEstado = 1;
-        reporte.ImgUrl = await imageService.GuardarImagenBase64Async(subirReporteDto.Foto);
+
+        try
+        {
+            reporte.ImgUrl = await imageService.GuardarImagenBase64Async(subirReporteDto.Foto);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return new ApiResponse<Reportes>
+            {
+                Success = false,
+                Message = ex.Message
+            };
+        }
 
         await reporteRepository.AddAsync(reporte);
         await reporteRepository.SaveChangesAsync();
@@ -170,7 +182,18 @@ public class ReporteService
 
         if (!string.IsNullOrWhiteSpace(editarReporteDto.Foto))
         {
-            reporte.ImgUrl = await imageService.GuardarImagenBase64Async(editarReporteDto.Foto);
+            try
+            {
+                reporte.ImgUrl = await imageService.GuardarImagenBase64Async(editarReporteDto.Foto);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return new ApiResponse<Reportes>
+                {
+                    Success = false,
+                    Message = ex.Message
+                };
+            }
         }
 
         reporteRepository.Update(reporte);
