@@ -2,23 +2,26 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ReportesLocalidadApp.Views.ReporteView"
-             Title="ReporteView" Shell.NavBarIsVisible="False">
+             Title="ReporteView"
+             Shell.NavBarIsVisible="False">
     <Grid RowDefinitions="Auto,*" BackgroundColor="#0F0F0F" Padding="10">
         <Border WidthRequest="38" Grid.Row="0" Grid.Column="0" HeightRequest="38" StrokeShape="RoundRectangle 12"
                 BackgroundColor="#2B2B29" Stroke="#4A4A45" Padding="0" VerticalOptions="Center" HorizontalOptions="Start">
-                <Label Grid.Row="0" Text="⬅️" TextColor="White" FontSize="14" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"></Label>
+            <Border.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding VolverReporteCommand}"></TapGestureRecognizer>
+            </Border.GestureRecognizers>
+            <Label Grid.Row="0" Text="&lt;" TextColor="White" FontSize="14" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"></Label>
         </Border>
 
-        <Label Text="Bache peligroso" TextColor="White" FontSize="20"
+        <Label Text="{Binding ReporteDetalle.Titulo}" TextColor="White" FontSize="20"
                FontAttributes="Bold" HorizontalTextAlignment="Center"
                VerticalTextAlignment="Center"></Label>
 
-        <!-- CONTENIDO -->
         <ScrollView Grid.Row="1" Margin="0,20,0,0">
             <VerticalStackLayout Spacing="10">
 
-                <Border StrokeShape="roundrectangle 14" BackgroundColor="#2b2b29" Stroke="#4a4a45"
-                    HeightRequest="230" Padding="0">
+                <Border StrokeShape="RoundRectangle 14" BackgroundColor="#2B2B29" Stroke="#4A4A45"
+                        HeightRequest="230" Padding="0">
                     <Grid>
                         <Image Aspect="Fill"></Image>
                         <Label Text="Imagen del reporte" TextColor="LightGray"
@@ -26,35 +29,98 @@
                     </Grid>
                 </Border>
 
-                <!-- UBICACIÓN -->
-                <Label Text="Ubicación" TextColor="White" FontSize="15" FontAttributes="Bold"></Label>
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                    <Border BackgroundColor="#FFE9A8" Stroke="Transparent" Padding="10,4"
+                            HorizontalOptions="Start" StrokeShape="RoundRectangle 20">
+                        <Label Text="{Binding ReporteDetalle.EstadoTexto}" TextColor="#7A5200" FontSize="11"
+                               FontAttributes="Bold" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"></Label>
+                    </Border>
+
+                    <Border Grid.Column="1" BackgroundColor="#FFF1E8" Stroke="Transparent" Padding="10,4"
+                            HorizontalOptions="End" StrokeShape="RoundRectangle 20">
+                        <Label Text="{Binding ReporteDetalle.CategoriaTexto}" TextColor="#E85B2A" FontSize="11"
+                               FontAttributes="Bold" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"></Label>
+                    </Border>
+                </Grid>
+
+                <Label Text="Titulo" TextColor="White" FontSize="15" FontAttributes="Bold"></Label>
+                <Border StrokeShape="RoundRectangle 12" BackgroundColor="#2B2B29"
+                        Stroke="#4A4A45" Padding="10">
+                    <Entry Text="{Binding TituloDetalle}"
+                           IsReadOnly="{Binding CamposSoloLectura}"
+                           TextColor="White"
+                           PlaceholderColor="LightGray"
+                           BackgroundColor="Transparent"></Entry>
+                </Border>
+
+                <Label Text="Categoria" TextColor="White" FontSize="15" FontAttributes="Bold"></Label>
+                <Border StrokeShape="RoundRectangle 12" BackgroundColor="#2B2B29"
+                        Stroke="#4A4A45" Padding="10">
+                    <Picker ItemsSource="{Binding CategoriasDisponibles}"
+                            SelectedItem="{Binding CategoriaDetalle}"
+                            IsEnabled="{Binding EstaEditandoReporte}"
+                            TextColor="White"
+                            BackgroundColor="Transparent"></Picker>
+                </Border>
+
+                <Label Text="Ubicacion" TextColor="White" FontSize="15" FontAttributes="Bold"></Label>
                 <Border StrokeShape="RoundRectangle 12" BackgroundColor="#2B2B29" Stroke="#4A4A45"
                         Padding="14" HeightRequest="90">
-
                     <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
                         <Label Text="IconoUbicacion" TextColor="#F05A2A"
                                FontSize="15" VerticalOptions="Center"></Label>
                         <VerticalStackLayout Grid.Column="1" Spacing="4" VerticalOptions="Center">
-                            <Label Text="Av. Juárez esq. Hidalgo"
+                            <Label Text="{Binding ReporteDetalle.Direccion}"
                                    TextColor="White" FontSize="13"
                                    FontAttributes="Bold"></Label>
 
-                            <Label Text="Nueva Rosita, Coahuila" TextColor="LightGray"
+                            <Label Text="Sin direccion registrada" TextColor="LightGray"
                                    FontSize="12"></Label>
                         </VerticalStackLayout>
                     </Grid>
                 </Border>
 
-                <!-- DESCRIPCIÓN -->
-                <Label Text="Descripción" TextColor="White"
+                <Label Text="Descripcion" TextColor="White"
                        FontSize="15" FontAttributes="Bold"></Label>
 
                 <Border StrokeShape="RoundRectangle 12" BackgroundColor="#2B2B29"
                         Stroke="#4A4A45" Padding="14">
-
-                    <Label Text="El reporte indica un bache peligroso sobre la avenida principal. Representa riesgo para vehículos y peatones, especialmente durante la noche."
-                           TextColor="#E6E6E6" FontSize="13" LineBreakMode="WordWrap"></Label>
+                    <Editor Text="{Binding DescripcionDetalle}"
+                            IsReadOnly="{Binding CamposSoloLectura}"
+                            TextColor="#E6E6E6"
+                            BackgroundColor="Transparent"
+                            FontSize="13"
+                            AutoSize="TextChanges"></Editor>
                 </Border>
+
+                <Label Text="{Binding Mensaje}" TextColor="White" FontSize="13"></Label>
+
+                <Button Text="Editar"
+                        HeightRequest="50"
+                        CornerRadius="15"
+                        FontAttributes="Bold"
+                        BackgroundColor="#1E4BE3"
+                        TextColor="White"
+                        IsVisible="{Binding PuedeEditarReporte}"
+                        Command="{Binding ActivarEdicionReporteCommand}"></Button>
+
+                <Button Text="Confirmar edicion"
+                        HeightRequest="50"
+                        CornerRadius="15"
+                        FontAttributes="Bold"
+                        BackgroundColor="#F54927"
+                        TextColor="White"
+                        IsVisible="{Binding EstaEditandoReporte}"
+                        Command="{Binding GuardarEdicionReporteCommand}"></Button>
+
+                <Button Text="Eliminar"
+                        HeightRequest="50"
+                        CornerRadius="15"
+                        FontAttributes="Bold"
+                        BackgroundColor="#FF122E"
+                        TextColor="White"
+                        IsVisible="{Binding PuedeEditarReporte}"
+                        Command="{Binding EliminarReporteCommand}"></Button>
 
             </VerticalStackLayout>
         </ScrollView>

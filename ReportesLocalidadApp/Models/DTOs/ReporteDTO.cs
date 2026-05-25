@@ -43,6 +43,29 @@ namespace ReportesLocalidadApp.Models.DTOs
         public int IdUsuario { get; set; }
         public int IdCategoria { get; set; }
         public int IdEstado { get; set; }
+        public string CategoriaTexto
+        {
+            get
+            {
+                if (IdCategoria == (int)Categorias.Bache) return "Bache";
+                if (IdCategoria == (int)Categorias.Fuga_de_agua) return "Fuga de agua";
+                if (IdCategoria == (int)Categorias.Basura) return "Basura";
+                if (IdCategoria == (int)Categorias.Alumbrado_Publico) return "Alumbrado publico";
+                if (IdCategoria == (int)Categorias.Accidente) return "Accidente";
+                if (IdCategoria == (int)Categorias.Otro) return "Otro";
+                return "Sin categoria";
+            }
+        }
+        public string EstadoTexto
+        {
+            get
+            {
+                if (IdEstado == (int)Estados.Pendiente)return "Pendiente";
+                if (IdEstado == (int)Estados.En_Progreso) return "En progreso";
+                if (IdEstado == (int)Estados.Resuelto) return "Resuelto";
+                return "Sin estado";
+            }
+        }
     }
 
     public class ReporteAEditarDto
@@ -64,6 +87,29 @@ namespace ReportesLocalidadApp.Models.DTOs
         public DateTime? FechaEdicion { get; set; }
         public int IdEstado { get; set; }
         public int IdCategoria { get; set; }
+        public string CategoriaTexto
+        {
+            get
+            {
+                if (IdCategoria == (int)Categorias.Bache) return "Bache";
+                if (IdCategoria == (int)Categorias.Fuga_de_agua) return "Fuga de agua";
+                if (IdCategoria == (int)Categorias.Basura) return "Basura";
+                if (IdCategoria == (int)Categorias.Alumbrado_Publico) return "Alumbrado publico";
+                if (IdCategoria == (int)Categorias.Accidente) return "Accidente";
+                if (IdCategoria == (int)Categorias.Otro) return "Otro";
+                return "Sin categoria";
+            }
+        }
+        public string EstadoTexto
+        {
+            get
+            {
+                if (IdEstado == (int)Estados.Pendiente)return "Pendiente";
+                if (IdEstado == (int)Estados.En_Progreso)return "En progreso";
+                if (IdEstado == (int)Estados.Resuelto)return "Resuelto";
+                return "Sin estado";
+            }
+        }
     }
 
     public class ReporteGeneralDto : ReportePropioDto

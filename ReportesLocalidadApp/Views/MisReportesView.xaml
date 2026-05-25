@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ReportesLocalidadApp.Views.MisReportesView"
+             x:Name="PaginaMisReportes"
              Title="MisReportesView" Shell.NavBarIsVisible="False">
     <Grid RowDefinitions="auto,*,auto" BackgroundColor="#0F0F0F">
         <Grid Grid.Row="0" Padding="20,20,20,20" ColumnDefinitions="*, auto">
@@ -24,10 +25,14 @@
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <Border Padding="14" StrokeShape="RoundRectangle 12" BackgroundColor="#2B2B29" Stroke="#4A4A45">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding BindingContext.AbrirMiReporteCommand, Source={x:Reference PaginaMisReportes}}"
+                                                          CommandParameter="{Binding .}"></TapGestureRecognizer>
+                                </Border.GestureRecognizers>
                                 <Grid ColumnDefinitions="52,*,Auto" ColumnSpacing="12">
 
                                     <Border WidthRequest="42" HeightRequest="42" StrokeShape="RoundRectangle 10" Padding="0" BackgroundColor="#FFF1E8" Stroke="Transparent" VerticalOptions="Center">
-                                        <Label Text="{Binding IdCategoria}" TextColor="#E85B2A" FontSize="10" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" ></Label>
+                                        <Label Text="{Binding CategoriaTexto}" TextColor="#E85B2A" FontSize="10" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" ></Label>
                                     </Border>
 
                                     <VerticalStackLayout Grid.Column="1" Spacing="3" VerticalOptions="Center">
@@ -40,7 +45,7 @@
                                     </VerticalStackLayout>
 
                                     <Border Grid.Column="2" BackgroundColor="#FFE9A8" Stroke="Transparent" Padding="10,4" HorizontalOptions="End" VerticalOptions="Start" StrokeShape="RoundRectangle 20">
-                                        <Label Text="{Binding IdEstado}" TextColor="#7A5200" FontSize="11" FontAttributes="Bold" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"></Label>
+                                        <Label Text="{Binding EstadoTexto}" TextColor="#7A5200" FontSize="11" FontAttributes="Bold" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"></Label>
                                     </Border>
                                 </Grid>
                             </Border>

@@ -29,12 +29,43 @@ public partial class MainViewModel : ObservableObject
 
     public ObservableCollection<ReporteGeneralDto> Reportes { get; }
     public ObservableCollection<ReportePropioDto> MisReportes { get; }
+    public List<Categorias> CategoriasDisponibles { get; } = Enum.GetValues<Categorias>().ToList();
 
     [ObservableProperty]
     private bool isBusy;
 
     [ObservableProperty]
     private string mensaje = string.Empty;
+
+    [ObservableProperty]
+    private string tituloReporte = string.Empty;
+
+    [ObservableProperty]
+    private string descripcionReporte = string.Empty;
+
+    [ObservableProperty]
+    private Categorias categoriaSeleccionada = Categorias.Bache;
+
+    [ObservableProperty]
+    private ReporteDetalleDto? reporteDetalle;
+
+    [ObservableProperty]
+    private bool puedeEditarReporte;
+
+    [ObservableProperty]
+    private bool estaEditandoReporte;
+
+    [ObservableProperty]
+    private bool camposSoloLectura = true;
+
+    [ObservableProperty]
+    private string tituloDetalle = string.Empty;
+
+    [ObservableProperty]
+    private string descripcionDetalle = string.Empty;
+
+    [ObservableProperty]
+    private Categorias categoriaDetalle = Categorias.Bache;
 
     [RelayCommand]
     private async Task CargarReportes()
@@ -259,6 +290,424 @@ public partial class MainViewModel : ObservableObject
         }
 
         elementosPropiosMostrados += reportesParaMostrar.Count;
+    }
+
+    [RelayCommand]
+    private async Task CrearReporte()
+    {
+        if (IsBusy)
+        {
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(TituloReporte))
+        {
+            Mensaje = "Ingrese un titulo para el reporte.";
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(DescripcionReporte))
+        {
+            Mensaje = "Ingrese una descripcion para el reporte.";
+            return;
+        }
+
+        try
+        {
+            IsBusy = true;
+            Mensaje = string.Empty;
+
+            var idUsuario = await authService.GetIdUsuarioAsync();
+
+            if (idUsuario == 0)
+            {
+                Mensaje = "No se encontro la sesion del usuario.";
+                return;
+            }
+
+            var reporte = new SubirReporteDto
+            {
+                Titulo = TituloReporte.Trim(),
+                Descripcion = DescripcionReporte.Trim(),
+                Direccion = null,
+                Foto = null,
+                IdUsuario = idUsuario,
+                IdCategoria = (int)CategoriaSeleccionada,
+                ClientRequestId = Guid.NewGuid().ToString()
+            };
+
+            var respuesta = await reportesService.CrearReporteAsync(reporte);
+
+            if (respuesta is null)
+            {
+                Mensaje = "No se pudo conectar con la API.";
+                return;
+            }
+
+            if (!respuesta.Success || respuesta.Data is null)
+            {
+                Mensaje = respuesta.Message;
+                return;
+            }
+
+            await AgregarReporteNuevoAListasAsync(respuesta.Data);
+
+            TituloReporte = string.Empty;
+            DescripcionReporte = string.Empty;
+            CategoriaSeleccionada = Categorias.Bache;
+            Mensaje = respuesta.Message;
+
+            await Shell.Current.GoToAsync("reportes");
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
+    private async Task AgregarReporteNuevoAListasAsync(ReporteDetalleDto reporte)
+    {
+        var nombreUsuario = await authService.GetNombreUsuarioAsync() ?? string.Empty;
+
+        var reporteGeneral = new ReporteGeneralDto
+        {
+            Id = reporte.Id,
+            Titulo = reporte.Titulo,
+            FechaSubida = reporte.FechaSubida,
+            FechaEdicion = reporte.FechaEdicion,
+            IdEstado = reporte.IdEstado,
+            IdCategoria = reporte.IdCategoria,
+            NombreUsuario = nombreUsuario
+        };
+
+        var reportePropio = new ReportePropioDto
+        {
+            Id = reporte.Id,
+            Titulo = reporte.Titulo,
+            FechaSubida = reporte.FechaSubida,
+            FechaEdicion = reporte.FechaEdicion,
+            IdEstado = reporte.IdEstado,
+            IdCategoria = reporte.IdCategoria
+        };
+
+        if (reportesCargados.Count > 0 || Reportes.Count > 0)
+        {
+            reportesCargados.Insert(0, reporteGeneral);
+            Reportes.Insert(0, reporteGeneral);
+            elementosMostrados++;
+            reportesSaltados++;
+        }
+
+        if (reportesPropiosCargados.Count > 0 || MisReportes.Count > 0)
+        {
+            reportesPropiosCargados.Insert(0, reportePropio);
+            MisReportes.Insert(0, reportePropio);
+            elementosPropiosMostrados++;
+            reportesPropiosSaltados++;
+        }
+    }
+
+    [RelayCommand]
+    private async Task AbrirReporte(ReportePropioDto reporte)
+    {
+        await CargarDetalleReporteAsync(reporte.Id, "reporte", false, true);
+    }
+
+    [RelayCommand]
+    private async Task AbrirMiReporte(ReportePropioDto reporte)
+    {
+        await CargarDetalleReporteAsync(reporte.Id, "reporte", true);
+    }
+
+    [RelayCommand]
+    private async Task AbrirReporteAdmin(ReporteGeneralDto reporte)
+    {
+        await CargarDetalleReporteAsync(reporte.Id, "reporteAdmin", false);
+    }
+
+    private async Task CargarDetalleReporteAsync(int idReporte, string ruta, bool puedeEditar, bool verificarPropietario = false)
+    {
+        if (IsBusy)
+        {
+            return;
+        }
+
+        try
+        {
+            IsBusy = true;
+            Mensaje = string.Empty;
+
+            var respuesta = await reportesService.GetReporteAsync(idReporte);
+
+            if (respuesta is null)
+            {
+                Mensaje = "No se pudo conectar con la API.";
+                return;
+            }
+
+            if (!respuesta.Success || respuesta.Data is null)
+            {
+                Mensaje = respuesta.Message;
+                return;
+            }
+
+            if (verificarPropietario)
+            {
+                var idUsuario = await authService.GetIdUsuarioAsync();
+                puedeEditar = respuesta.Data.IdUsuario == idUsuario;
+            }
+
+            PrepararDetalleReporte(respuesta.Data, puedeEditar);
+            await Shell.Current.GoToAsync(ruta);
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
+    private void PrepararDetalleReporte(ReporteDetalleDto reporte, bool puedeEditar)
+    {
+        ReporteDetalle = reporte;
+        PuedeEditarReporte = puedeEditar;
+        EstaEditandoReporte = false;
+        CamposSoloLectura = true;
+        TituloDetalle = reporte.Titulo;
+        DescripcionDetalle = reporte.Descripcion;
+        CategoriaDetalle = (Categorias)reporte.IdCategoria;
+    }
+
+    [RelayCommand]
+    private void ActivarEdicionReporte()
+    {
+        if (!PuedeEditarReporte)
+        {
+            return;
+        }
+
+        EstaEditandoReporte = true;
+        CamposSoloLectura = false;
+        Mensaje = string.Empty;
+    }
+
+    [RelayCommand]
+    private async Task GuardarEdicionReporte()
+    {
+        if (IsBusy || ReporteDetalle is null)
+        {
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(TituloDetalle))
+        {
+            Mensaje = "Ingrese un titulo para el reporte.";
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(DescripcionDetalle))
+        {
+            Mensaje = "Ingrese una descripcion para el reporte.";
+            return;
+        }
+
+        try
+        {
+            IsBusy = true;
+            Mensaje = string.Empty;
+
+            var idUsuario = await authService.GetIdUsuarioAsync();
+
+            if (idUsuario == 0)
+            {
+                Mensaje = "No se encontro la sesion del usuario.";
+                return;
+            }
+
+            var reporteEditado = new EditarReporteDto
+            {
+                Id = ReporteDetalle.Id,
+                Titulo = TituloDetalle.Trim(),
+                Descripcion = DescripcionDetalle.Trim(),
+                Direccion = ReporteDetalle.Direccion,
+                Foto = null,
+                IdUsuario = idUsuario,
+                IdCategoria = (int)CategoriaDetalle
+            };
+
+            var respuesta = await reportesService.EditarReporteAsync(ReporteDetalle.Id, reporteEditado);
+
+            if (respuesta is null)
+            {
+                Mensaje = "No se pudo conectar con la API.";
+                return;
+            }
+
+            if (!respuesta.Success || respuesta.Data is null)
+            {
+                Mensaje = respuesta.Message;
+                return;
+            }
+
+            PrepararDetalleReporte(respuesta.Data, true);
+            ActualizarReporteEnListas(respuesta.Data);
+            Mensaje = respuesta.Message;
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
+    [RelayCommand]
+    private async Task EliminarReporte()
+    {
+        if (IsBusy || ReporteDetalle is null)
+        {
+            return;
+        }
+
+        var confirmar = await Shell.Current.DisplayAlert("Eliminar reporte", "Desea eliminar este reporte?", "Si", "No");
+
+        if (!confirmar)
+        {
+            return;
+        }
+
+        try
+        {
+            IsBusy = true;
+            Mensaje = string.Empty;
+
+            var idUsuario = await authService.GetIdUsuarioAsync();
+
+            if (idUsuario == 0)
+            {
+                Mensaje = "No se encontro la sesion del usuario.";
+                return;
+            }
+
+            var respuesta = await reportesService.EliminarReporteAsync(ReporteDetalle.Id, idUsuario);
+
+            if (respuesta is null)
+            {
+                Mensaje = "No se pudo conectar con la API.";
+                return;
+            }
+
+            if (!respuesta.Success)
+            {
+                Mensaje = respuesta.Message;
+                return;
+            }
+
+            QuitarReporteDeListas(ReporteDetalle.Id);
+            ReporteDetalle = null;
+            Mensaje = respuesta.Message;
+            await Shell.Current.GoToAsync("misReportes");
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
+    private void ActualizarReporteEnListas(ReporteDetalleDto reporte)
+    {
+        var reportePropioActualizado = new ReportePropioDto
+        {
+            Id = reporte.Id,
+            Titulo = reporte.Titulo,
+            FechaSubida = reporte.FechaSubida,
+            FechaEdicion = reporte.FechaEdicion,
+            IdEstado = reporte.IdEstado,
+            IdCategoria = reporte.IdCategoria
+        };
+
+        var reportePropio = MisReportes.FirstOrDefault(x => x.Id == reporte.Id);
+
+        if (reportePropio is not null)
+        {
+            var posicion = MisReportes.IndexOf(reportePropio);
+            MisReportes[posicion] = reportePropioActualizado;
+        }
+
+        var reportePropioCargado = reportesPropiosCargados.FirstOrDefault(x => x.Id == reporte.Id);
+
+        if (reportePropioCargado is not null)
+        {
+            var posicion = reportesPropiosCargados.IndexOf(reportePropioCargado);
+            reportesPropiosCargados[posicion] = reportePropioActualizado;
+        }
+
+        var reporteGeneral = Reportes.FirstOrDefault(x => x.Id == reporte.Id);
+
+        if (reporteGeneral is not null)
+        {
+            var reporteGeneralActualizado = new ReporteGeneralDto
+            {
+                Id = reporte.Id,
+                Titulo = reporte.Titulo,
+                FechaSubida = reporte.FechaSubida,
+                FechaEdicion = reporte.FechaEdicion,
+                IdEstado = reporte.IdEstado,
+                IdCategoria = reporte.IdCategoria,
+                NombreUsuario = reporteGeneral.NombreUsuario
+            };
+
+            var posicion = Reportes.IndexOf(reporteGeneral);
+            Reportes[posicion] = reporteGeneralActualizado;
+
+            var reporteGeneralCargado = reportesCargados.FirstOrDefault(x => x.Id == reporte.Id);
+
+            if (reporteGeneralCargado is not null)
+            {
+                var posicionCargado = reportesCargados.IndexOf(reporteGeneralCargado);
+                reportesCargados[posicionCargado] = reporteGeneralActualizado;
+            }
+        }
+    }
+
+    private void QuitarReporteDeListas(int idReporte)
+    {
+        var reportePropio = MisReportes.FirstOrDefault(x => x.Id == idReporte);
+
+        if (reportePropio is not null)
+        {
+            MisReportes.Remove(reportePropio);
+        }
+
+        var reportePropioCargado = reportesPropiosCargados.FirstOrDefault(x => x.Id == idReporte);
+
+        if (reportePropioCargado is not null)
+        {
+            reportesPropiosCargados.Remove(reportePropioCargado);
+        }
+
+        var reporteGeneral = Reportes.FirstOrDefault(x => x.Id == idReporte);
+
+        if (reporteGeneral is not null)
+        {
+            Reportes.Remove(reporteGeneral);
+        }
+
+        var reporteGeneralCargado = reportesCargados.FirstOrDefault(x => x.Id == idReporte);
+
+        if (reporteGeneralCargado is not null)
+        {
+            reportesCargados.Remove(reporteGeneralCargado);
+        }
+    }
+
+    [RelayCommand]
+    private async Task VolverReporte()
+    {
+        if (PuedeEditarReporte)
+        {
+            await Shell.Current.GoToAsync("misReportes");
+            return;
+        }
+
+        await Shell.Current.GoToAsync("reportes");
     }
 
     [RelayCommand]
