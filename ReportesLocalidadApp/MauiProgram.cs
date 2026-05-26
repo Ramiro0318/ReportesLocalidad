@@ -10,7 +10,7 @@ namespace ReportesLocalidadApp
         public static MauiApp CreateMauiApp()
         {
             var builder = MauiApp.CreateBuilder();
-            builder
+            builder 
                 .UseMauiApp<App>()
                 .ConfigureFonts(fonts =>
                 {
@@ -20,7 +20,7 @@ namespace ReportesLocalidadApp
 
             builder.Services.AddSingleton(new HttpClient
             {
-                BaseAddress = new Uri("http://localhost:5027/"),
+                BaseAddress = new Uri("https://reporteslocalidad.duckdns.org/"),
                 Timeout = TimeSpan.FromSeconds(8)
             });
             builder.Services.AddSingleton<AuthService>();
