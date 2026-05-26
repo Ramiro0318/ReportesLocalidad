@@ -62,6 +62,8 @@ public partial class MainViewModel : ObservableObject
     private string descripcionReporte = string.Empty;
 
     [ObservableProperty]
+    private bool isRefreshing;
+    [ObservableProperty]
     private string categoriaSeleccionada = "Bache";
 
     [ObservableProperty]
@@ -103,13 +105,27 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     private async Task CargarReportes()
     {
-        await CargarReportesGeneralesAsync();
+        try
+        {
+            await CargarReportesGeneralesAsync();
+        }
+        finally
+        {
+            IsRefreshing = false;
+        }
     }
 
     [RelayCommand]
     private async Task CargarReportesAdmin()
     {
-        await CargarReportesGeneralesAsync();
+        try
+        {
+            await CargarReportesGeneralesAsync();
+        }
+        finally
+        {
+            IsRefreshing = false;
+        }
     }
 
     private async Task CargarReportesGeneralesAsync()
@@ -212,6 +228,19 @@ public partial class MainViewModel : ObservableObject
 
     [RelayCommand]
     private async Task CargarMisReportes()
+    {
+        try
+        {
+            await CargarMisReportesAsync();
+        }
+        finally
+        {
+            IsRefreshing = false;
+        }
+    }
+
+    [RelayCommand]
+    private async Task CargarMisReportesAsync()
     {
         if (IsBusy)
         {

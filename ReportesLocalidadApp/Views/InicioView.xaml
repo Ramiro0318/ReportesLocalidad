@@ -28,8 +28,8 @@
                 </Border>
             </Grid>
         </Grid>
-                
-        <ScrollView Grid.Row="1">
+
+        <RefreshView Grid.Row="1" IsRefreshing="{Binding IsRefreshing}" Command="{Binding CargarReportesCommand}">
             <VerticalStackLayout Padding="14,16" Spacing="10">
                 <Grid ColumnDefinitions="*,auto">
                     <Label Text="Reportes de la comunidad" TextColor="#E6E6C7" FontSize="15" FontAttributes="Bold"></Label>
@@ -90,7 +90,7 @@
                 </Border>-->
 
             </VerticalStackLayout>
-        </ScrollView>
+        </RefreshView>
         
         <!--Menu estatico-->
         <Grid Grid.Row="2" HeightRequest="70" BackgroundColor="#2B2B29" ColumnDefinitions="*,*,*,*">
