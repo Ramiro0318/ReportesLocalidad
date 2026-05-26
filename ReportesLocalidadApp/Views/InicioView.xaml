@@ -5,7 +5,6 @@
              x:Name="PaginaInicio"
              Title="InicioView" Shell.NavBarIsVisible="False">
     <Grid RowDefinitions="auto,*,auto" BackgroundColor="#0F0F0F">
-        <!--Parte del encabezado-->
         <Grid Grid.Row="0"  Padding="18,28,18,18" ColumnDefinitions="*, auto">
             <Grid.Background>
                 <LinearGradientBrush StartPoint="1,1" EndPoint="0,0">
@@ -29,15 +28,12 @@
                 </Border>
             </Grid>
         </Grid>
-        
-        <!--aqui van los Reportes-->
+                
         <ScrollView Grid.Row="1">
             <VerticalStackLayout Padding="14,16" Spacing="10">
                 <Grid ColumnDefinitions="*,auto">
                     <Label Text="Reportes de la comunidad" TextColor="#E6E6C7" FontSize="15" FontAttributes="Bold"></Label>
                 </Grid>
-                
-                <!--Reporte-->
                 <CollectionView ItemsSource="{Binding Reportes}">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
@@ -103,7 +99,7 @@
                 <Label Text="Inicio" TextColor="#F05A2A" FontSize="11" HorizontalTextAlignment="Center"></Label>
             </VerticalStackLayout>
 
-            <VerticalStackLayout Grid.Column="1" HorizontalOptions="Center" VerticalOptions="Center" Spacing="2">
+            <VerticalStackLayout Grid.Column="2" HorizontalOptions="Center" VerticalOptions="Center" Spacing="2">
                 <VerticalStackLayout.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding IrAgregarReporteCommand}"></TapGestureRecognizer>
                 </VerticalStackLayout.GestureRecognizers>
@@ -111,7 +107,7 @@
                 <Label Text="Agregar" TextColor="White" FontSize="11" HorizontalTextAlignment="Center"></Label>
             </VerticalStackLayout>
 
-            <VerticalStackLayout Grid.Column="2" HorizontalOptions="Center" VerticalOptions="Center" Spacing="2">
+            <VerticalStackLayout Grid.Column="1" HorizontalOptions="Center" VerticalOptions="Center" Spacing="2">
                 <VerticalStackLayout.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding IrMisReportesCommand}"></TapGestureRecognizer>
                 </VerticalStackLayout.GestureRecognizers>
@@ -126,6 +122,9 @@
                 <Image Source="perfil.png"  WidthRequest="30"></Image>
                 <Label Text="Perfil" TextColor="White" FontSize="11" HorizontalTextAlignment="Center"></Label>
             </VerticalStackLayout>
+        </Grid>
+        <Grid Grid.RowSpan="2" Grid.ColumnSpan="2" ZIndex="10" BackgroundColor="#80000000" IsVisible="{Binding IsBusy}" InputTransparent="False">
+            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" Color="#F54927" WidthRequest="50" HeightRequest="50"></ActivityIndicator>
         </Grid>
     </Grid>
 

@@ -107,19 +107,12 @@
 
                 <Label Text="{Binding Mensaje}" TextColor="White" FontSize="13"></Label>
 
-                <ActivityIndicator IsRunning="{Binding IsBusy}"
-                                   IsVisible="{Binding IsBusy}"
-                                   Color="White"></ActivityIndicator>
-
-                <Button Text="Enviar reporte"
-                        HeightRequest="50"
-                        CornerRadius="15"
-                        FontAttributes="Bold"
-                        BackgroundColor="#F54927"
-                        TextColor="White"
-                        Command="{Binding CrearReporteCommand}"></Button>
-
+                <Button Text="Enviar reporte" HeightRequest="50" CornerRadius="15" FontAttributes="Bold"
+                        BackgroundColor="#F54927" TextColor="White" Command="{Binding CrearReporteCommand}"></Button>
             </VerticalStackLayout>
         </ScrollView>
+        <Grid Grid.RowSpan="2" Grid.ColumnSpan="2" ZIndex="10" BackgroundColor="#80000000" IsVisible="{Binding IsBusy}" InputTransparent="False">
+            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" Color="#F54927" WidthRequest="50" HeightRequest="50"></ActivityIndicator>
+        </Grid>
     </Grid>
 </ContentPage>
