@@ -40,13 +40,27 @@ public class ImageService
             throw new InvalidOperationException("La imagen excede el tamano maximo permitido.");
         }
 
-        var uploadsPath = Path.Combine(environment.WebRootPath, "uploads");
-        Directory.CreateDirectory(uploadsPath);
+        var webRootPath = environment.WebRootPath;
+
+        if (string.IsNullOrWhiteSpace(webRootPath))
+        {
+            webRootPath = Path.Combine(environment.ContentRootPath, "wwwroot");
+        }
+
+        var uploadsPath = Path.Combine(webRootPath, "uploads");
 
         var nombreArchivo = $"{Guid.NewGuid()}{extension}";
         var rutaFisica = Path.Combine(uploadsPath, nombreArchivo);
 
-        await File.WriteAllBytesAsync(rutaFisica, bytesImagen);
+        try
+        {
+            Directory.CreateDirectory(uploadsPath);
+            await File.WriteAllBytesAsync(rutaFisica, bytesImagen);
+        }
+        catch
+        {
+            throw new InvalidOperationException("No se pudo guardar la imagen en el servidor.");
+        }
 
         return $"/uploads/{nombreArchivo}";
     }

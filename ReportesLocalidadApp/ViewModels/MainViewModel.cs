@@ -18,6 +18,7 @@ public partial class MainViewModel : ObservableObject
 
     private string? fotoBase64;
     private bool enviandoReportesPendientes;
+    private bool procesandoFoto;
     private int reportesSaltados;
     private int reportesPropiosSaltados;
     private int elementosMostrados;
@@ -37,6 +38,7 @@ public partial class MainViewModel : ObservableObject
         Connectivity.Current.ConnectivityChanged += async (sender, args) => await RevisarConexionAsync();
         _ = CargarReportesPendientesAsync();
         _ = ReintentarReportesSiApiDisponible(false);
+        _ = CargarNombreUsuarioAsync();
     }
 
     public ObservableCollection<ReporteGeneralDto> Reportes { get; }
@@ -69,6 +71,9 @@ public partial class MainViewModel : ObservableObject
 
     [ObservableProperty]
     private int reportesPendientes;
+
+    [ObservableProperty]
+    private string nombreUsuario = string.Empty;
 
     [ObservableProperty]
     private string tituloReporte = string.Empty;
@@ -152,6 +157,7 @@ public partial class MainViewModel : ObservableObject
         {
             IsBusy = true;
             Mensaje = string.Empty;
+            await CargarNombreUsuarioAsync();
 
             reportesCargados.Clear();
             Reportes.Clear();
@@ -264,6 +270,7 @@ public partial class MainViewModel : ObservableObject
         {
             IsBusy = true;
             Mensaje = string.Empty;
+            await CargarNombreUsuarioAsync();
 
             reportesPropiosCargados.Clear();
             MisReportes.Clear();
@@ -371,41 +378,67 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     private async Task TomarFoto()
     {
-        var resultado = await fotoService.TomarFotoAsync();
-
-        if (resultado is null)
+        if (procesandoFoto)
         {
-            Mensaje = "No se pudo tomar la foto.";
-            await MostrarToastAsync(Mensaje);
             return;
         }
 
-        RutaImagen = resultado.Value.RutaImagen;
-        ImagenSeleccionada = ImageSource.FromFile(resultado.Value.RutaImagen);
-        MostrarTextoImagen = false;
-        fotoBase64 = resultado.Value.FotoBase64;
-        Mensaje = "Fotografia tomada correctamente.";
-        await MostrarToastAsync(Mensaje);
+        try
+        {
+            procesandoFoto = true;
+            var resultado = await fotoService.TomarFotoAsync();
+
+            if (resultado.RutaImagen is null || resultado.FotoBase64 is null)
+            {
+                Mensaje = resultado.Error ?? "No se pudo tomar la foto.";
+                await MostrarToastAsync(Mensaje);
+                return;
+            }
+
+            RutaImagen = resultado.RutaImagen;
+            ImagenSeleccionada = ImageSource.FromFile(resultado.RutaImagen);
+            MostrarTextoImagen = false;
+            fotoBase64 = resultado.FotoBase64;
+            Mensaje = "Fotografia tomada correctamente.";
+            await MostrarToastAsync(Mensaje);
+        }
+        finally
+        {
+            procesandoFoto = false;
+        }
     }
 
     [RelayCommand]
     private async Task SeleccionarFoto()
     {
-        var resultado = await fotoService.SeleccionarFotoAsync();
-
-        if (resultado is null)
+        if (procesandoFoto)
         {
-            Mensaje = "No se pudo seleccionar la foto.";
-            await MostrarToastAsync(Mensaje);
             return;
         }
 
-        RutaImagen = resultado.Value.RutaImagen;
-        ImagenSeleccionada = ImageSource.FromFile(resultado.Value.RutaImagen);
-        MostrarTextoImagen = false;
-        fotoBase64 = resultado.Value.FotoBase64;
-        Mensaje = "Fotografia seleccionada correctamente.";
-        await MostrarToastAsync(Mensaje);
+        try
+        {
+            procesandoFoto = true;
+            var resultado = await fotoService.SeleccionarFotoAsync();
+
+            if (resultado.RutaImagen is null || resultado.FotoBase64 is null)
+            {
+                Mensaje = resultado.Error ?? "No se pudo seleccionar la foto.";
+                await MostrarToastAsync(Mensaje);
+                return;
+            }
+
+            RutaImagen = resultado.RutaImagen;
+            ImagenSeleccionada = ImageSource.FromFile(resultado.RutaImagen);
+            MostrarTextoImagen = false;
+            fotoBase64 = resultado.FotoBase64;
+            Mensaje = "Fotografia seleccionada correctamente.";
+            await MostrarToastAsync(Mensaje);
+        }
+        finally
+        {
+            procesandoFoto = false;
+        }
     }
 
     [RelayCommand]
@@ -452,9 +485,7 @@ public partial class MainViewModel : ObservableObject
                 ClientRequestId = Guid.NewGuid().ToString()
             };
 
-            var apiDisponible = await reportesService.ApiDisponibleAsync();
-
-            if (!apiDisponible)
+            if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
             {
                 await GuardarReportePendienteAsync(reporte);
                 return;
@@ -471,6 +502,7 @@ public partial class MainViewModel : ObservableObject
             if (!respuesta.Success || respuesta.Data is null)
             {
                 Mensaje = respuesta.Message;
+                await MostrarToastAsync(Mensaje);
                 return;
             }
 
@@ -561,6 +593,11 @@ public partial class MainViewModel : ObservableObject
         ReportesPendientes = reportesPendientesLocales.Count;
     }
 
+    private async Task CargarNombreUsuarioAsync()
+    {
+        NombreUsuario = await authService.GetNombreUsuarioAsync() ?? string.Empty;
+    }
+
     private async Task RevisarConexionAsync()
     {
         if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
@@ -586,13 +623,6 @@ public partial class MainViewModel : ObservableObject
     private async Task ReintentarReportesSiApiDisponible(bool mostrarAlerta)
     {
         if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
-        {
-            return;
-        }
-
-        var apiDisponible = await reportesService.ApiDisponibleAsync();
-
-        if (!apiDisponible)
         {
             return;
         }
@@ -636,6 +666,14 @@ public partial class MainViewModel : ObservableObject
                     continue;
                 }
 
+                if (ErrorNoReintentable(respuesta.Message))
+                {
+                    await reportePendienteService.EliminarReportePendienteAsync(reportePendiente.ClientRequestId);
+                    Mensaje = respuesta.Message;
+                    await MostrarToastAsync(respuesta.Message);
+                    continue;
+                }
+
                 if (!respuesta.Success || respuesta.Data is null)
                 {
                     continue;
@@ -668,6 +706,19 @@ public partial class MainViewModel : ObservableObject
     {
         return !string.IsNullOrWhiteSpace(mensaje) &&
             mensaje.Contains("ya fue registrado", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private bool ErrorNoReintentable(string? mensaje)
+    {
+        if (string.IsNullOrWhiteSpace(mensaje))
+        {
+            return false;
+        }
+
+        return mensaje.Contains("demasiado grande", StringComparison.OrdinalIgnoreCase) ||
+            mensaje.Contains("formato", StringComparison.OrdinalIgnoreCase) ||
+            mensaje.Contains("base64", StringComparison.OrdinalIgnoreCase) ||
+            mensaje.Contains("Categoria", StringComparison.OrdinalIgnoreCase);
     }
 
     private async Task MostrarToastAsync(string mensaje)
@@ -1154,6 +1205,7 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     private async Task IrPerfil()
     {
+        await CargarNombreUsuarioAsync();
         await Shell.Current.GoToAsync("perfil");
     }
 

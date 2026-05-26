@@ -4,31 +4,51 @@ public class FotoService
 {
     private const int MaxSizeBytes = 8 * 1024 * 1024;
 
-    public async Task<(string RutaImagen, string FotoBase64)?> TomarFotoAsync()
+    public async Task<(string? RutaImagen, string? FotoBase64, string? Error)> TomarFotoAsync()
     {
         try
         {
+            var permiso = await Permissions.CheckStatusAsync<Permissions.Camera>();
+
+            if (permiso != PermissionStatus.Granted)
+            {
+                permiso = await Permissions.RequestAsync<Permissions.Camera>();
+            }
+
+            if (permiso != PermissionStatus.Granted)
+            {
+                return (null, null, $"No se concedio permiso para usar la camara. Estado: {permiso}");
+            }
+
             if (!MediaPicker.Default.IsCaptureSupported)
             {
-                return null;
+                return (null, null, "El dispositivo no permite tomar fotografias.");
             }
 
             var photo = await MediaPicker.Default.CapturePhotoAsync();
 
             if (photo is null)
             {
-                return null;
+                return (null, null, "No se tomo ninguna fotografia.");
             }
 
             return await GuardarImagenAsync(photo);
         }
+        catch (FeatureNotSupportedException)
+        {
+            return (null, null, "La camara no esta disponible en este dispositivo.");
+        }
+        catch (PermissionException)
+        {
+            return (null, null, "No se concedio permiso para usar la camara.");
+        }
         catch
         {
-            return null;
+            return (null, null, "No se pudo abrir la camara.");
         }
     }
 
-    public async Task<(string RutaImagen, string FotoBase64)?> SeleccionarFotoAsync()
+    public async Task<(string? RutaImagen, string? FotoBase64, string? Error)> SeleccionarFotoAsync()
     {
         try
         {
@@ -36,18 +56,26 @@ public class FotoService
 
             if (photo is null)
             {
-                return null;
+                return (null, null, "No se selecciono ninguna fotografia.");
             }
 
             return await GuardarImagenAsync(photo);
         }
+        catch (FeatureNotSupportedException)
+        {
+            return (null, null, "La galeria no esta disponible en este dispositivo.");
+        }
+        catch (PermissionException)
+        {
+            return (null, null, "No se concedio permiso para abrir la galeria.");
+        }
         catch
         {
-            return null;
+            return (null, null, "No se pudo abrir la galeria.");
         }
     }
 
-    private async Task<(string RutaImagen, string FotoBase64)?> GuardarImagenAsync(FileResult photo)
+    private async Task<(string? RutaImagen, string? FotoBase64, string? Error)> GuardarImagenAsync(FileResult photo)
     {
         try
         {
@@ -60,7 +88,7 @@ public class FotoService
 
             if (extension != ".jpg" && extension != ".jpeg" && extension != ".png")
             {
-                return null;
+                return (null, null, "Formato de imagen no permitido.");
             }
 
             var nombreArchivo = $"{Guid.NewGuid()}{extension}";
@@ -76,16 +104,16 @@ public class FotoService
 
             if (buffer.Length > MaxSizeBytes)
             {
-                return null;
+                return (null, null, "La imagen excede el tamano maximo permitido.");
             }
 
             var base64 = $"{ObtenerPrefijoBase64(extension)}{Convert.ToBase64String(buffer)}";
 
-            return (localFilePath, base64);
+            return (localFilePath, base64, null);
         }
         catch
         {
-            return null;
+            return (null, null, "No se pudo procesar la fotografia.");
         }
     }
 

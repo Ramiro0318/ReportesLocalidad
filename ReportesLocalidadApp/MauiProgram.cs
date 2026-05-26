@@ -21,7 +21,7 @@ namespace ReportesLocalidadApp
             builder.Services.AddSingleton(new HttpClient
             {
                 BaseAddress = new Uri("https://reporteslocalidad.duckdns.org/"),
-                Timeout = TimeSpan.FromSeconds(8)
+                Timeout = TimeSpan.FromSeconds(30)
             });
             builder.Services.AddSingleton<AuthService>();
             builder.Services.AddSingleton<FotoService>();

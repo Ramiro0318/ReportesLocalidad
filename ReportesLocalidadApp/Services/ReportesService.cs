@@ -59,9 +59,21 @@ public class ReportesService
 
             return await LeerRespuestaAsync<ReporteDetalleDto>(response);
         }
-        catch
+        catch (TaskCanceledException)
         {
             return null;
+        }
+        catch (HttpRequestException)
+        {
+            return null;
+        }
+        catch
+        {
+            return new ApiResponse<ReporteDetalleDto>
+            {
+                Success = false,
+                Message = "La API respondio, pero no se pudo leer la respuesta."
+            };
         }
     }
 
@@ -261,11 +273,38 @@ public class ReportesService
             return CrearRespuestaNoAutorizada<T>();
         }
 
-        var respuesta = await response.Content.ReadFromJsonAsync<ApiResponse<T>>();
+        if (response.StatusCode == HttpStatusCode.RequestEntityTooLarge)
+        {
+            return new ApiResponse<T>
+            {
+                Success = false,
+                Message = "La imagen es demasiado grande para el servidor."
+            };
+        }
+
+        ApiResponse<T>? respuesta = null;
+
+        try
+        {
+            respuesta = await response.Content.ReadFromJsonAsync<ApiResponse<T>>();
+        }
+        catch
+        {
+            respuesta = null;
+        }
 
         if (respuesta is not null)
         {
             return respuesta;
+        }
+
+        if (!response.IsSuccessStatusCode)
+        {
+            return new ApiResponse<T>
+            {
+                Success = false,
+                Message = $"La API rechazo la solicitud. Codigo: {(int)response.StatusCode}"
+            };
         }
 
         return new ApiResponse<T>

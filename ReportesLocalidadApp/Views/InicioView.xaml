@@ -14,7 +14,7 @@
             </Grid.Background>
             <VerticalStackLayout Spacing="0" VerticalOptions="Center">
                 <Label Text="Buenos Días" TextColor="LightGray" FontSize="15"></Label>
-                <Label Text="Carlos Hernandez" TextColor="White" FontSize="20" FontAttributes="Bold"></Label>
+                <Label Text="{Binding NombreUsuario}" TextColor="White" FontSize="20" FontAttributes="Bold"></Label>
             </VerticalStackLayout>
 
             <Grid Grid.Column="1" WidthRequest="44" HeightRequest="44" BackgroundColor="#50000000" VerticalOptions="Center" HorizontalOptions="End">
