@@ -363,7 +363,7 @@ public class ReporteService
             {
                 Id = reporte.Id,
                 Titulo = reporte.Titulo,
-                nombreUsuario = reporte.IdUsuarioNavigation.NombreUsuario,
+                NombreUsuario = reporte.IdUsuarioNavigation.NombreUsuario,
                 FechaSubida = reporte.FechaSubida,
                 FechaEdicion = reporte.FechaEdicion,
                 IdEstado = reporte.IdEstado,

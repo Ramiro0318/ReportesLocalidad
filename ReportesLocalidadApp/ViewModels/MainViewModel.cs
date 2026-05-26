@@ -12,6 +12,7 @@ public partial class MainViewModel : ObservableObject
     private readonly AuthService authService;
     private readonly FotoService fotoService;
     private readonly ReportePendienteService reportePendienteService;
+    private readonly AlertaService alertaService;
     private readonly List<ReporteGeneralDto> reportesCargados = new();
     private readonly List<ReportePropioDto> reportesPropiosCargados = new();
     private string? fotoBase64;
@@ -23,12 +24,13 @@ public partial class MainViewModel : ObservableObject
     private const int CargaInicial = 50;
     private const int CantidadVisible = 25;
 
-    public MainViewModel(ReportesService reportesService, AuthService authService, FotoService fotoService, ReportePendienteService reportePendienteService)
+    public MainViewModel(ReportesService reportesService, AuthService authService, FotoService fotoService, ReportePendienteService reportePendienteService, AlertaService alertaService)
     {
         this.reportesService = reportesService;
         this.authService = authService;
         this.fotoService = fotoService;
         this.reportePendienteService = reportePendienteService;
+        this.alertaService = alertaService;
         Reportes = new ObservableCollection<ReporteGeneralDto>();
         MisReportes = new ObservableCollection<ReportePropioDto>();
         Connectivity.Current.ConnectivityChanged += async (sender, args) => await RevisarConexionAsync();
@@ -371,6 +373,7 @@ public partial class MainViewModel : ObservableObject
         if (resultado is null)
         {
             Mensaje = "No se pudo tomar la foto.";
+            await MostrarToastAsync(Mensaje);
             return;
         }
 
@@ -379,6 +382,7 @@ public partial class MainViewModel : ObservableObject
         MostrarTextoImagen = false;
         fotoBase64 = resultado.Value.FotoBase64;
         Mensaje = "Fotografia tomada correctamente.";
+        await MostrarToastAsync(Mensaje);
     }
 
     [RelayCommand]
@@ -389,6 +393,7 @@ public partial class MainViewModel : ObservableObject
         if (resultado is null)
         {
             Mensaje = "No se pudo seleccionar la foto.";
+            await MostrarToastAsync(Mensaje);
             return;
         }
 
@@ -397,6 +402,7 @@ public partial class MainViewModel : ObservableObject
         MostrarTextoImagen = false;
         fotoBase64 = resultado.Value.FotoBase64;
         Mensaje = "Fotografia seleccionada correctamente.";
+        await MostrarToastAsync(Mensaje);
     }
 
     [RelayCommand]
@@ -475,6 +481,7 @@ public partial class MainViewModel : ObservableObject
             MostrarTextoImagen = true;
             fotoBase64 = null;
             Mensaje = respuesta.Message;
+            await MostrarToastAsync("Reporte creado correctamente.");
 
             await Shell.Current.GoToAsync("reportes");
         }
@@ -540,7 +547,7 @@ public partial class MainViewModel : ObservableObject
         fotoBase64 = null;
 
         Mensaje = "No se pudo conectar con la API. El reporte se subira cuando vuelva la conexion.";
-        await MostrarAlertaAsync("Reporte pendiente", "No se pudo conectar con la API. El reporte se guardo en el dispositivo y se subira cuando vuelva la conexion.");
+        await MostrarToastAsync("Reporte guardado. Se subira cuando vuelva la conexion.");
         await Shell.Current.GoToAsync("reportes");
     }
 
@@ -555,6 +562,7 @@ public partial class MainViewModel : ObservableObject
         if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
         {
             Mensaje = "Sin conexion a internet.";
+            await MostrarToastAsync("Sin conexion a internet.");
             return;
         }
 
@@ -563,9 +571,11 @@ public partial class MainViewModel : ObservableObject
         if (!apiDisponible)
         {
             Mensaje = "Hay internet, pero no se pudo conectar con la API.";
+            await MostrarToastAsync("No se pudo conectar con la API.");
             return;
         }
 
+        await MostrarToastAsync("Conexion recuperada.");
         await ReintentarReportesPendientesAsync(true);
     }
 
@@ -612,7 +622,7 @@ public partial class MainViewModel : ObservableObject
 
                 if (mostrarAlerta)
                 {
-                    await MostrarAlertaAsync("Reportes enviados", $"Se enviaron {enviados} reportes pendientes.");
+                    await MostrarToastAsync($"Se enviaron {enviados} reportes pendientes.");
                 }
             }
         }
@@ -622,12 +632,9 @@ public partial class MainViewModel : ObservableObject
         }
     }
 
-    private async Task MostrarAlertaAsync(string titulo, string mensaje)
+    private async Task MostrarToastAsync(string mensaje)
     {
-        await MainThread.InvokeOnMainThreadAsync(async () =>
-        {
-            await Shell.Current.DisplayAlert(titulo, mensaje, "Aceptar");
-        });
+        await alertaService.MostrarToastAsync(mensaje);
     }
 
     [RelayCommand]
@@ -818,6 +825,7 @@ public partial class MainViewModel : ObservableObject
             PrepararDetalleReporte(respuesta.Data, true);
             ActualizarReporteEnListas(respuesta.Data);
             Mensaje = respuesta.Message;
+            await MostrarToastAsync("Reporte editado correctamente.");
         }
         finally
         {
@@ -870,6 +878,7 @@ public partial class MainViewModel : ObservableObject
             QuitarReporteDeListas(ReporteDetalle.Id);
             ReporteDetalle = null;
             Mensaje = respuesta.Message;
+            await MostrarToastAsync("Reporte eliminado correctamente.");
             await Shell.Current.GoToAsync("misReportes");
         }
         finally
@@ -1010,6 +1019,7 @@ public partial class MainViewModel : ObservableObject
             QuitarReporteDeListas(ReporteDetalle.Id);
             ReporteDetalle = null;
             Mensaje = respuesta.Message;
+            await MostrarToastAsync("Reporte eliminado correctamente.");
             await Shell.Current.GoToAsync("adminReportes");
         }
         finally
@@ -1062,6 +1072,7 @@ public partial class MainViewModel : ObservableObject
             PrepararDetalleReporte(respuesta.Data, false);
             ActualizarReporteEnListas(respuesta.Data);
             Mensaje = respuesta.Message;
+            await MostrarToastAsync("Estado actualizado correctamente.");
             await Shell.Current.GoToAsync("adminReportes");
         }
         finally

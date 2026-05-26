@@ -2,13 +2,12 @@ namespace ReportesLocalidadApi.Services;
 
 public class ImageService
 {
-    private readonly IWebHostEnvironment _environment;
-    private readonly string[] _formatosPermitidos = [".jpg", ".jpeg", ".png"];
-    private const int MaxSizeBytes = 8 * 1024 * 1024;
+    private IWebHostEnvironment environment;
+    private List<string> formatosPermitidos = new List<string>(){ ".jpg", ".jpeg", ".png" };
 
     public ImageService(IWebHostEnvironment environment)
     {
-        _environment = environment;
+        this.environment = environment;
     }
 
     public async Task<string?> GuardarImagenBase64Async(string? imagenBase64)
@@ -19,7 +18,7 @@ public class ImageService
         }
 
         var extension = ObtenerExtension(imagenBase64);
-        if (!_formatosPermitidos.Contains(extension))
+        if (!formatosPermitidos.Contains(extension))
         {
             throw new InvalidOperationException("Formato de imagen no permitido.");
         }
@@ -36,12 +35,12 @@ public class ImageService
             throw new InvalidOperationException("La imagen no tiene un formato base64 valido.");
         }
 
-        if (bytesImagen.Length > MaxSizeBytes)
+        if (bytesImagen.Length > (8 * 1024 * 1024))
         {
             throw new InvalidOperationException("La imagen excede el tamano maximo permitido.");
         }
 
-        var uploadsPath = Path.Combine(_environment.WebRootPath, "uploads", "reportes");
+        var uploadsPath = Path.Combine(environment.WebRootPath, "uploads");
         Directory.CreateDirectory(uploadsPath);
 
         var nombreArchivo = $"{Guid.NewGuid()}{extension}";
@@ -49,15 +48,18 @@ public class ImageService
 
         await File.WriteAllBytesAsync(rutaFisica, bytesImagen);
 
-        return $"/uploads/reportes/{nombreArchivo}";
+        return $"/uploads/{nombreArchivo}";
     }
 
     private static string LimpiarBase64(string imagenBase64)
     {
         var indiceComa = imagenBase64.IndexOf(',');
-        return indiceComa >= 0
-            ? imagenBase64[(indiceComa + 1)..]
-            : imagenBase64;
+        if (indiceComa >= 0)
+        {
+            return imagenBase64.Substring(indiceComa + 1);
+        }
+
+        return imagenBase64;
     }
 
     private static string ObtenerExtension(string imagenBase64)

@@ -13,9 +13,9 @@ namespace ReportesLocalidadApi.Validators
                 .MaximumLength(40).WithMessage("Un nombre de usuario no puede tener tantas letras.")
                 .Matches(@"^[a-zA-Z0-9ñÑ]+$").WithMessage("Un nombre no puede contener simbolos ni caracteres especiales.");
 
-            RuleFor(x => x.Password).NotEmpty().WithMessage("La contraseña no puede estar vacía.").
-                MinimumLength(6).WithMessage("La contraseña tiene que tener entre 6 y 30 caracteres.").
-                MaximumLength(30).WithMessage("La contraseña tiene que tener entre 6 y 30 caracteres.");
+            RuleFor(x => x.Password).NotEmpty().WithMessage("La contraseña no puede estar vacía.")
+                .MinimumLength(6).WithMessage("La contraseña tiene que tener entre 6 y 30 caracteres.")
+                .MaximumLength(30).WithMessage("La contraseña tiene que tener entre 6 y 30 caracteres.");
 
             RuleFor(x => x.IdRol).Equal(1).WithMessage("Rol no válido");
         }

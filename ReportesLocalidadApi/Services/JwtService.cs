@@ -51,7 +51,7 @@ public class JwtService
         return Convert.ToBase64String(bytes);
     }
 
-    public DateTime ObtenerFechaExpiracionRefreshToken()
+    public DateTime ObtenerFechaExpiracionToken()
     {
         var diasTexto = configuration["Jwt:RefreshTokenDays"];
         var dias = int.TryParse(diasTexto, out var valorDias) ? valorDias : 7;

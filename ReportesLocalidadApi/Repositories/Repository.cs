@@ -27,9 +27,7 @@ public class Repository<T> where T : class
 
     public async Task<IReadOnlyList<T>> GetCantidadAsync(int cantidad)
     {
-        return await _dbSet.AsNoTracking()
-            .Take(cantidad)
-            .ToListAsync();
+        return await _dbSet.AsNoTracking().Take(cantidad).ToListAsync();
     }
 
     public async Task<IReadOnlyList<T>> GetPagedAsync(int skip, int take)
@@ -37,10 +35,7 @@ public class Repository<T> where T : class
         skip = Math.Max(skip, 0);
         take = Math.Clamp(take, 1, 50);
 
-        return await _dbSet.AsNoTracking()
-            .Skip(skip)
-            .Take(take)
-            .ToListAsync();
+        return await _dbSet.AsNoTracking().Skip(skip).Take(take).ToListAsync();
     }
 
     public async Task AddAsync(T entity)

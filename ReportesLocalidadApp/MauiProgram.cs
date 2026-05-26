@@ -26,6 +26,7 @@ namespace ReportesLocalidadApp
             builder.Services.AddSingleton<AuthService>();
             builder.Services.AddSingleton<FotoService>();
             builder.Services.AddSingleton<ReportePendienteService>();
+            builder.Services.AddSingleton<AlertaService>();
             builder.Services.AddTransient<ReportesService>();
             builder.Services.AddSingleton<MainViewModel>();
             builder.Services.AddTransient<AuthViewModel>();

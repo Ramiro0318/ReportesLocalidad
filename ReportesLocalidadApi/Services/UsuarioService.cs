@@ -88,8 +88,7 @@ public class UsuarioService
 
     public async Task<ApiResponse<AuthResponseDto>> RefreshAsync(RefreshTokenDto refreshTokenDto)
     {
-        var refreshToken = await context.RefreshTokens
-            .Include(refreshToken => refreshToken.IdUsuarioNavigation)
+        var refreshToken = await context.RefreshTokens.Include(refreshToken => refreshToken.IdUsuarioNavigation)
             .FirstOrDefaultAsync(refreshToken => refreshToken.Token == refreshTokenDto.RefreshToken);
 
         if (refreshToken is null || refreshToken.FechaRevocacion is not null || refreshToken.FechaExpiracion <= DateTime.Now)
@@ -122,8 +121,7 @@ public class UsuarioService
 
     public async Task<ApiResponse<object>> LogoutAsync(LogoutDto logoutDto)
     {
-        var refreshToken = await context.RefreshTokens
-            .FirstOrDefaultAsync(refreshToken => refreshToken.Token == logoutDto.RefreshToken);
+        var refreshToken = await context.RefreshTokens.FirstOrDefaultAsync(refreshToken => refreshToken.Token == logoutDto.RefreshToken);
 
         if (refreshToken is null)
         {
@@ -153,7 +151,7 @@ public class UsuarioService
         {
             Token = jwtService.GenerarRefreshToken(),
             FechaCreacion = DateTime.Now,
-            FechaExpiracion = jwtService.ObtenerFechaExpiracionRefreshToken(),
+            FechaExpiracion = jwtService.ObtenerFechaExpiracionToken(),
             IdUsuario = idUsuario
         };
     }

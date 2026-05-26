@@ -13,11 +13,11 @@ namespace ReportesLocalidadApi.Controllers;
 [Route("api/[controller]")]
 public class ReportesController : ControllerBase
 {
-    private readonly ReporteService _reporteService;
+    private readonly ReporteService reporteService;
 
     public ReportesController(ReporteService reporteService)
     {
-        _reporteService = reporteService;
+        this.reporteService = reporteService;
     }
 
     private int GetIdUsuarioToken()
@@ -49,7 +49,7 @@ public class ReportesController : ControllerBase
             });
         }
 
-        var respuesta = await _reporteService.CrearAsync(subirReporteDto);
+        var respuesta = await reporteService.CrearAsync(subirReporteDto);
 
         if (!respuesta.Success)
         {
@@ -63,7 +63,7 @@ public class ReportesController : ControllerBase
     [HttpGet("getReporte/{id}")]
     public async Task<IActionResult> GetById(int id)
     {
-        var respuesta = await _reporteService.GetByIdAsync(id);
+        var respuesta = await reporteService.GetByIdAsync(id);
 
         if (!respuesta.Success)
         {
@@ -76,7 +76,7 @@ public class ReportesController : ControllerBase
     [HttpGet("getReporteEditar/{id}")]
     public async Task<IActionResult> GetReporteEditar(int id)
     {
-        var respuesta = await _reporteService.GetReporteEditarAsync(id);
+        var respuesta = await reporteService.GetReporteEditarAsync(id);
 
         if (!respuesta.Success)
         {
@@ -104,7 +104,7 @@ public class ReportesController : ControllerBase
             });
         }
 
-        var respuesta = await _reporteService.EditarAsync(id, editarReporteDto);
+        var respuesta = await reporteService.EditarAsync(id, editarReporteDto);
 
         if (!respuesta.Success)
         {
@@ -131,7 +131,7 @@ public class ReportesController : ControllerBase
             });
         }
 
-        var respuesta = await _reporteService.CambiarEstadoAsync(id, cambiarestadoDto);
+        var respuesta = await reporteService.CambiarEstadoAsync(id, cambiarestadoDto);
 
         if (!respuesta.Success)
         {
@@ -153,7 +153,7 @@ public class ReportesController : ControllerBase
             return Forbid();
         }
 
-        var respuesta = await _reporteService.GetByUsuarioAsync(idUsuario, skip, take);
+        var respuesta = await reporteService.GetByUsuarioAsync(idUsuario, skip, take);
 
         if (!respuesta.Success)
         {
@@ -167,7 +167,7 @@ public class ReportesController : ControllerBase
     [HttpGet("getReportes")]
     public async Task<IActionResult> GetReportes([FromQuery] int skip = 0, [FromQuery] int take = 50)
     {
-        var respuesta = await _reporteService.GetReportesAsync(skip, take);
+        var respuesta = await reporteService.GetReportesAsync(skip, take);
 
         return Ok(respuesta);
     }
@@ -177,7 +177,7 @@ public class ReportesController : ControllerBase
     public async Task<IActionResult> Eliminar(int id)
     {
         var idUsuario = GetIdUsuarioToken();
-        var respuesta = await _reporteService.EliminarAsync(id, idUsuario);
+        var respuesta = await reporteService.EliminarAsync(id, idUsuario);
         if (!respuesta.Success)
         {
             return BadRequest(respuesta);

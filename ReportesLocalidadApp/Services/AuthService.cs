@@ -1,3 +1,4 @@
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using ReportesLocalidadApp.Models.DTOs;
 
@@ -5,6 +6,8 @@ namespace ReportesLocalidadApp.Services;
 
 public class AuthService
 {
+    private const string AccessTokenKey = "access_token";
+    private const string RefreshTokenKey = "refresh_token";
     private const string IdUsuarioKey = "id_usuario";
     private const string NombreUsuarioKey = "nombre_usuario";
     private const string IdRolKey = "id_rol";
@@ -26,21 +29,37 @@ public class AuthService
                 Password = password
             };
 
-            var response = await client.PostAsJsonAsync("api/usuarios/login", loginDto);
+            var response = await client.PostAsJsonAsync("api/auth/login", loginDto);
 
             if (!response.IsSuccessStatusCode)
             {
-                return await response.Content.ReadFromJsonAsync<ApiResponse<UsuarioRespuestaDto>>();
+                var error = await response.Content.ReadFromJsonAsync<ApiResponse<AuthResponseDto>>();
+                return new ApiResponse<UsuarioRespuestaDto>
+                {
+                    Success = false,
+                    Message = error?.Message ?? "No se pudo iniciar sesion."
+                };
             }
 
-            var resultado = await response.Content.ReadFromJsonAsync<ApiResponse<UsuarioRespuestaDto>>();
+            var resultado = await response.Content.ReadFromJsonAsync<ApiResponse<AuthResponseDto>>();
 
             if (resultado?.Success == true && resultado.Data is not null)
             {
                 await GuardarSesionAsync(resultado.Data);
+
+                return new ApiResponse<UsuarioRespuestaDto>
+                {
+                    Success = true,
+                    Message = resultado.Message,
+                    Data = resultado.Data.Usuario
+                };
             }
 
-            return resultado;
+            return new ApiResponse<UsuarioRespuestaDto>
+            {
+                Success = false,
+                Message = resultado?.Message ?? "No se pudo iniciar sesion."
+            };
         }
         catch
         {
@@ -59,7 +78,7 @@ public class AuthService
                 IdRol = 1
             };
 
-            var response = await client.PostAsJsonAsync("api/usuarios/registro", registroDto);
+            var response = await client.PostAsJsonAsync("api/auth/registro", registroDto);
             return await response.Content.ReadFromJsonAsync<ApiResponse<UsuarioRespuestaDto>>();
         }
         catch
@@ -68,11 +87,15 @@ public class AuthService
         }
     }
 
-    public async Task GuardarSesionAsync(UsuarioRespuestaDto usuario)
+    public async Task GuardarSesionAsync(AuthResponseDto authResponse)
     {
-        await SecureStorage.Default.SetAsync(IdUsuarioKey, usuario.Id.ToString());
-        await SecureStorage.Default.SetAsync(NombreUsuarioKey, usuario.NombreUsuario);
-        await SecureStorage.Default.SetAsync(IdRolKey, usuario.IdRol.ToString());
+        await SecureStorage.Default.SetAsync(AccessTokenKey, authResponse.AccessToken);
+        await SecureStorage.Default.SetAsync(RefreshTokenKey, authResponse.RefreshToken);
+        await SecureStorage.Default.SetAsync(IdUsuarioKey, authResponse.Usuario.Id.ToString());
+        await SecureStorage.Default.SetAsync(NombreUsuarioKey, authResponse.Usuario.NombreUsuario);
+        await SecureStorage.Default.SetAsync(IdRolKey, authResponse.Usuario.IdRol.ToString());
+
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", authResponse.AccessToken);
     }
 
     public async Task<UsuarioRespuestaDto?> ObtenerSesionAsync()
@@ -113,16 +136,96 @@ public class AuthService
         return int.TryParse(idRolTexto, out var idRol) ? idRol : 0;
     }
 
-    public async Task<bool> EstaAutenticadoAsync()
+    public async Task<string?> GetAccessTokenAsync()
     {
-        var idUsuario = await GetIdUsuarioAsync();
-        return idUsuario != 0;
+        return await SecureStorage.Default.GetAsync(AccessTokenKey);
     }
 
-    public void CerrarSesion()
+    public async Task<string?> GetRefreshTokenAsync()
     {
+        return await SecureStorage.Default.GetAsync(RefreshTokenKey);
+    }
+
+    public async Task PrepararTokenAsync()
+    {
+        var accessToken = await GetAccessTokenAsync();
+
+        if (!string.IsNullOrWhiteSpace(accessToken))
+        {
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+        }
+    }
+
+    public async Task<bool> EstaAutenticadoAsync()
+    {
+        var accessToken = await GetAccessTokenAsync();
+        return !string.IsNullOrWhiteSpace(accessToken);
+    }
+
+    public async Task<bool> RefreshTokenAsync()
+    {
+        try
+        {
+            var refreshToken = await GetRefreshTokenAsync();
+
+            if (string.IsNullOrWhiteSpace(refreshToken))
+            {
+                return false;
+            }
+
+            var refreshTokenDto = new RefreshTokenDto
+            {
+                RefreshToken = refreshToken
+            };
+
+            var response = await client.PostAsJsonAsync("api/auth/refresh", refreshTokenDto);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return false;
+            }
+
+            var resultado = await response.Content.ReadFromJsonAsync<ApiResponse<AuthResponseDto>>();
+
+            if (resultado?.Success == true && resultado.Data is not null)
+            {
+                await GuardarSesionAsync(resultado.Data);
+                return true;
+            }
+
+            return false;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    public async Task CerrarSesionAsync()
+    {
+        var refreshToken = await GetRefreshTokenAsync();
+
+        if (!string.IsNullOrWhiteSpace(refreshToken))
+        {
+            try
+            {
+                var logoutDto = new LogoutDto
+                {
+                    RefreshToken = refreshToken
+                };
+
+                await client.PostAsJsonAsync("api/usuarios/logout", logoutDto);
+            }
+            catch
+            {
+            }
+        }
+
+        SecureStorage.Default.Remove(AccessTokenKey);
+        SecureStorage.Default.Remove(RefreshTokenKey);
         SecureStorage.Default.Remove(IdUsuarioKey);
         SecureStorage.Default.Remove(NombreUsuarioKey);
         SecureStorage.Default.Remove(IdRolKey);
+        client.DefaultRequestHeaders.Authorization = null;
     }
 }

@@ -1,4 +1,5 @@
 using System.Net.Http.Json;
+using System.Net;
 using ReportesLocalidadApp.Models.DTOs;
 
 namespace ReportesLocalidadApp.Services;
@@ -6,11 +7,13 @@ namespace ReportesLocalidadApp.Services;
 public class ReportesService
 {
     private readonly HttpClient http;
+    private readonly AuthService authService;
     private const string Endpoint = "api/reportes";
 
-    public ReportesService(HttpClient http)
+    public ReportesService(HttpClient http, AuthService authService)
     {
         this.http = http;
+        this.authService = authService;
     }
 
     public string? ObtenerUrlImagen(string? imgUrl)
@@ -39,8 +42,22 @@ public class ReportesService
     {
         try
         {
+            await authService.PrepararTokenAsync();
             var response = await http.PostAsJsonAsync($"{Endpoint}/crearReporte", subirReporteDto);
-            return await response.Content.ReadFromJsonAsync<ApiResponse<ReporteDetalleDto>>();
+
+            if (response.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                var tokenActualizado = await authService.RefreshTokenAsync();
+
+                if (!tokenActualizado)
+                {
+                    return CrearRespuestaNoAutorizada<ReporteDetalleDto>();
+                }
+
+                response = await http.PostAsJsonAsync($"{Endpoint}/crearReporte", subirReporteDto);
+            }
+
+            return await LeerRespuestaAsync<ReporteDetalleDto>(response);
         }
         catch
         {
@@ -52,8 +69,22 @@ public class ReportesService
     {
         try
         {
-            var result = await http.GetFromJsonAsync<ApiResponse<ReporteDetalleDto>>($"{Endpoint}/getReporte/{idReporte}");
-            return result;
+            await authService.PrepararTokenAsync();
+            var response = await http.GetAsync($"{Endpoint}/getReporte/{idReporte}");
+
+            if (response.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                var tokenActualizado = await authService.RefreshTokenAsync();
+
+                if (!tokenActualizado)
+                {
+                    return CrearRespuestaNoAutorizada<ReporteDetalleDto>();
+                }
+
+                response = await http.GetAsync($"{Endpoint}/getReporte/{idReporte}");
+            }
+
+            return await LeerRespuestaAsync<ReporteDetalleDto>(response);
         }
         catch
         {
@@ -65,8 +96,22 @@ public class ReportesService
     {
         try
         {
-            var result = await http.GetFromJsonAsync<ApiResponse<ReporteAEditarDto>>($"{Endpoint}/getReporteEditar/{idReporte}");
-            return result;
+            await authService.PrepararTokenAsync();
+            var response = await http.GetAsync($"{Endpoint}/getReporteEditar/{idReporte}");
+
+            if (response.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                var tokenActualizado = await authService.RefreshTokenAsync();
+
+                if (!tokenActualizado)
+                {
+                    return CrearRespuestaNoAutorizada<ReporteAEditarDto>();
+                }
+
+                response = await http.GetAsync($"{Endpoint}/getReporteEditar/{idReporte}");
+            }
+
+            return await LeerRespuestaAsync<ReporteAEditarDto>(response);
         }
         catch
         {
@@ -78,8 +123,22 @@ public class ReportesService
     {
         try
         {
+            await authService.PrepararTokenAsync();
             var response = await http.PutAsJsonAsync($"{Endpoint}/editarReporte/{idReporte}", editarReporteDto);
-            return await response.Content.ReadFromJsonAsync<ApiResponse<ReporteDetalleDto>>();
+
+            if (response.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                var tokenActualizado = await authService.RefreshTokenAsync();
+
+                if (!tokenActualizado)
+                {
+                    return CrearRespuestaNoAutorizada<ReporteDetalleDto>();
+                }
+
+                response = await http.PutAsJsonAsync($"{Endpoint}/editarReporte/{idReporte}", editarReporteDto);
+            }
+
+            return await LeerRespuestaAsync<ReporteDetalleDto>(response);
         }
         catch
         {
@@ -91,8 +150,22 @@ public class ReportesService
     {
         try
         {
+            await authService.PrepararTokenAsync();
             var response = await http.PutAsJsonAsync($"{Endpoint}/cambiarEstado/{idReporte}", cambiarEstadoReporteDto);
-            return await response.Content.ReadFromJsonAsync<ApiResponse<ReporteDetalleDto>>();
+
+            if (response.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                var tokenActualizado = await authService.RefreshTokenAsync();
+
+                if (!tokenActualizado)
+                {
+                    return CrearRespuestaNoAutorizada<ReporteDetalleDto>();
+                }
+
+                response = await http.PutAsJsonAsync($"{Endpoint}/cambiarEstado/{idReporte}", cambiarEstadoReporteDto);
+            }
+
+            return await LeerRespuestaAsync<ReporteDetalleDto>(response);
         }
         catch
         {
@@ -104,9 +177,22 @@ public class ReportesService
     {
         try
         {
-            var result = await http.GetFromJsonAsync<ApiResponse<List<ReportePropioDto>>>($"{Endpoint}/getByUsuario/{idUsuario}?skip={skip}&take={take}");
+            await authService.PrepararTokenAsync();
+            var response = await http.GetAsync($"{Endpoint}/getByUsuario/{idUsuario}?skip={skip}&take={take}");
 
-            return result;
+            if (response.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                var tokenActualizado = await authService.RefreshTokenAsync();
+
+                if (!tokenActualizado)
+                {
+                    return CrearRespuestaNoAutorizada<List<ReportePropioDto>>();
+                }
+
+                response = await http.GetAsync($"{Endpoint}/getByUsuario/{idUsuario}?skip={skip}&take={take}");
+            }
+
+            return await LeerRespuestaAsync<List<ReportePropioDto>>(response);
         }
         catch
         {
@@ -118,9 +204,22 @@ public class ReportesService
     {
         try
         {
-            var result = await http.GetFromJsonAsync<ApiResponse<List<ReporteGeneralDto>>>($"{Endpoint}/getReportes?skip={skip}&take={take}");
+            await authService.PrepararTokenAsync();
+            var response = await http.GetAsync($"{Endpoint}/getReportes?skip={skip}&take={take}");
 
-            return result;
+            if (response.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                var tokenActualizado = await authService.RefreshTokenAsync();
+
+                if (!tokenActualizado)
+                {
+                    return CrearRespuestaNoAutorizada<List<ReporteGeneralDto>>();
+                }
+
+                response = await http.GetAsync($"{Endpoint}/getReportes?skip={skip}&take={take}");
+            }
+
+            return await LeerRespuestaAsync<List<ReporteGeneralDto>>(response);
         }
         catch
         {
@@ -132,12 +231,56 @@ public class ReportesService
     {
         try
         {
-            var response = await http.DeleteAsync($"{Endpoint}/eliminarReporte/{idReporte}?idUsuario={idUsuario}");
-            return await response.Content.ReadFromJsonAsync<ApiResponse<ReporteDetalleDto>>();
+            await authService.PrepararTokenAsync();
+            var response = await http.DeleteAsync($"{Endpoint}/eliminarReporte/{idReporte}");
+
+            if (response.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                var tokenActualizado = await authService.RefreshTokenAsync();
+
+                if (!tokenActualizado)
+                {
+                    return CrearRespuestaNoAutorizada<ReporteDetalleDto>();
+                }
+
+                response = await http.DeleteAsync($"{Endpoint}/eliminarReporte/{idReporte}");
+            }
+
+            return await LeerRespuestaAsync<ReporteDetalleDto>(response);
         }
         catch
         {
             return null;
         }
+    }
+
+    private async Task<ApiResponse<T>?> LeerRespuestaAsync<T>(HttpResponseMessage response)
+    {
+        if (response.StatusCode == HttpStatusCode.Unauthorized)
+        {
+            return CrearRespuestaNoAutorizada<T>();
+        }
+
+        var respuesta = await response.Content.ReadFromJsonAsync<ApiResponse<T>>();
+
+        if (respuesta is not null)
+        {
+            return respuesta;
+        }
+
+        return new ApiResponse<T>
+        {
+            Success = false,
+            Message = "La API no devolvio una respuesta valida."
+        };
+    }
+
+    private ApiResponse<T> CrearRespuestaNoAutorizada<T>()
+    {
+        return new ApiResponse<T>
+        {
+            Success = false,
+            Message = "Sesion vencida. Inicia sesion nuevamente."
+        };
     }
 }

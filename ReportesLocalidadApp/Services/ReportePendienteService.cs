@@ -5,7 +5,7 @@ namespace ReportesLocalidadApp.Services;
 
 public class ReportePendienteService
 {
-    private readonly string rutaArchivo = Path.Combine(FileSystem.AppDataDirectory, "reportes_pendientes.json");
+    private string rutaArchivo = Path.Combine(FileSystem.AppDataDirectory, "reportes_pendientes.json");
 
     public async Task GuardarReportePendienteAsync(SubirReporteDto reporte)
     {
