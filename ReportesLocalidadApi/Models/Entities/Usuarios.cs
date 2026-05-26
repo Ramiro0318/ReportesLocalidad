@@ -15,5 +15,7 @@ public partial class Usuarios
 
     public virtual Roles IdRolNavigation { get; set; } = null!;
 
+    public virtual ICollection<RefreshTokens> RefreshTokens { get; set; } = new List<RefreshTokens>();
+
     public virtual ICollection<Reportes> Reportes { get; set; } = new List<Reportes>();
 }

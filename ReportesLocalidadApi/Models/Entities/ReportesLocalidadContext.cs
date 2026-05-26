@@ -20,6 +20,8 @@ public partial class ReportesLocalidadContext : DbContext
 
     public virtual DbSet<Estados> Estados { get; set; }
 
+    public virtual DbSet<RefreshTokens> RefreshTokens { get; set; }
+
     public virtual DbSet<Reportes> Reportes { get; set; }
 
     public virtual DbSet<Roles> Roles { get; set; }
@@ -48,6 +50,29 @@ public partial class ReportesLocalidadContext : DbContext
             entity.ToTable("estados");
 
             entity.Property(e => e.Nombre).HasMaxLength(80);
+        });
+
+        modelBuilder.Entity<RefreshTokens>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("refresh_tokens");
+
+            entity.HasIndex(e => e.FechaExpiracion, "IX_RefreshTokens_FechaExpiracion");
+
+            entity.HasIndex(e => e.IdUsuario, "IX_RefreshTokens_IdUsuario");
+
+            entity.HasIndex(e => e.Token, "IX_RefreshTokens_Token");
+
+            entity.Property(e => e.FechaCreacion).HasColumnType("datetime");
+            entity.Property(e => e.FechaExpiracion).HasColumnType("datetime");
+            entity.Property(e => e.FechaRevocacion).HasColumnType("datetime");
+            entity.Property(e => e.Token).HasMaxLength(500);
+
+            entity.HasOne(d => d.IdUsuarioNavigation).WithMany(p => p.RefreshTokens)
+                .HasForeignKey(d => d.IdUsuario)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_RefreshTokens_Usuarios_IdUsuario");
         });
 
         modelBuilder.Entity<Reportes>(entity =>
