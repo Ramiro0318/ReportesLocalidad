@@ -17,7 +17,6 @@ if (string.IsNullOrWhiteSpace(connectionString))
 
 builder.Services.AddControllers();
 builder.Services.AddDbContext<ReportesLocalidadContext>(options => options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 builder.Services.AddAutoMapper(config =>
 {
@@ -33,7 +32,6 @@ builder.Services.AddScoped<ReporteService>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();

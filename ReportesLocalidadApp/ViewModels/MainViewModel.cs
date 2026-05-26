@@ -11,9 +11,11 @@ public partial class MainViewModel : ObservableObject
     private readonly ReportesService reportesService;
     private readonly AuthService authService;
     private readonly FotoService fotoService;
+    private readonly ReportePendienteService reportePendienteService;
     private readonly List<ReporteGeneralDto> reportesCargados = new();
     private readonly List<ReportePropioDto> reportesPropiosCargados = new();
     private string? fotoBase64;
+    private bool enviandoReportesPendientes;
     private int reportesSaltados;
     private int reportesPropiosSaltados;
     private int elementosMostrados;
@@ -21,13 +23,16 @@ public partial class MainViewModel : ObservableObject
     private const int CargaInicial = 50;
     private const int CantidadVisible = 25;
 
-    public MainViewModel(ReportesService reportesService, AuthService authService, FotoService fotoService)
+    public MainViewModel(ReportesService reportesService, AuthService authService, FotoService fotoService, ReportePendienteService reportePendienteService)
     {
         this.reportesService = reportesService;
         this.authService = authService;
         this.fotoService = fotoService;
+        this.reportePendienteService = reportePendienteService;
         Reportes = new ObservableCollection<ReporteGeneralDto>();
         MisReportes = new ObservableCollection<ReportePropioDto>();
+        Connectivity.Current.ConnectivityChanged += async (sender, args) => await RevisarConexionAsync();
+        _ = CargarReportesPendientesAsync();
     }
 
     public ObservableCollection<ReporteGeneralDto> Reportes { get; }
@@ -53,7 +58,13 @@ public partial class MainViewModel : ObservableObject
     private bool isBusy;
 
     [ObservableProperty]
+    private bool isRefreshing;
+
+    [ObservableProperty]
     private string mensaje = string.Empty;
+
+    [ObservableProperty]
+    private int reportesPendientes;
 
     [ObservableProperty]
     private string tituloReporte = string.Empty;
@@ -103,13 +114,27 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     private async Task CargarReportes()
     {
-        await CargarReportesGeneralesAsync();
+        try
+        {
+            await CargarReportesGeneralesAsync();
+        }
+        finally
+        {
+            IsRefreshing = false;
+        }
     }
 
     [RelayCommand]
     private async Task CargarReportesAdmin()
     {
-        await CargarReportesGeneralesAsync();
+        try
+        {
+            await CargarReportesGeneralesAsync();
+        }
+        finally
+        {
+            IsRefreshing = false;
+        }
     }
 
     private async Task CargarReportesGeneralesAsync()
@@ -146,6 +171,7 @@ public partial class MainViewModel : ObservableObject
             reportesCargados.AddRange(respuesta.Data);
             reportesSaltados += respuesta.Data.Count;
             MostrarSiguientesReportes();
+            await ReintentarReportesPendientesAsync(false);
         }
         finally
         {
@@ -212,6 +238,18 @@ public partial class MainViewModel : ObservableObject
 
     [RelayCommand]
     private async Task CargarMisReportes()
+    {
+        try
+        {
+            await CargarMisReportesAsync();
+        }
+        finally
+        {
+            IsRefreshing = false;
+        }
+    }
+
+    private async Task CargarMisReportesAsync()
     {
         if (IsBusy)
         {
@@ -405,11 +443,19 @@ public partial class MainViewModel : ObservableObject
                 ClientRequestId = Guid.NewGuid().ToString()
             };
 
+            var apiDisponible = await reportesService.ApiDisponibleAsync();
+
+            if (!apiDisponible)
+            {
+                await GuardarReportePendienteAsync(reporte);
+                return;
+            }
+
             var respuesta = await reportesService.CrearReporteAsync(reporte);
 
             if (respuesta is null)
             {
-                Mensaje = "No se pudo conectar con la API.";
+                await GuardarReportePendienteAsync(reporte);
                 return;
             }
 
@@ -478,6 +524,110 @@ public partial class MainViewModel : ObservableObject
             elementosPropiosMostrados++;
             reportesPropiosSaltados++;
         }
+    }
+
+    private async Task GuardarReportePendienteAsync(SubirReporteDto reporte)
+    {
+        await reportePendienteService.GuardarReportePendienteAsync(reporte);
+        await CargarReportesPendientesAsync();
+
+        TituloReporte = string.Empty;
+        DescripcionReporte = string.Empty;
+        CategoriaSeleccionada = "Bache";
+        RutaImagen = null;
+        ImagenSeleccionada = null;
+        MostrarTextoImagen = true;
+        fotoBase64 = null;
+
+        Mensaje = "No se pudo conectar con la API. El reporte se subira cuando vuelva la conexion.";
+        await MostrarAlertaAsync("Reporte pendiente", "No se pudo conectar con la API. El reporte se guardo en el dispositivo y se subira cuando vuelva la conexion.");
+        await Shell.Current.GoToAsync("reportes");
+    }
+
+    private async Task CargarReportesPendientesAsync()
+    {
+        var reportesPendientesLocales = await reportePendienteService.ObtenerReportesPendientesAsync();
+        ReportesPendientes = reportesPendientesLocales.Count;
+    }
+
+    private async Task RevisarConexionAsync()
+    {
+        if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
+        {
+            Mensaje = "Sin conexion a internet.";
+            return;
+        }
+
+        var apiDisponible = await reportesService.ApiDisponibleAsync();
+
+        if (!apiDisponible)
+        {
+            Mensaje = "Hay internet, pero no se pudo conectar con la API.";
+            return;
+        }
+
+        await ReintentarReportesPendientesAsync(true);
+    }
+
+    private async Task ReintentarReportesPendientesAsync(bool mostrarAlerta)
+    {
+        if (enviandoReportesPendientes)
+        {
+            return;
+        }
+
+        try
+        {
+            enviandoReportesPendientes = true;
+
+            var reportesPendientesLocales = await reportePendienteService.ObtenerReportesPendientesAsync();
+
+            if (reportesPendientesLocales.Count == 0)
+            {
+                ReportesPendientes = 0;
+                return;
+            }
+
+            var enviados = 0;
+
+            foreach (var reportePendiente in reportesPendientesLocales)
+            {
+                var respuesta = await reportesService.CrearReporteAsync(reportePendiente);
+
+                if (respuesta is null || !respuesta.Success || respuesta.Data is null)
+                {
+                    continue;
+                }
+
+                await reportePendienteService.EliminarReportePendienteAsync(reportePendiente.ClientRequestId);
+                await AgregarReporteNuevoAListasAsync(respuesta.Data);
+                enviados++;
+            }
+
+            await CargarReportesPendientesAsync();
+
+            if (enviados > 0)
+            {
+                Mensaje = $"Se enviaron {enviados} reportes pendientes.";
+
+                if (mostrarAlerta)
+                {
+                    await MostrarAlertaAsync("Reportes enviados", $"Se enviaron {enviados} reportes pendientes.");
+                }
+            }
+        }
+        finally
+        {
+            enviandoReportesPendientes = false;
+        }
+    }
+
+    private async Task MostrarAlertaAsync(string titulo, string mensaje)
+    {
+        await MainThread.InvokeOnMainThreadAsync(async () =>
+        {
+            await Shell.Current.DisplayAlert(titulo, mensaje, "Aceptar");
+        });
     }
 
     [RelayCommand]

@@ -106,6 +106,9 @@
                 </Border>
 
                 <Label Text="{Binding Mensaje}" TextColor="White" FontSize="13"></Label>
+                <Label Text="{Binding ReportesPendientes, StringFormat='Reportes pendientes por subir: {0}'}"
+                       TextColor="#E6E6C7"
+                       FontSize="12"></Label>
 
                 <ActivityIndicator IsRunning="{Binding IsBusy}"
                                    IsVisible="{Binding IsBusy}"

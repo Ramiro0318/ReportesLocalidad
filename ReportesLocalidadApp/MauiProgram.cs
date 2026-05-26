@@ -20,10 +20,12 @@ namespace ReportesLocalidadApp
 
             builder.Services.AddSingleton(new HttpClient
             {
-                BaseAddress = new Uri("http://localhost:5027/")
+                BaseAddress = new Uri("http://localhost:5027/"),
+                Timeout = TimeSpan.FromSeconds(8)
             });
             builder.Services.AddSingleton<AuthService>();
             builder.Services.AddSingleton<FotoService>();
+            builder.Services.AddSingleton<ReportePendienteService>();
             builder.Services.AddTransient<ReportesService>();
             builder.Services.AddSingleton<MainViewModel>();
             builder.Services.AddTransient<AuthViewModel>();

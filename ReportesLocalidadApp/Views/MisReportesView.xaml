@@ -17,7 +17,9 @@
             </VerticalStackLayout>
         </Grid>
         
-        <ScrollView Grid.Row="1">
+        <RefreshView Grid.Row="1"
+                     IsRefreshing="{Binding IsRefreshing}"
+                     Command="{Binding CargarMisReportesCommand}">
             <VerticalStackLayout Padding="14,16" Spacing="10">
 
                 <!--Reporte 1-->
@@ -76,7 +78,7 @@
                 </Border>-->
 
             </VerticalStackLayout>
-        </ScrollView>
+        </RefreshView>
 
         <!--Menu estatico-->
         <Grid Grid.Row="2" HeightRequest="70" BackgroundColor="#2B2B29" ColumnDefinitions="*,*,*,*">

@@ -15,17 +15,24 @@ public class ReportesService
 
     public string? ObtenerUrlImagen(string? imgUrl)
     {
-        if (string.IsNullOrWhiteSpace(imgUrl))
-        {
-            return null;
-        }
+        if (string.IsNullOrWhiteSpace(imgUrl)) { return null; }
 
-        if (imgUrl.StartsWith("http"))
-        {
-            return imgUrl;
-        }
+        if (imgUrl.StartsWith("http")) { return imgUrl; }
 
         return new Uri(http.BaseAddress!, imgUrl.TrimStart('/')).ToString();
+    }
+
+    public async Task<bool> ApiDisponibleAsync()
+    {
+        try
+        {
+            var response = await http.GetAsync("api/hello");
+            return response.IsSuccessStatusCode;
+        }
+        catch
+        {
+            return false;
+        }
     }
 
     public async Task<ApiResponse<ReporteDetalleDto>?> CrearReporteAsync(SubirReporteDto subirReporteDto)
