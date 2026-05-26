@@ -2,106 +2,84 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ReportesLocalidadApp.Views.RegistroView"
-             Title="RegistroView"
-             Shell.NavBarIsVisible="False">
-    <Grid BackgroundColor="#0F0F0F">
-        <Grid.Background>
-            <LinearGradientBrush StartPoint="1,1" EndPoint="0,0">
-                <GradientStop Color="#f05a3c" Offset="0.1" />
-                <GradientStop Color="#F54927" Offset="0.8" />
-            </LinearGradientBrush>
-        </Grid.Background>
+             Title="RegistroView" BackgroundColor="#1c1c1c" Shell.NavBarIsVisible="False">
 
-        <ScrollView>
-            <VerticalStackLayout Spacing="24" Padding="28,60,28,40" VerticalOptions="Center">
-                <VerticalStackLayout>
-                    <Border WidthRequest="80" HeightRequest="80" Stroke="Transparent" Margin="10">
-                        <Border.StrokeShape>
-                            <RoundRectangle CornerRadius="20" />
-                        </Border.StrokeShape>
+    <Grid>
+
+        <!--<Grid ZIndex="20" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="#80000000" IsVisible="{Binding VistaErrorInternet}">
+
+        <Border Padding="20" StrokeShape="12" BackgroundColor="#FFFFFF" HorizontalOptions="Center"
+                VerticalOptions="Center"> 
+            <Border.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CerrarErrorInternetCommand}"></TapGestureRecognizer>
+            </Border.GestureRecognizers>
+            <VerticalStackLayout Spacing="10">
+                <Image Source="mensaje.png" WidthRequest="50" HeightRequest="50" HorizontalOptions="Center"></Image>
+                <Label Text="Sin conexión a internet" FontSize="18" TextColor="Gray" HorizontalTextAlignment="Center" ></Label>
+                <Label Text="Para solucionar el problema verifica tu conexion a internet" FontSize="15" TextColor="Gray" HorizontalTextAlignment="Center" ></Label>
+            </VerticalStackLayout>
+        </Border>
+    </Grid>-->
+
+
+        <Grid RowDefinitions="*, auto">
+            <ScrollView Grid.Row="0">
+                <VerticalStackLayout Grid.Row="0" VerticalOptions="Center" Spacing="10" Padding="30,30,28,0">
+                    <Border WidthRequest="80" HeightRequest="80" Stroke="Transparent">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="20"></RoundRectangle>
+                            </Border.StrokeShape>
                         <Border.Background>
                             <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                <GradientStop Color="#F2694E" Offset="0" />
-                                <GradientStop Color="#F54927" Offset="1" />
+                                <GradientStop Color="#F2694E" Offset="0"></GradientStop>
+                                <GradientStop Color="#F54927" Offset="1"></GradientStop>
                             </LinearGradientBrush>
                         </Border.Background>
-                        <Image Source="ciudad.png"
-                               WidthRequest="60"
-                               HeightRequest="60"
-                               HorizontalOptions="Center"
-                               VerticalOptions="Center" />
+                        <Image Source="ciudad.png"  WidthRequest="60" HeightRequest="60" HorizontalOptions="Center" VerticalOptions="Center"></Image>
                     </Border>
-                    <Label Text="Crear cuenta"
-                           FontSize="25"
-                           FontAttributes="Bold"
-                           TextColor="White"
-                           HorizontalOptions="Center" />
-                    <Label Text="Registra tu cuenta ciudadana"
-                           Margin="0,10,0,0"
-                           FontSize="15"
-                           TextColor="#80FFFFFF"
-                           HorizontalOptions="Center" />
+                        <Label Text="Crear cuenta" FontSize="25" FontAttributes="Bold" TextColor="White" HorizontalOptions="Center"></Label>
+                        <Label Text="Registra tu cuenta ciudadana" FontSize="15" TextColor="#80FFFFFF" HorizontalOptions="Center"></Label>
+                                        
+                    <Label Text="USUARIO" FontSize="12" FontAttributes="Bold" TextColor="#80FFFFFF"></Label>
+                    <Entry Placeholder="Ej. Carlos" TextColor="White" Margin="0" PlaceholderColor="#40FFFFFF"
+                            HeightRequest="50" BackgroundColor="#14FFFFFF" Text="{Binding NombreUsuario}">
+                    </Entry>
+
+                    <Label Text="CONTRASEÑA" FontSize="12" FontAttributes="Bold" TextColor="#80FFFFFF"></Label>
+                    <Entry Placeholder="••••••••" TextColor="White" IsPassword="True" 
+                        PlaceholderColor="#40FFFFFF" HeightRequest="50"
+                        BackgroundColor="#14FFFFFF" Text="{Binding Password}">
+                    </Entry>
+
+                    <Label Text="CONFIRMAR CONTRASEÑA" FontSize="12" FontAttributes="Bold" TextColor="#80FFFFFF"></Label>
+                    <Entry Placeholder="••••••••" TextColor="White" IsPassword="True"
+                        PlaceholderColor="#40FFFFFF" HeightRequest="50"
+                        BackgroundColor="#14FFFFFF" Text="{Binding ConfirmarPassword}">
+                    </Entry>
+
+                    <Label Text="{Binding Mensaje}" HorizontalTextAlignment="Center"
+                        HorizontalOptions="Center"
+                         LineBreakMode="WordWrap" FontSize="15" TextColor="#90FFFFFF">
+                    </Label>
+
+
+                    <Button Text="Registrarme" HeightRequest="50" CornerRadius="18" FontAttributes="Bold" Margin="0,0,0,10"
+                        FontSize="15" BackgroundColor="#F54927" TextColor="White" Command="{Binding RegistrarCommand}">
+                    </Button>
+
+                    <Button Text="Ya tengo cuenta" HeightRequest="50" CornerRadius="20"
+                         FontAttributes="Bold" FontSize="15" BackgroundColor="#1E1E1E"
+                         BorderColor="#F54927" BorderWidth="1" TextColor="#F54927"
+                         Command="{Binding IrLoginCommand}"></Button>
                 </VerticalStackLayout>
+            </ScrollView>
 
-                <VerticalStackLayout Spacing="5">
-                    <Label Text="USUARIO" FontSize="12" FontAttributes="Bold" TextColor="#80FFFFFF" />
-                    <Entry Placeholder="Ej. Carlos"
-                           Text="{Binding NombreUsuario}"
-                           TextColor="White"
-                           PlaceholderColor="#40FFFFFF"
-                           HeightRequest="50"
-                           BackgroundColor="#14FFFFFF" />
-                </VerticalStackLayout>
+            <Label Grid.Row="1" Text="© Designed by: Alfredo Mata and Ramiro Valverde"  FontSize="15"
+            TextColor="#40FFFFFF" HorizontalOptions="Center"></Label>
+        </Grid>
 
-                <VerticalStackLayout Spacing="5">
-                    <Label Text="CONTRASENA" FontSize="12" FontAttributes="Bold" TextColor="#80FFFFFF" />
-                    <Entry IsPassword="True"
-                           Placeholder="********"
-                           Text="{Binding Password}"
-                           TextColor="White"
-                           PlaceholderColor="#40FFFFFF"
-                           HeightRequest="50"
-                           BackgroundColor="#14FFFFFF" />
-                </VerticalStackLayout>
-
-                <VerticalStackLayout Spacing="5">
-                    <Label Text="CONFIRMAR CONTRASENA" FontSize="12" FontAttributes="Bold" TextColor="#80FFFFFF" />
-                    <Entry IsPassword="True"
-                           Placeholder="********"
-                           Text="{Binding ConfirmarPassword}"
-                           TextColor="White"
-                           PlaceholderColor="#40FFFFFF"
-                           HeightRequest="50"
-                           BackgroundColor="#14FFFFFF" />
-                </VerticalStackLayout>
-
-                <Label Text="{Binding Mensaje}"
-                       HorizontalTextAlignment="Center"
-                       HorizontalOptions="Center"
-                       LineBreakMode="WordWrap"
-                       FontSize="15"
-                       TextColor="#90FFFFFF" />
-
-                <Button Text="Registrarme"
-                        HeightRequest="50"
-                        CornerRadius="15"
-                        FontAttributes="Bold"
-                        BackgroundColor="#F54927"
-                        TextColor="White"
-                        Command="{Binding RegistrarCommand}" />
-
-                <Button Text="Ya tengo cuenta"
-                        HeightRequest="50"
-                        CornerRadius="15"
-                        FontAttributes="Bold"
-                        BackgroundColor="#2B2B29"
-                        TextColor="White"
-                        Command="{Binding IrLoginCommand}" />
-
-                <ActivityIndicator IsVisible="{Binding IsBusy}"
-                                   IsRunning="{Binding IsBusy}"
-                                   Color="White" />
-            </VerticalStackLayout>
-        </ScrollView>
+        <Grid BackgroundColor="#80000000" IsVisible="{Binding IsBusy}" InputTransparent="False" ZIndex="999">
+            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" Color="#F54927" WidthRequest="50" HeightRequest="50"></ActivityIndicator>
+        </Grid>
     </Grid>
 </ContentPage>

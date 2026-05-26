@@ -21,7 +21,6 @@
                      IsRefreshing="{Binding IsRefreshing}"
                      Command="{Binding CargarMisReportesCommand}">
             <VerticalStackLayout Padding="14,16" Spacing="10">
-
                 <!--Reporte 1-->
                 <CollectionView ItemsSource="{Binding MisReportes}">
                     <CollectionView.ItemTemplate>
@@ -76,7 +75,6 @@
                         </Border>
                     </Grid>
                 </Border>-->
-
             </VerticalStackLayout>
         </RefreshView>
 
@@ -90,7 +88,7 @@
                 <Label Text="Inicio" TextColor="#F05A2A" FontSize="11" HorizontalTextAlignment="Center"></Label>
             </VerticalStackLayout>
 
-            <VerticalStackLayout Grid.Column="1" HorizontalOptions="Center" VerticalOptions="Center" Spacing="2">
+            <VerticalStackLayout Grid.Column="2" HorizontalOptions="Center" VerticalOptions="Center" Spacing="2">
                 <VerticalStackLayout.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding IrAgregarReporteCommand}"></TapGestureRecognizer>
                 </VerticalStackLayout.GestureRecognizers>
@@ -98,7 +96,7 @@
                 <Label Text="Agregar" TextColor="White" FontSize="11" HorizontalTextAlignment="Center"></Label>
             </VerticalStackLayout>
 
-            <VerticalStackLayout Grid.Column="2" HorizontalOptions="Center" VerticalOptions="Center" Spacing="2">
+            <VerticalStackLayout Grid.Column="1" HorizontalOptions="Center" VerticalOptions="Center" Spacing="2">
                 <VerticalStackLayout.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding IrMisReportesCommand}"></TapGestureRecognizer>
                 </VerticalStackLayout.GestureRecognizers>
@@ -113,6 +111,9 @@
                 <Image Source="perfil.png"  WidthRequest="30"></Image>
                 <Label Text="Perfil" TextColor="White" FontSize="11" HorizontalTextAlignment="Center"></Label>
             </VerticalStackLayout>
+        </Grid>
+        <Grid Grid.RowSpan="2" Grid.ColumnSpan="2" ZIndex="10" BackgroundColor="#80000000" IsVisible="{Binding IsBusy}" InputTransparent="False">
+            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" Color="#F54927" WidthRequest="50" HeightRequest="50"></ActivityIndicator>
         </Grid>
     </Grid>
 </ContentPage>

@@ -77,6 +77,8 @@ public partial class MainViewModel : ObservableObject
     private string descripcionReporte = string.Empty;
 
     [ObservableProperty]
+    private bool isRefreshing;
+    [ObservableProperty]
     private string categoriaSeleccionada = "Bache";
 
     [ObservableProperty]
