@@ -20,7 +20,6 @@ if (string.IsNullOrWhiteSpace(connectionString))
 
 builder.Services.AddControllers();
 builder.Services.AddDbContext<ReportesLocalidadContext>(options => options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
-builder.Services.AddOpenApi();
 builder.Services.AddAutoMapper(config =>
 {
     config.AddProfile<MappingProfile>();
@@ -60,12 +59,6 @@ builder.Services.AddScoped<UsuarioService>();
 builder.Services.AddScoped<ReporteService>();
 
 var app = builder.Build();
-
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-}
-
 
 app.UseAuthentication();
 app.UseAuthorization();

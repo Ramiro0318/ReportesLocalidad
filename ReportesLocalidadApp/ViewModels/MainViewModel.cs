@@ -15,14 +15,15 @@ public partial class MainViewModel : ObservableObject
     private readonly AlertaService alertaService;
     private readonly List<ReporteGeneralDto> reportesCargados = new();
     private readonly List<ReportePropioDto> reportesPropiosCargados = new();
+
     private string? fotoBase64;
     private bool enviandoReportesPendientes;
     private int reportesSaltados;
     private int reportesPropiosSaltados;
     private int elementosMostrados;
     private int elementosPropiosMostrados;
-    private const int CargaInicial = 50;
-    private const int CantidadVisible = 25;
+    private int CargaInicial = 50;
+    private int CantidadVisible = 25;
 
     public MainViewModel(ReportesService reportesService, AuthService authService, FotoService fotoService, ReportePendienteService reportePendienteService, AlertaService alertaService)
     {
@@ -35,6 +36,7 @@ public partial class MainViewModel : ObservableObject
         MisReportes = new ObservableCollection<ReportePropioDto>();
         Connectivity.Current.ConnectivityChanged += async (sender, args) => await RevisarConexionAsync();
         _ = CargarReportesPendientesAsync();
+        _ = ReintentarReportesSiApiDisponible(false);
     }
 
     public ObservableCollection<ReporteGeneralDto> Reportes { get; }
@@ -173,7 +175,7 @@ public partial class MainViewModel : ObservableObject
             reportesCargados.AddRange(respuesta.Data);
             reportesSaltados += respuesta.Data.Count;
             MostrarSiguientesReportes();
-            await ReintentarReportesPendientesAsync(false);
+            await ReintentarReportesSiApiDisponible(false);
         }
         finally
         {
@@ -292,7 +294,8 @@ public partial class MainViewModel : ObservableObject
 
             reportesPropiosCargados.AddRange(respuesta.Data);
             reportesPropiosSaltados += respuesta.Data.Count;
-            MostrarSiguientesReportesPropios();
+            MostrarSiguientesPropios();
+            await ReintentarReportesSiApiDisponible(false);
         }
         finally
         {
@@ -310,7 +313,7 @@ public partial class MainViewModel : ObservableObject
 
         if (elementosPropiosMostrados < reportesPropiosCargados.Count)
         {
-            MostrarSiguientesReportesPropios();
+            MostrarSiguientesPropios();
             return;
         }
 
@@ -342,7 +345,7 @@ public partial class MainViewModel : ObservableObject
 
             reportesPropiosCargados.AddRange(respuesta.Data);
             reportesPropiosSaltados += respuesta.Data.Count;
-            MostrarSiguientesReportesPropios();
+            MostrarSiguientesPropios();
         }
         finally
         {
@@ -350,7 +353,7 @@ public partial class MainViewModel : ObservableObject
         }
     }
 
-    private void MostrarSiguientesReportesPropios()
+    private void MostrarSiguientesPropios()
     {
         var reportesParaMostrar = reportesPropiosCargados
             .Skip(elementosPropiosMostrados)
@@ -471,7 +474,7 @@ public partial class MainViewModel : ObservableObject
                 return;
             }
 
-            await AgregarReporteNuevoAListasAsync(respuesta.Data);
+            await AgregarReporteLista(respuesta.Data);
 
             TituloReporte = string.Empty;
             DescripcionReporte = string.Empty;
@@ -482,6 +485,7 @@ public partial class MainViewModel : ObservableObject
             fotoBase64 = null;
             Mensaje = respuesta.Message;
             await MostrarToastAsync("Reporte creado correctamente.");
+            await ReintentarReportesSiApiDisponible(false);
 
             await Shell.Current.GoToAsync("reportes");
         }
@@ -491,7 +495,7 @@ public partial class MainViewModel : ObservableObject
         }
     }
 
-    private async Task AgregarReporteNuevoAListasAsync(ReporteDetalleDto reporte)
+    private async Task AgregarReporteLista(ReporteDetalleDto reporte)
     {
         var nombreUsuario = await authService.GetNombreUsuarioAsync() ?? string.Empty;
 
@@ -576,10 +580,27 @@ public partial class MainViewModel : ObservableObject
         }
 
         await MostrarToastAsync("Conexion recuperada.");
-        await ReintentarReportesPendientesAsync(true);
+        await ReintentarReportes(true);
     }
 
-    private async Task ReintentarReportesPendientesAsync(bool mostrarAlerta)
+    private async Task ReintentarReportesSiApiDisponible(bool mostrarAlerta)
+    {
+        if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
+        {
+            return;
+        }
+
+        var apiDisponible = await reportesService.ApiDisponibleAsync();
+
+        if (!apiDisponible)
+        {
+            return;
+        }
+
+        await ReintentarReportes(mostrarAlerta);
+    }
+
+    private async Task ReintentarReportes(bool mostrarAlerta)
     {
         if (enviandoReportesPendientes)
         {
@@ -604,13 +625,24 @@ public partial class MainViewModel : ObservableObject
             {
                 var respuesta = await reportesService.CrearReporteAsync(reportePendiente);
 
-                if (respuesta is null || !respuesta.Success || respuesta.Data is null)
+                if (respuesta is null)
+                {
+                    continue;
+                }
+
+                if (ReporteDuplicado(respuesta.Message))
+                {
+                    await reportePendienteService.EliminarReportePendienteAsync(reportePendiente.ClientRequestId);
+                    continue;
+                }
+
+                if (!respuesta.Success || respuesta.Data is null)
                 {
                     continue;
                 }
 
                 await reportePendienteService.EliminarReportePendienteAsync(reportePendiente.ClientRequestId);
-                await AgregarReporteNuevoAListasAsync(respuesta.Data);
+                await AgregarReporteLista(respuesta.Data);
                 enviados++;
             }
 
@@ -630,6 +662,12 @@ public partial class MainViewModel : ObservableObject
         {
             enviandoReportesPendientes = false;
         }
+    }
+
+    private bool ReporteDuplicado(string? mensaje)
+    {
+        return !string.IsNullOrWhiteSpace(mensaje) &&
+            mensaje.Contains("ya fue registrado", StringComparison.OrdinalIgnoreCase);
     }
 
     private async Task MostrarToastAsync(string mensaje)
@@ -1081,6 +1119,8 @@ public partial class MainViewModel : ObservableObject
         }
     }
 
+
+    //Navegacion
     [RelayCommand]
     private async Task VolverReporte()
     {
