@@ -46,13 +46,13 @@
                     </Entry>
 
                     <Label Text="CONTRASEÑA" FontSize="12" FontAttributes="Bold" TextColor="#80FFFFFF"></Label>
-                    <Entry Placeholder="••••••••" TextColor="White" 
+                    <Entry Placeholder="••••••••" TextColor="White" IsPassword="True" 
                         PlaceholderColor="#40FFFFFF" HeightRequest="50"
                         BackgroundColor="#14FFFFFF" Text="{Binding Password}">
                     </Entry>
 
                     <Label Text="CONFIRMAR CONTRASEÑA" FontSize="12" FontAttributes="Bold" TextColor="#80FFFFFF"></Label>
-                    <Entry Placeholder="••••••••" TextColor="White" 
+                    <Entry Placeholder="••••••••" TextColor="White" IsPassword="True"
                         PlaceholderColor="#40FFFFFF" HeightRequest="50"
                         BackgroundColor="#14FFFFFF" Text="{Binding ConfirmarPassword}">
                     </Entry>
