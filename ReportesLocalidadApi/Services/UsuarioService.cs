@@ -9,26 +9,28 @@ namespace ReportesLocalidadApi.Services;
 
 public class UsuarioService
 {
-    private readonly ReportesLocalidadContext _context;
-    private readonly Repository<Usuarios> _usuarioRepository;
-    private readonly IMapper _mapper;
+    private readonly ReportesLocalidadContext context;
+    private readonly Repository<Usuarios> usuarioRepository;
+    private readonly IMapper mapper;
+    private readonly JwtService jwtService;
 
-    public UsuarioService(ReportesLocalidadContext context, Repository<Usuarios> usuarioRepository, IMapper mapper)
+    public UsuarioService(ReportesLocalidadContext context, Repository<Usuarios> usuarioRepository, IMapper mapper, JwtService jwtService)
     {
-        _context = context;
-        _usuarioRepository = usuarioRepository;
-        _mapper = mapper;
+        this.context = context;
+        this.usuarioRepository = usuarioRepository;
+        this.mapper = mapper;
+        this.jwtService = jwtService;
     }
 
     public async Task<ApiResponse<UsuarioRespuestaDto>> RegistrarAsync(RegistroDto registroDto)
     {
-        var usuario = _mapper.Map<Usuarios>(registroDto);
+        var usuario = mapper.Map<Usuarios>(registroDto);
 
         usuario.IdRol = 1;
         usuario.PasswordHash = HashHelper.ToSha256(registroDto.Password);
 
-        await _usuarioRepository.AddAsync(usuario);
-        await _usuarioRepository.SaveChangesAsync();
+        await usuarioRepository.AddAsync(usuario);
+        await usuarioRepository.SaveChangesAsync();
 
         return new ApiResponse<UsuarioRespuestaDto>
         {
@@ -43,13 +45,13 @@ public class UsuarioService
         };
     }
 
-    public async Task<ApiResponse<UsuarioRespuestaDto>> LoginAsync(LoginDto loginDto)
+    public async Task<ApiResponse<AuthResponseDto>> LoginAsync(LoginDto loginDto)
     {
-        var usuario = await _context.Usuarios.FirstOrDefaultAsync(usuario => usuario.NombreUsuario == loginDto.NombreUsuario);
+        var usuario = await context.Usuarios.FirstOrDefaultAsync(usuario => usuario.NombreUsuario == loginDto.NombreUsuario);
 
         if (usuario is null)
         {
-            return new ApiResponse<UsuarioRespuestaDto>
+            return new ApiResponse<AuthResponseDto>
             {
                 Success = false,
                 Message = "Usuario o contrasena incorrectos."
@@ -60,24 +62,109 @@ public class UsuarioService
 
         if (!passwordCorrecto)
         {
-            return new ApiResponse<UsuarioRespuestaDto>
+            return new ApiResponse<AuthResponseDto>
             {
                 Success = false,
                 Message = "Usuario o contrasena incorrectos."
             };
         }
 
-        return new ApiResponse<UsuarioRespuestaDto>
+        var refreshToken = CrearRefreshToken(usuario.Id);
+        await context.RefreshTokens.AddAsync(refreshToken);
+        await context.SaveChangesAsync();
+
+        return new ApiResponse<AuthResponseDto>
         {
             Success = true,
             Message = "Inicio de sesion correcto.",
-            Data = new UsuarioRespuestaDto
+            Data = new AuthResponseDto
             {
-                Id = usuario.Id,
-                NombreUsuario = usuario.NombreUsuario,
-                IdRol = usuario.IdRol
+                AccessToken = jwtService.GenerarAccessToken(usuario),
+                RefreshToken = refreshToken.Token,
+                Usuario = CrearUsuarioRespuesta(usuario)
             }
         };
     }
 
+    public async Task<ApiResponse<AuthResponseDto>> RefreshAsync(RefreshTokenDto refreshTokenDto)
+    {
+        var refreshToken = await context.RefreshTokens
+            .Include(refreshToken => refreshToken.IdUsuarioNavigation)
+            .FirstOrDefaultAsync(refreshToken => refreshToken.Token == refreshTokenDto.RefreshToken);
+
+        if (refreshToken is null || refreshToken.FechaRevocacion is not null || refreshToken.FechaExpiracion <= DateTime.Now)
+        {
+            return new ApiResponse<AuthResponseDto>
+            {
+                Success = false,
+                Message = "Refresh token invalido o expirado."
+            };
+        }
+
+        refreshToken.FechaRevocacion = DateTime.Now;
+
+        var nuevoRefreshToken = CrearRefreshToken(refreshToken.IdUsuario);
+        await context.RefreshTokens.AddAsync(nuevoRefreshToken);
+        await context.SaveChangesAsync();
+
+        return new ApiResponse<AuthResponseDto>
+        {
+            Success = true,
+            Message = "Token renovado correctamente.",
+            Data = new AuthResponseDto
+            {
+                AccessToken = jwtService.GenerarAccessToken(refreshToken.IdUsuarioNavigation),
+                RefreshToken = nuevoRefreshToken.Token,
+                Usuario = CrearUsuarioRespuesta(refreshToken.IdUsuarioNavigation)
+            }
+        };
+    }
+
+    public async Task<ApiResponse<object>> LogoutAsync(LogoutDto logoutDto)
+    {
+        var refreshToken = await context.RefreshTokens
+            .FirstOrDefaultAsync(refreshToken => refreshToken.Token == logoutDto.RefreshToken);
+
+        if (refreshToken is null)
+        {
+            return new ApiResponse<object>
+            {
+                Success = false,
+                Message = "Refresh token no encontrado."
+            };
+        }
+
+        if (refreshToken.FechaRevocacion is null)
+        {
+            refreshToken.FechaRevocacion = DateTime.Now;
+            await context.SaveChangesAsync();
+        }
+
+        return new ApiResponse<object>
+        {
+            Success = true,
+            Message = "Sesion cerrada correctamente."
+        };
+    }
+
+    private RefreshTokens CrearRefreshToken(int idUsuario)
+    {
+        return new RefreshTokens
+        {
+            Token = jwtService.GenerarRefreshToken(),
+            FechaCreacion = DateTime.Now,
+            FechaExpiracion = jwtService.ObtenerFechaExpiracionRefreshToken(),
+            IdUsuario = idUsuario
+        };
+    }
+
+    private UsuarioRespuestaDto CrearUsuarioRespuesta(Usuarios usuario)
+    {
+        return new UsuarioRespuestaDto
+        {
+            Id = usuario.Id,
+            NombreUsuario = usuario.NombreUsuario,
+            IdRol = usuario.IdRol
+        };
+    }
 }

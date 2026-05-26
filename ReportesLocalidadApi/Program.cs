@@ -1,4 +1,7 @@
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using ReportesLocalidadApi.Mappings;
 using ReportesLocalidadApi.Models;
 using ReportesLocalidadApi.Models.Entities;
@@ -22,11 +25,37 @@ builder.Services.AddAutoMapper(config =>
 {
     config.AddProfile<MappingProfile>();
 });
-builder.Services.AddDbContext<ReportesLocalidadContext>(options =>
-    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+
+var jwtKey = builder.Configuration["Jwt:Key"];
+var jwtIssuer = builder.Configuration["Jwt:Issuer"];
+var jwtAudience = builder.Configuration["Jwt:Audience"];
+
+if (string.IsNullOrWhiteSpace(jwtKey))
+{
+    throw new InvalidOperationException("No se encontro la llave JWT.");
+}
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = jwtIssuer,
+            ValidAudience = jwtAudience,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
+            ClockSkew = TimeSpan.Zero
+        };
+    });
+
+builder.Services.AddAuthorization();
 
 builder.Services.AddScoped(typeof(Repository<>));
 builder.Services.AddScoped<ImageService>();
+builder.Services.AddScoped<JwtService>();
 builder.Services.AddScoped<UsuarioService>();
 builder.Services.AddScoped<ReporteService>();
 
@@ -39,6 +68,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 app.UseStaticFiles();
 
