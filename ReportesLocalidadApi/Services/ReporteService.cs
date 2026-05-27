@@ -12,13 +12,15 @@ public class ReporteService
     private readonly Repository<Reportes> reporteRepository;
     private readonly ImageService imageService;
     private readonly IMapper mapper;
+    private readonly FirebaseNotificationService firebaseNotificationService;
 
-    public ReporteService(ReportesLocalidadContext context, Repository<Reportes> reporteRepository, ImageService imageService, IMapper mapper)
+    public ReporteService(ReportesLocalidadContext context, Repository<Reportes> reporteRepository, ImageService imageService, IMapper mapper, FirebaseNotificationService firebaseNotificationService)
     {
         this.context = context;
         this.reporteRepository = reporteRepository;
         this.imageService = imageService;
         this.mapper = mapper;
+        this.firebaseNotificationService = firebaseNotificationService;
     }
 
     public async Task<ApiResponse<Reportes>> CrearAsync(SubirReporteDto subirReporteDto)
@@ -229,7 +231,9 @@ public class ReporteService
             };
         }
 
-        var reporte = await context.Reportes.FirstOrDefaultAsync(reporte => reporte.Id == id);
+        var reporte = await context.Reportes
+            .Include(reporte => reporte.IdUsuarioNavigation)
+            .FirstOrDefaultAsync(reporte => reporte.Id == id);
 
         if (reporte is null)
         {
@@ -256,6 +260,7 @@ public class ReporteService
 
         reporteRepository.Update(reporte);
         await reporteRepository.SaveChangesAsync();
+        await NotificarCambioEstadoAsync(reporte);
 
         return new ApiResponse<Reportes>
         {
@@ -263,6 +268,30 @@ public class ReporteService
             Message = "Estado del reporte actualizado correctamente.",
             Data = reporte
         };
+    }
+
+    private async Task NotificarCambioEstadoAsync(Reportes reporte)
+    {
+        var tokenFirebase = reporte.IdUsuarioNavigation.TokenFirebase;
+
+        if (string.IsNullOrWhiteSpace(tokenFirebase))
+        {
+            return;
+        }
+
+        var estado = ObtenerTextoEstado(reporte.IdEstado);
+        var titulo = "Reporte actualizado";
+        var mensaje = $"Tu reporte \"{reporte.Titulo}\" cambio a {estado}.";
+
+        await firebaseNotificationService.EnviarNotificacionAsync(tokenFirebase, titulo, mensaje);
+    }
+
+    private string ObtenerTextoEstado(int idEstado)
+    {
+        if (idEstado == 1) return "Pendiente";
+        if (idEstado == 2) return "En progreso";
+        if (idEstado == 3) return "Resuelto";
+        return "un nuevo estado";
     }
 
 

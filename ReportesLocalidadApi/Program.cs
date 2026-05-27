@@ -57,6 +57,7 @@ builder.Services.AddScoped<ImageService>();
 builder.Services.AddScoped<JwtService>();
 builder.Services.AddScoped<UsuarioService>();
 builder.Services.AddScoped<ReporteService>();
+builder.Services.AddSingleton<FirebaseNotificationService>();
 
 var app = builder.Build();
 
