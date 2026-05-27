@@ -87,7 +87,7 @@
 
                                             <Label Text="{Binding NombreUsuario}" TextColor="White" FontSize="12"></Label>
 
-                                            <Label Text="{Binding FechaSubida, StringFormat='{0:dd \'de\' MMMM \'de\' yyyy}'}" TextColor="#D8D8D8" FontSize="11"></Label>
+                                            <Label Text="{Binding FechaSubida, StringFormat='{}{0:dd MMMM yyyy}'}" TextColor="#D8D8D8" FontSize="11" ></Label>
                                         </VerticalStackLayout>
 
                                         <Border Grid.Column="2" Stroke="Transparent" Padding="10,4" HorizontalOptions="End" VerticalOptions="Start" StrokeShape="RoundRectangle 20">
@@ -136,7 +136,7 @@
                     <TapGestureRecognizer Command="{Binding IrInicioCommand}"></TapGestureRecognizer>
                 </VerticalStackLayout.GestureRecognizers>
                 <Image Source="inicio.png"  WidthRequest="25"></Image>
-                <Label Text="Inicio" TextColor="#F05A2A" FontSize="11" HorizontalTextAlignment="Center"></Label>
+                <Label Text="Inicio" TextColor="White" FontSize="11" HorizontalTextAlignment="Center"></Label>
             </VerticalStackLayout>
 
             <VerticalStackLayout Grid.Column="2" HorizontalOptions="Center" VerticalOptions="Center" Spacing="2">
