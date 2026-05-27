@@ -73,6 +73,15 @@ public partial class MainViewModel : ObservableObject
     private int reportesPendientes;
 
     [ObservableProperty]
+    private int totalMisReportes;
+
+    [ObservableProperty]
+    private int reportesAtendidos;
+
+    [ObservableProperty]
+    private int reportesPendientesUsuario;
+
+    [ObservableProperty]
     private string nombreUsuario = string.Empty;
 
     [ObservableProperty]
@@ -302,6 +311,7 @@ public partial class MainViewModel : ObservableObject
             reportesPropiosCargados.AddRange(respuesta.Data);
             reportesPropiosSaltados += respuesta.Data.Count;
             MostrarSiguientesPropios();
+            ActualizarConteoPerfil();
             await ReintentarReportesSiApiDisponible(false);
         }
         finally
@@ -353,6 +363,7 @@ public partial class MainViewModel : ObservableObject
             reportesPropiosCargados.AddRange(respuesta.Data);
             reportesPropiosSaltados += respuesta.Data.Count;
             MostrarSiguientesPropios();
+            ActualizarConteoPerfil();
         }
         finally
         {
@@ -373,6 +384,46 @@ public partial class MainViewModel : ObservableObject
         }
 
         elementosPropiosMostrados += reportesParaMostrar.Count;
+    }
+
+    [RelayCommand]
+    private async Task CargarPerfil()
+    {
+        await CargarNombreUsuarioAsync();
+        await CargarReportesPendientesAsync();
+
+        var idUsuario = await authService.GetIdUsuarioAsync();
+
+        if (idUsuario == 0)
+        {
+            TotalMisReportes = 0;
+            ReportesAtendidos = 0;
+            ReportesPendientesUsuario = 0;
+            return;
+        }
+
+        var respuesta = await reportesService.GetByUsuarioAsync(idUsuario, 0, CargaInicial);
+
+        if (respuesta is null || !respuesta.Success || respuesta.Data is null)
+        {
+            ActualizarConteoPerfil();
+            return;
+        }
+
+        reportesPropiosCargados.Clear();
+        reportesPropiosCargados.AddRange(respuesta.Data);
+        ActualizarConteoPerfil();
+    }
+
+    private void ActualizarConteoPerfil()
+    {
+        var reportesParaContar = reportesPropiosCargados.Count > 0
+            ? reportesPropiosCargados
+            : MisReportes.ToList();
+
+        TotalMisReportes = reportesParaContar.Count;
+        ReportesAtendidos = reportesParaContar.Count(x => x.IdEstado == (int)Estados.Resuelto);
+        ReportesPendientesUsuario = reportesParaContar.Count(x => x.IdEstado == (int)Estados.Pendiente);
     }
 
     [RelayCommand]
@@ -516,6 +567,7 @@ public partial class MainViewModel : ObservableObject
             }
 
             await AgregarReporteLista(respuesta.Data);
+            ActualizarConteoPerfil();
 
             TituloReporte = string.Empty;
             DescripcionReporte = string.Empty;
@@ -576,6 +628,8 @@ public partial class MainViewModel : ObservableObject
             elementosPropiosMostrados++;
             reportesPropiosSaltados++;
         }
+
+        ActualizarConteoPerfil();
     }
 
     private async Task GuardarReportePendienteAsync(SubirReporteDto reporte)
@@ -709,6 +763,7 @@ public partial class MainViewModel : ObservableObject
 
                 await reportePendienteService.EliminarReportePendienteAsync(reportePendiente.ClientRequestId);
                 await AgregarReporteLista(respuesta.Data);
+                ActualizarConteoPerfil();
                 enviados++;
             }
 
@@ -1058,6 +1113,8 @@ public partial class MainViewModel : ObservableObject
                 reportesCargados[posicionCargado] = reporteGeneralActualizado;
             }
         }
+
+        ActualizarConteoPerfil();
     }
 
     private void QuitarReporteDeListas(int idReporte)
@@ -1089,6 +1146,8 @@ public partial class MainViewModel : ObservableObject
         {
             reportesCargados.Remove(reporteGeneralCargado);
         }
+
+        ActualizarConteoPerfil();
     }
 
     [RelayCommand]

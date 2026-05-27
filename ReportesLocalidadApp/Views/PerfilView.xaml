@@ -17,7 +17,7 @@
         <Grid Grid.Row="1" ColumnDefinitions="*,*,*" Margin="10,10,10,0" ColumnSpacing="10">
             <Border BackgroundColor="#2B2B29" Stroke="#4A4A45" StrokeThickness="1" StrokeShape="RoundRectangle 15">
                 <VerticalStackLayout Spacing="5" VerticalOptions="Center">
-                    <Label Text="12" TextColor="White" FontSize="22"
+                    <Label Text="{Binding TotalMisReportes}" TextColor="White" FontSize="22"
                        FontAttributes="Bold" HorizontalTextAlignment="Center"></Label>
                     <Label Text="Reportes" TextColor="White" FontSize="12"
                        HorizontalTextAlignment="Center"></Label>
@@ -26,7 +26,7 @@
 
             <Border BackgroundColor="#2B2B29" Grid.Column="1" Stroke="#4A4A45" StrokeThickness="1" Padding="12" HeightRequest="80" StrokeShape="RoundRectangle 14">
                 <VerticalStackLayout Spacing="5" VerticalOptions="Center">
-                    <Label Text="4" TextColor="White" FontSize="22" FontAttributes="Bold" HorizontalTextAlignment="Center"></Label>
+                    <Label Text="{Binding ReportesAtendidos}" TextColor="White" FontSize="22" FontAttributes="Bold" HorizontalTextAlignment="Center"></Label>
                     <Label Text="Atendidos" TextColor="White" FontSize="12" HorizontalTextAlignment="Center"></Label>
                 </VerticalStackLayout>
             </Border>
@@ -37,7 +37,7 @@
                 StrokeShape="RoundRectangle 14">
 
                 <VerticalStackLayout Spacing="5" VerticalOptions="Center">
-                    <Label Text="8" TextColor="White" FontSize="22" FontAttributes="Bold" HorizontalTextAlignment="Center"></Label>
+                    <Label Text="{Binding ReportesPendientesUsuario}" TextColor="White" FontSize="22" FontAttributes="Bold" HorizontalTextAlignment="Center"></Label>
                     <Label Text="Pendientes" TextColor="White" FontSize="12" HorizontalTextAlignment="Center"></Label>
                 </VerticalStackLayout>
             </Border>
@@ -46,6 +46,11 @@
 
         <ScrollView Grid.Row="2" VerticalOptions="Center">
             <VerticalStackLayout Padding="14,16" Spacing="10">
+                <Label Text="{Binding ReportesPendientes, StringFormat='Reportes pendientes por subir: {0}'}"
+                       TextColor="#F54927"
+                       FontSize="13"
+                       FontAttributes="Bold"
+                       HorizontalTextAlignment="Center"></Label>
                 <Grid>
                     <Button Text="Cerrar sesión" HeightRequest="50" 
                     CornerRadius="15" BorderWidth="1"
@@ -62,6 +67,9 @@
         <!--Menu estatico-->
         <Grid Grid.Row="2" VerticalOptions="End" HeightRequest="70" BackgroundColor="#2B2B29" ColumnDefinitions="*,*,*,*">
             <VerticalStackLayout Grid.Column="0" HorizontalOptions="Center" VerticalOptions="Center" Spacing="2">
+                <VerticalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding IrInicioCommand}"></TapGestureRecognizer>
+                </VerticalStackLayout.GestureRecognizers>
                 <Image Source="inicio.png"  WidthRequest="25"></Image>
                 <Label Text="Inicio" TextColor="#F05A2A" FontSize="11" HorizontalTextAlignment="Center"></Label>
             </VerticalStackLayout>
