@@ -4,7 +4,7 @@
              x:Class="ReportesLocalidadApp.Views.ReportesAdminView"
              x:Name="PaginaReportesAdmin"
              Title="ReportesAdminView" Shell.NavBarIsVisible="False">
-    <Grid RowDefinitions="auto,*,auto" BackgroundColor="#0F0F0F">
+    <Grid RowDefinitions="auto,auto,*,auto" BackgroundColor="#0F0F0F">
         <Grid Grid.Row="0"  Padding="18,28,18,18" ColumnDefinitions="*, auto">
             <Grid.Background>
                 <LinearGradientBrush StartPoint="1,1" EndPoint="0,0">
@@ -29,7 +29,29 @@
             </Grid>
         </Grid>
 
-        <RefreshView Grid.Row="1"  IsRefreshing="{Binding IsRefreshing}" Command="{Binding CargarReportesCommand}">
+        <Grid Grid.Row="1" ColumnDefinitions="*,*" ColumnSpacing="10" Padding="10,10,10,10" BackgroundColor="#0F0F0F">
+            <!-- filtro de estado-->
+            <VerticalStackLayout Spacing="5">
+                <Label Text="Estado" TextColor="#E6E6C7" FontSize="12" FontAttributes="Bold"></Label>
+                <Border Stroke="#4A4A45" StrokeThickness="1" BackgroundColor="#2B2B29" StrokeShape="RoundRectangle 12" Padding="10,1" HeightRequest="50">
+                    <Picker Title="Todos" TitleColor="#D8D8D8" TextColor="White" BackgroundColor="Transparent" FontSize="13"
+                    ItemsSource="{Binding EstadosFiltro}"
+                    SelectedItem="{Binding EstadoFiltroSeleccionado}"></Picker>
+                </Border>
+            </VerticalStackLayout>
+
+            <!-- filtro de categoria -->
+            <VerticalStackLayout Grid.Column="1" Spacing="5">
+                <Label Text="Categoría" TextColor="#E6E6C7" FontSize="12" FontAttributes="Bold"></Label>
+                <Border Stroke="#4A4A45" StrokeThickness="1" BackgroundColor="#2B2B29" StrokeShape="RoundRectangle 12" Padding="10,1" HeightRequest="50">
+                    <Picker Title="Todas" TitleColor="#D8D8D8" TextColor="White" BackgroundColor="Transparent" FontSize="13"
+                    ItemsSource="{Binding CategoriasFiltro}"
+                    SelectedItem="{Binding CategoriaFiltroSeleccionada}"></Picker>
+                </Border>
+            </VerticalStackLayout>
+        </Grid>
+
+        <RefreshView Grid.Row="2"  IsRefreshing="{Binding IsRefreshing}" Command="{Binding CargarReportesCommand}">
             <Grid RowDefinitions="auto,*" Padding="5">
                 <CollectionView ItemsSource="{Binding Reportes}" Grid.Row="1">
                     <CollectionView.ItemTemplate>
@@ -38,7 +60,7 @@
                                 <Border Padding="15" Margin="0,10,0,0" StrokeShape="RoundRectangle 12" BackgroundColor="#2B2B29" Stroke="DarkGray">
                                     <Border.GestureRecognizers>
                                         <TapGestureRecognizer Command="{Binding BindingContext.AbrirReporteAdminCommand, Source={x:Reference PaginaReportesAdmin}}"
-                                            CommandParameter="{Binding .}"></TapGestureRecognizer>
+                                                CommandParameter="{Binding .}"></TapGestureRecognizer>
                                     </Border.GestureRecognizers>
                                     <Grid ColumnDefinitions="52,*,Auto" ColumnSpacing="10">
                                         <Border WidthRequest="40" HeightRequest="40" StrokeShape="RoundRectangle 10" Stroke="Transparent">
@@ -55,12 +77,16 @@
                                                     <Setter Property="BackgroundColor" Value="#A2D4FC"></Setter>
                                                 </DataTrigger>
 
-                                                <DataTrigger TargetType="Border" Binding="{Binding CategoriaTexto}" Value="Alumbrado">
+                                                <DataTrigger TargetType="Border" Binding="{Binding CategoriaTexto}" Value="Alumbrado publico">
                                                     <Setter Property="BackgroundColor" Value="#F7DB5E"></Setter>
                                                 </DataTrigger>
 
                                                 <DataTrigger TargetType="Border" Binding="{Binding CategoriaTexto}" Value="Basura">
                                                     <Setter Property="BackgroundColor" Value="#F3E8FF"></Setter>
+                                                </DataTrigger>
+
+                                                <DataTrigger TargetType="Border" Binding="{Binding CategoriaTexto}" Value="Accidente">
+                                                    <Setter Property="BackgroundColor" Value="#F78981"></Setter>
                                                 </DataTrigger>
 
                                             </Border.Triggers>
@@ -75,12 +101,16 @@
                                                         <Setter Property="Source" Value="agua.png"></Setter>
                                                     </DataTrigger>
 
-                                                    <DataTrigger TargetType="Image" Binding="{Binding CategoriaTexto}" Value="Alumbrado">
+                                                    <DataTrigger TargetType="Image" Binding="{Binding CategoriaTexto}" Value="Alumbrado publico">
                                                         <Setter Property="Source" Value="alumbrado.png"></Setter>
                                                     </DataTrigger>
 
                                                     <DataTrigger TargetType="Image" Binding="{Binding CategoriaTexto}" Value="Basura">
                                                         <Setter Property="Source" Value="basura.png"></Setter>
+                                                    </DataTrigger>
+
+                                                    <DataTrigger TargetType="Image" Binding="{Binding CategoriaTexto}" Value="Accidente">
+                                                        <Setter Property="Source" Value="accidente.png"></Setter>
                                                     </DataTrigger>
 
                                                 </Image.Triggers>
@@ -92,7 +122,7 @@
 
                                             <Label Text="{Binding NombreUsuario}" TextColor="White" FontSize="12"></Label>
 
-                                            <Label Text="{Binding FechaSubida, StringFormat='{0:dd \'de\' MMMM \'de\' yyyy}'}" TextColor="#D8D8D8" FontSize="11"></Label>
+                                            <!--<Label Text="{Binding FechaSubida, StringFormat='{0:dd \'de\' MMMM \'de\' yyyy}'}" TextColor="#D8D8D8" FontSize="11"></Label>-->
                                         </VerticalStackLayout>
 
                                         <Border Grid.Column="2" Stroke="Transparent" Padding="10,4" HorizontalOptions="End" VerticalOptions="Start" StrokeShape="RoundRectangle 20">
@@ -101,7 +131,7 @@
                                                 <DataTrigger TargetType="Border" Binding="{Binding EstadoTexto}" Value="Pendiente">
                                                     <Setter Property="BackgroundColor" Value="#FFE9A8"></Setter>
                                                 </DataTrigger>
-                                                
+
                                                 <DataTrigger TargetType="Border" Binding="{Binding EstadoTexto}" Value="En progreso">
                                                     <Setter Property="BackgroundColor" Value="#B9E3FF"></Setter>
                                                 </DataTrigger>

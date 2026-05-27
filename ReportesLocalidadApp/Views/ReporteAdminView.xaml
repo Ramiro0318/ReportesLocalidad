@@ -92,7 +92,7 @@
                         </Label>
                     </Border>
 
-                    <Border Grid.Column="1" BackgroundColor="LightGray" Stroke="Transparent" Padding="15,10" HorizontalOptions="End" StrokeShape="RoundRectangle 20" Margin="0,0,10,0">
+                    <Border Grid.Column="1" Stroke="Transparent" Padding="15,10" HorizontalOptions="End" StrokeShape="RoundRectangle 20" Margin="0,0,10,0">
                         <Border.Triggers>
                             <DataTrigger TargetType="Border" Binding="{Binding ReporteDetalle.CategoriaTexto}" Value="Bache">
                                 <Setter Property="BackgroundColor" Value="#F5D8B3"></Setter>
@@ -102,7 +102,7 @@
                                 <Setter Property="BackgroundColor" Value="#E8F5FF"></Setter>
                             </DataTrigger>
                            
-                            <DataTrigger TargetType="Border" Binding="{Binding ReporteDetalle.CategoriaTexto}" Value="Alumbrado">
+                            <DataTrigger TargetType="Border" Binding="{Binding ReporteDetalle.CategoriaTexto}" Value="Alumbrado publico">
                                 <Setter Property="BackgroundColor" Value="#EEFBE3"></Setter>
                             </DataTrigger>
                            
@@ -125,7 +125,7 @@
                                     <Setter Property="TextColor" Value="#247FD4"></Setter>
                                 </DataTrigger>
                                
-                                <DataTrigger TargetType="Label" Binding="{Binding ReporteDetalle.CategoriaTexto}" Value="Alumbrado">
+                                <DataTrigger TargetType="Label" Binding="{Binding ReporteDetalle.CategoriaTexto}" Value="Alumbrado publico">
                                     <Setter Property="TextColor" Value="#5C9F10"></Setter>
                                 </DataTrigger>
                                
