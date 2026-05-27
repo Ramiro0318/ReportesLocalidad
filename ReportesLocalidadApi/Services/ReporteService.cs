@@ -13,14 +13,16 @@ public class ReporteService
     private readonly ImageService imageService;
     private readonly IMapper mapper;
     private readonly FirebaseNotificationService firebaseNotificationService;
+    private readonly ILogger<ReporteService> logger;
 
-    public ReporteService(ReportesLocalidadContext context, Repository<Reportes> reporteRepository, ImageService imageService, IMapper mapper, FirebaseNotificationService firebaseNotificationService)
+    public ReporteService(ReportesLocalidadContext context, Repository<Reportes> reporteRepository, ImageService imageService, IMapper mapper, FirebaseNotificationService firebaseNotificationService, ILogger<ReporteService> logger)
     {
         this.context = context;
         this.reporteRepository = reporteRepository;
         this.imageService = imageService;
         this.mapper = mapper;
         this.firebaseNotificationService = firebaseNotificationService;
+        this.logger = logger;
     }
 
     public async Task<ApiResponse<Reportes>> CrearAsync(SubirReporteDto subirReporteDto)
@@ -231,9 +233,7 @@ public class ReporteService
             };
         }
 
-        var reporte = await context.Reportes
-            .Include(reporte => reporte.IdUsuarioNavigation)
-            .FirstOrDefaultAsync(reporte => reporte.Id == id);
+        var reporte = await context.Reportes.FirstOrDefaultAsync(reporte => reporte.Id == id);
 
         if (reporte is null)
         {
@@ -257,10 +257,14 @@ public class ReporteService
 
         reporte.IdEstado = cambiarEstadoDto.IdEstado;
         reporte.FechaEdicion = DateTime.Now;
+        var tokenFirebase = await context.Usuarios
+            .Where(usuario => usuario.Id == reporte.IdUsuario)
+            .Select(usuario => usuario.TokenFirebase)
+            .FirstOrDefaultAsync();
 
         reporteRepository.Update(reporte);
         await reporteRepository.SaveChangesAsync();
-        await NotificarCambioEstadoAsync(reporte);
+        await NotificarCambioEstadoAsync(reporte, tokenFirebase);
 
         return new ApiResponse<Reportes>
         {
@@ -270,12 +274,11 @@ public class ReporteService
         };
     }
 
-    private async Task NotificarCambioEstadoAsync(Reportes reporte)
+    private async Task NotificarCambioEstadoAsync(Reportes reporte, string? tokenFirebase)
     {
-        var tokenFirebase = reporte.IdUsuarioNavigation.TokenFirebase;
-
         if (string.IsNullOrWhiteSpace(tokenFirebase))
         {
+            logger.LogWarning("El usuario del reporte {IdReporte} no tiene token Firebase.", reporte.Id);
             return;
         }
 
@@ -283,6 +286,7 @@ public class ReporteService
         var titulo = "Reporte actualizado";
         var mensaje = $"Tu reporte \"{reporte.Titulo}\" cambio a {estado}.";
 
+        logger.LogInformation("Enviando notificacion Firebase al usuario del reporte {IdReporte}.", reporte.Id);
         await firebaseNotificationService.EnviarNotificacionAsync(tokenFirebase, titulo, mensaje);
     }
 

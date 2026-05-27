@@ -7,16 +7,23 @@ namespace ReportesLocalidadApi.Services;
 public class FirebaseNotificationService
 {
     private readonly IConfiguration configuration;
+    private readonly ILogger<FirebaseNotificationService> logger;
+    private bool firebaseInicializado;
 
-    public FirebaseNotificationService(IConfiguration configuration)
+    public FirebaseNotificationService(IConfiguration configuration, ILogger<FirebaseNotificationService> logger)
     {
         this.configuration = configuration;
-        InicializarFirebase();
+        this.logger = logger;
     }
 
     public async Task EnviarNotificacionAsync(string token, string titulo, string mensaje)
     {
         if (string.IsNullOrWhiteSpace(token))
+        {
+            return;
+        }
+
+        if (!InicializarFirebase())
         {
             return;
         }
@@ -33,30 +40,45 @@ public class FirebaseNotificationService
 
         try
         {
-            await FirebaseMessaging.DefaultInstance.SendAsync(message);
+            var respuesta = await FirebaseMessaging.DefaultInstance.SendAsync(message);
+            logger.LogInformation("Notificacion Firebase enviada correctamente. Id: {Respuesta}", respuesta);
         }
-        catch
+        catch (Exception ex)
         {
+            logger.LogError(ex, "No se pudo enviar la notificacion Firebase.");
         }
     }
 
-    private void InicializarFirebase()
+    private bool InicializarFirebase()
     {
-        if (FirebaseApp.DefaultInstance is not null)
+        if (firebaseInicializado || FirebaseApp.DefaultInstance is not null)
         {
-            return;
+            firebaseInicializado = true;
+            return true;
         }
 
-        var rutaArchivo = configuration["Firebase:ServiceAccountPath"];
-
-        if (string.IsNullOrWhiteSpace(rutaArchivo))
+        try
         {
-            throw new InvalidOperationException("No se encontro la ruta de Firebase.");
+            var rutaArchivo = configuration["Firebase:ServiceAccountPath"];
+
+            if (string.IsNullOrWhiteSpace(rutaArchivo) || !File.Exists(rutaArchivo))
+            {
+                logger.LogWarning("No se encontro el archivo de Firebase en la ruta {RutaArchivo}.", rutaArchivo);
+                return false;
+            }
+
+            FirebaseApp.Create(new AppOptions
+            {
+                Credential = GoogleCredential.FromFile(rutaArchivo)
+            });
+
+            firebaseInicializado = true;
+            return true;
         }
-
-        FirebaseApp.Create(new AppOptions
+        catch (Exception ex)
         {
-            Credential = GoogleCredential.FromFile(rutaArchivo)
-        });
+            logger.LogError(ex, "No se pudo inicializar Firebase.");
+            return false;
+        }
     }
 }

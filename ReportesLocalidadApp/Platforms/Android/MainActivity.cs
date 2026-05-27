@@ -13,7 +13,21 @@ namespace ReportesLocalidadApp
         protected override async void OnCreate(Bundle? savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
+            PedirPermisoNotificaciones();
             await ObtenerTokenFirebaseAsync();
+        }
+
+        private void PedirPermisoNotificaciones()
+        {
+            if (Build.VERSION.SdkInt < BuildVersionCodes.Tiramisu)
+            {
+                return;
+            }
+
+            if (CheckSelfPermission(Android.Manifest.Permission.PostNotifications) != Permission.Granted)
+            {
+                RequestPermissions(new[] { Android.Manifest.Permission.PostNotifications }, 1001);
+            }
         }
 
         private async Task ObtenerTokenFirebaseAsync()
