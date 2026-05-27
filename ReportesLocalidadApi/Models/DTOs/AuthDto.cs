@@ -16,3 +16,8 @@ public class LogoutDto
 {
     public string RefreshToken { get; set; } = "";
 }
+
+public class TokenFirebaseDto
+{
+    public string Token { get; set; } = "";
+}

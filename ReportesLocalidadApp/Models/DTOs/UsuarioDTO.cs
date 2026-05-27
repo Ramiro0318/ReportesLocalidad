@@ -41,4 +41,9 @@ namespace ReportesLocalidadApp.Models.DTOs
     {
         public string RefreshToken { get; set; } = string.Empty;
     }
+
+    public class TokenFirebaseDto
+    {
+        public string Token { get; set; } = string.Empty;
+    }
 }

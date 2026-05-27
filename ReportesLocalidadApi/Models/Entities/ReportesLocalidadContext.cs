@@ -134,6 +134,7 @@ public partial class ReportesLocalidadContext : DbContext
 
             entity.Property(e => e.NombreUsuario).HasMaxLength(100);
             entity.Property(e => e.PasswordHash).HasMaxLength(255);
+            entity.Property(e => e.TokenFirebase).HasMaxLength(500);
 
             entity.HasOne(d => d.IdRolNavigation).WithMany(p => p.Usuarios)
                 .HasForeignKey(d => d.IdRol)

@@ -145,6 +145,38 @@ public class UsuarioService
         };
     }
 
+    public async Task<ApiResponse<object>> GuardarTokenFirebaseAsync(int idUsuario, TokenFirebaseDto tokenFirebaseDto)
+    {
+        if (string.IsNullOrWhiteSpace(tokenFirebaseDto.Token))
+        {
+            return new ApiResponse<object>
+            {
+                Success = false,
+                Message = "Token de Firebase no valido."
+            };
+        }
+
+        var usuario = await context.Usuarios.FirstOrDefaultAsync(usuario => usuario.Id == idUsuario);
+
+        if (usuario is null)
+        {
+            return new ApiResponse<object>
+            {
+                Success = false,
+                Message = "Usuario no encontrado."
+            };
+        }
+
+        usuario.TokenFirebase = tokenFirebaseDto.Token;
+        await context.SaveChangesAsync();
+
+        return new ApiResponse<object>
+        {
+            Success = true,
+            Message = "Token de Firebase guardado correctamente."
+        };
+    }
+
     private RefreshTokens CrearRefreshToken(int idUsuario)
     {
         return new RefreshTokens

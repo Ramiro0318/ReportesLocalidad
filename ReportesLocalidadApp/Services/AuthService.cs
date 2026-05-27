@@ -13,10 +13,12 @@ public class AuthService
     private const string IdRolKey = "id_rol";
 
     private readonly HttpClient client;
+    private readonly FirebaseTokenService firebaseTokenService;
 
-    public AuthService(HttpClient client)
+    public AuthService(HttpClient client, FirebaseTokenService firebaseTokenService)
     {
         this.client = client;
+        this.firebaseTokenService = firebaseTokenService;
     }
 
     public async Task<ApiResponse<UsuarioRespuestaDto>?> LoginAsync(string nombreUsuario, string password)
@@ -96,6 +98,7 @@ public class AuthService
         await SecureStorage.Default.SetAsync(IdRolKey, authResponse.Usuario.IdRol.ToString());
 
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", authResponse.AccessToken);
+        await EnviarTokenFirebaseAsync();
     }
 
     public async Task<UsuarioRespuestaDto?> ObtenerSesionAsync()
@@ -174,6 +177,30 @@ public class AuthService
         if (!string.IsNullOrWhiteSpace(accessToken))
         {
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+        }
+    }
+
+    public async Task EnviarTokenFirebaseAsync()
+    {
+        try
+        {
+            await PrepararTokenAsync();
+            var tokenFirebase = await firebaseTokenService.ObtenerTokenAsync();
+
+            if (string.IsNullOrWhiteSpace(tokenFirebase))
+            {
+                return;
+            }
+
+            var tokenFirebaseDto = new TokenFirebaseDto
+            {
+                Token = tokenFirebase
+            };
+
+            await client.PostAsJsonAsync("api/usuarios/guardarTokenFirebase", tokenFirebaseDto);
+        }
+        catch
+        {
         }
     }
 

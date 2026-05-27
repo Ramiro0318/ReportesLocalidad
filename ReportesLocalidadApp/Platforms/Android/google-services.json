@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "921983648443",
+    "project_id": "reporteslocalidad",
+    "storage_bucket": "reporteslocalidad.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:921983648443:android:c31e081f72647950d59f9e",
+        "android_client_info": {
+          "package_name": "com.companyname.reporteslocalidadapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDdR8qZjykxEoFGruDM7gBK-zqs-y8bX4E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

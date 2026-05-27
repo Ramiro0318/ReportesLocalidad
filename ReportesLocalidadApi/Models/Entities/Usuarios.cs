@@ -13,6 +13,8 @@ public partial class Usuarios
 
     public int IdRol { get; set; }
 
+    public string? TokenFirebase { get; set; }
+
     public virtual Roles IdRolNavigation { get; set; } = null!;
 
     public virtual ICollection<RefreshTokens> RefreshTokens { get; set; } = new List<RefreshTokens>();

@@ -29,6 +29,7 @@ namespace ReportesLocalidadApp
             builder.Services.AddSingleton<FotoService>();
             builder.Services.AddSingleton<ReportePendienteService>();
             builder.Services.AddSingleton<AlertaService>();
+            builder.Services.AddSingleton<FirebaseTokenService>();
             builder.Services.AddTransient<ReportesService>();
             builder.Services.AddSingleton<MainViewModel>();
             builder.Services.AddTransient<AuthViewModel>();
