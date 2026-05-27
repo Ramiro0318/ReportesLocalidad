@@ -119,6 +119,27 @@ public class AuthService
         };
     }
 
+    public async Task<UsuarioRespuestaDto?> ObtenerSesionGuardadaAsync()
+    {
+        var sesion = await ObtenerSesionAsync();
+
+        if (sesion is null)
+        {
+            return null;
+        }
+
+        await PrepararTokenAsync();
+
+        var tokenActualizado = await RefreshTokenAsync();
+
+        if (!tokenActualizado)
+        {
+            return null;
+        }
+
+        return await ObtenerSesionAsync();
+    }
+
     public async Task<int> GetIdUsuarioAsync()
     {
         var idTexto = await SecureStorage.Default.GetAsync(IdUsuarioKey);
@@ -209,6 +230,8 @@ public class AuthService
         {
             try
             {
+                await PrepararTokenAsync();
+
                 var logoutDto = new LogoutDto
                 {
                     RefreshToken = refreshToken

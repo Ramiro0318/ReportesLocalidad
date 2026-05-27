@@ -9,4 +9,14 @@ public partial class LoginView : ContentPage
 		InitializeComponent();
 		BindingContext = viewModel;
 	}   
+
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+
+        if (BindingContext is AuthViewModel viewModel)
+        {
+            await viewModel.RevisarSesionGuardadaCommand.ExecuteAsync(null);
+        }
+    }
 }

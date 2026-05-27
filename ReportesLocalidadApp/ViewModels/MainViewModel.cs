@@ -1301,4 +1301,43 @@ public partial class MainViewModel : ObservableObject
     {
         await Shell.Current.GoToAsync("adminReportes");
     }
+
+    [RelayCommand]
+    private async Task Logout()
+    {
+        if (IsBusy)
+        {
+            return;
+        }
+
+        try
+        {
+            IsBusy = true;
+            await authService.CerrarSesionAsync();
+            LimpiarDatosSesion();
+            await Shell.Current.GoToAsync("//login");
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
+    private void LimpiarDatosSesion()
+    {
+        reportesCargados.Clear();
+        reportesPropiosCargados.Clear();
+        Reportes.Clear();
+        MisReportes.Clear();
+        ReporteDetalle = null;
+        NombreUsuario = string.Empty;
+        TotalMisReportes = 0;
+        ReportesAtendidos = 0;
+        ReportesPendientesUsuario = 0;
+        reportesSaltados = 0;
+        reportesPropiosSaltados = 0;
+        elementosMostrados = 0;
+        elementosPropiosMostrados = 0;
+        Mensaje = string.Empty;
+    }
 }

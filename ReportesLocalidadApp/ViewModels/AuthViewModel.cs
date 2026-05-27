@@ -7,6 +7,7 @@ namespace ReportesLocalidadApp.ViewModels;
 public partial class AuthViewModel : ObservableObject
 {
     private readonly AuthService authService;
+    private bool sesionRevisada;
 
     [ObservableProperty]
     private bool isBusy;
@@ -29,14 +30,52 @@ public partial class AuthViewModel : ObservableObject
     }
 
     [RelayCommand]
+    private async Task RevisarSesionGuardada()
+    {
+        if (sesionRevisada)
+        {
+            return;
+        }
+
+        try
+        {
+            sesionRevisada = true;
+            IsBusy = true;
+            Mensaje = string.Empty;
+
+            var sesion = await authService.ObtenerSesionGuardadaAsync();
+
+            if (sesion is null)
+            {
+                return;
+            }
+
+            if (sesion.IdRol == 2)
+            {
+                await Shell.Current.GoToAsync("adminReportes");
+            }
+            else
+            {
+                await Shell.Current.GoToAsync("reportes");
+            }
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
+    [RelayCommand]
     private async Task IrRegistro()
     {
+        LimpiarCampos();
         await Shell.Current.GoToAsync("registro");
     }
 
     [RelayCommand]
     private async Task IrLogin()
     {
+        LimpiarCampos();
         await Shell.Current.GoToAsync("..");
     }
 
@@ -77,10 +116,12 @@ public partial class AuthViewModel : ObservableObject
 
             if (respuesta.Data.IdRol == 2)
             {
+                LimpiarCampos();
                 await Shell.Current.GoToAsync("adminReportes");
             }
             else
             {
+                LimpiarCampos();
                 await Shell.Current.GoToAsync("reportes");
             }
         }
@@ -127,6 +168,7 @@ public partial class AuthViewModel : ObservableObject
 
             if (respuesta.Success)
             {
+                LimpiarCampos();
                 await Shell.Current.GoToAsync("..");
             }
         }
@@ -134,5 +176,13 @@ public partial class AuthViewModel : ObservableObject
         {
             IsBusy = false;
         }
+    }
+
+    private void LimpiarCampos()
+    {
+        NombreUsuario = string.Empty;
+        Password = string.Empty;
+        ConfirmarPassword = string.Empty;
+        Mensaje = string.Empty;
     }
 }
