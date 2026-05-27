@@ -1,8 +1,16 @@
+using ReportesLocalidadApp.Helpers;
+
 namespace ReportesLocalidadApp.Services;
 
 public class FotoService
 {
     private const int MaxSizeBytes = 8 * 1024 * 1024;
+    private readonly FotoHelper fotoHelper;
+
+    public FotoService(FotoHelper fotoHelper)
+    {
+        this.fotoHelper = fotoHelper;
+    }
 
     public async Task<(string? RutaImagen, string? FotoBase64, string? Error)> TomarFotoAsync()
     {
@@ -100,16 +108,17 @@ public class FotoService
                 await sourceStream.CopyToAsync(localFileStream);
             }
 
-            var buffer = await File.ReadAllBytesAsync(localFilePath);
+            var rutaComprimida = await fotoHelper.ComprimirFotoAsync(localFilePath);
+            var buffer = await File.ReadAllBytesAsync(rutaComprimida);
 
             if (buffer.Length > MaxSizeBytes)
             {
                 return (null, null, "La imagen excede el tamano maximo permitido.");
             }
 
-            var base64 = $"{ObtenerPrefijoBase64(extension)}{Convert.ToBase64String(buffer)}";
+            var base64 = $"{ObtenerPrefijoBase64(Path.GetExtension(rutaComprimida).ToLower())}{Convert.ToBase64String(buffer)}";
 
-            return (localFilePath, base64, null);
+            return (rutaComprimida, base64, null);
         }
         catch
         {

@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Logging;
+using ReportesLocalidadApp.Helpers;
 using ReportesLocalidadApp.Services;
 using ReportesLocalidadApp.ViewModels;
 using ReportesLocalidadApp.Views;
@@ -24,6 +25,7 @@ namespace ReportesLocalidadApp
                 Timeout = TimeSpan.FromSeconds(30)
             });
             builder.Services.AddSingleton<AuthService>();
+            builder.Services.AddSingleton<FotoHelper>();
             builder.Services.AddSingleton<FotoService>();
             builder.Services.AddSingleton<ReportePendienteService>();
             builder.Services.AddSingleton<AlertaService>();

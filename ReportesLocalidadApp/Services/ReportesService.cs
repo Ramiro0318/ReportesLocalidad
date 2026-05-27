@@ -9,6 +9,7 @@ public class ReportesService
     private readonly HttpClient http;
     private readonly AuthService authService;
     private const string Endpoint = "api/reportes";
+    public string UltimoErrorConexion { get; private set; } = string.Empty;
 
     public ReportesService(HttpClient http, AuthService authService)
     {
@@ -42,6 +43,7 @@ public class ReportesService
     {
         try
         {
+            UltimoErrorConexion = string.Empty;
             await authService.PrepararTokenAsync();
             var response = await http.PostAsJsonAsync($"{Endpoint}/crearReporte", subirReporteDto);
 
@@ -59,12 +61,14 @@ public class ReportesService
 
             return await LeerRespuestaAsync<ReporteDetalleDto>(response);
         }
-        catch (TaskCanceledException)
+        catch (TaskCanceledException ex)
         {
+            UltimoErrorConexion = ex.Message;
             return null;
         }
-        catch (HttpRequestException)
+        catch (HttpRequestException ex)
         {
+            UltimoErrorConexion = ex.Message;
             return null;
         }
         catch

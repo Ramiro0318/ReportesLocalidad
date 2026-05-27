@@ -495,7 +495,16 @@ public partial class MainViewModel : ObservableObject
 
             if (respuesta is null)
             {
-                await GuardarReportePendienteAsync(reporte);
+                var apiDisponible = await reportesService.ApiDisponibleAsync();
+
+                if (!apiDisponible)
+                {
+                    await GuardarReportePendienteAsync(reporte);
+                    return;
+                }
+
+                Mensaje = "La API responde, pero no pudo recibir el reporte. Revisa que la imagen no sea demasiado pesada.";
+                await MostrarToastAsync(Mensaje);
                 return;
             }
 
@@ -627,6 +636,13 @@ public partial class MainViewModel : ObservableObject
             return;
         }
 
+        var apiDisponible = await reportesService.ApiDisponibleAsync();
+
+        if (!apiDisponible)
+        {
+            return;
+        }
+
         await ReintentarReportes(mostrarAlerta);
     }
 
@@ -657,6 +673,18 @@ public partial class MainViewModel : ObservableObject
 
                 if (respuesta is null)
                 {
+                    var apiDisponible = await reportesService.ApiDisponibleAsync();
+
+                    if (apiDisponible)
+                    {
+                        Mensaje = "La API responde, pero un reporte pendiente no pudo enviarse. Revisa que la imagen no sea demasiado pesada.";
+
+                        if (mostrarAlerta)
+                        {
+                            await MostrarToastAsync(Mensaje);
+                        }
+                    }
+
                     continue;
                 }
 
