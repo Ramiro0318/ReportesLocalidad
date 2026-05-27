@@ -5,23 +5,6 @@
              BackgroundColor="#1c1c1c"
              Title="LoginView" Shell.NavBarIsVisible="False">
     <Grid>
-
-        <!--<Grid ZIndex="20" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="#80000000" IsVisible="{Binding VistaErrorInternet}">
-
-            <Border Padding="20" StrokeShape="12" BackgroundColor="#FFFFFF" HorizontalOptions="Center"
-                    VerticalOptions="Center"> 
-                <Border.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CerrarErrorInternetCommand}"></TapGestureRecognizer>
-                </Border.GestureRecognizers>
-                <VerticalStackLayout Spacing="10">
-                    <Image Source="mensaje.png" WidthRequest="50" HeightRequest="50" HorizontalOptions="Center"></Image>
-                    <Label Text="Sin conexión a internet" FontSize="18" TextColor="Gray" HorizontalTextAlignment="Center" ></Label>
-                    <Label Text="Para solucionar el problema verifica tu conexion a internet" FontSize="15" TextColor="Gray" HorizontalTextAlignment="Center" ></Label>
-                </VerticalStackLayout>
-            </Border>
-        </Grid>-->
-
-
         <Grid RowDefinitions="*, auto">
             <ScrollView Grid.Row="0">
                 <VerticalStackLayout Grid.Row="0" VerticalOptions="Center" Spacing="10" Padding="30,0,30,0">

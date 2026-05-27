@@ -16,69 +16,120 @@
                 <Label Text="Mis reportes" TextColor="White" FontSize="20" FontAttributes="Bold"></Label>
             </VerticalStackLayout>
         </Grid>
-        
-        <RefreshView Grid.Row="1"
-                     IsRefreshing="{Binding IsRefreshing}"
-                     Command="{Binding CargarMisReportesCommand}">
-            <VerticalStackLayout Padding="14,16" Spacing="10">
-                <!--Reporte 1-->
-                <CollectionView ItemsSource="{Binding MisReportes}">
+
+        <RefreshView Grid.Row="1"  IsRefreshing="{Binding IsRefreshing}" Command="{Binding CargarReportesCommand}">
+            <Grid RowDefinitions="auto,*" Padding="5">
+                <CollectionView ItemsSource="{Binding Reportes}" Grid.Row="1">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
-                            <Border Padding="14" StrokeShape="RoundRectangle 12" BackgroundColor="#2B2B29" Stroke="#4A4A45">
-                                <Border.GestureRecognizers>
-                                    <TapGestureRecognizer Command="{Binding BindingContext.AbrirMiReporteCommand, Source={x:Reference PaginaMisReportes}}"
-                                                          CommandParameter="{Binding .}"></TapGestureRecognizer>
-                                </Border.GestureRecognizers>
-                                <Grid ColumnDefinitions="52,*,Auto" ColumnSpacing="12">
+                            <Grid>
+                                <Border Padding="15" Margin="0,10,0,0" StrokeShape="RoundRectangle 12" BackgroundColor="#2B2B29" Stroke="DarkGray">
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding BindingContext.AbrirMiReporteCommand,
+                                            Source={x:Reference PaginaMisReportes}}" CommandParameter="{Binding .}"></TapGestureRecognizer>
+                                    </Border.GestureRecognizers>
+                                    <Grid ColumnDefinitions="52,*,Auto" ColumnSpacing="10">
+                                        <Border WidthRequest="40" HeightRequest="40" StrokeShape="RoundRectangle 10" Stroke="Transparent">
+                                            <Border.Triggers>
+                                                <DataTrigger TargetType="Border" Binding="{Binding CategoriaTexto}" Value="Bache">
+                                                    <Setter Property="BackgroundColor" Value="#F5D8B3"></Setter>
+                                                </DataTrigger>
 
-                                    <Border WidthRequest="42" HeightRequest="42" StrokeShape="RoundRectangle 10" Padding="0" BackgroundColor="#FFF1E8" Stroke="Transparent" VerticalOptions="Center">
-                                        <Label Text="{Binding CategoriaTexto}" TextColor="#E85B2A" FontSize="10" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" ></Label>
-                                    </Border>
+                                                <DataTrigger TargetType="Border" Binding="{Binding CategoriaTexto}" Value="Otro">
+                                                    <Setter Property="BackgroundColor" Value="#B5B3B3"></Setter>
+                                                </DataTrigger>
 
-                                    <VerticalStackLayout Grid.Column="1" Spacing="3" VerticalOptions="Center">
+                                                <DataTrigger TargetType="Border" Binding="{Binding CategoriaTexto}" Value="Fuga de agua">
+                                                    <Setter Property="BackgroundColor" Value="#A2D4FC"></Setter>
+                                                </DataTrigger>
 
-                                        <Label Text="{Binding Titulo}" TextColor="White" FontSize="15" FontAttributes="Bold"></Label>
+                                                <DataTrigger TargetType="Border" Binding="{Binding CategoriaTexto}" Value="Alumbrado publico">
+                                                    <Setter Property="BackgroundColor" Value="#F7DB5E"></Setter>
+                                                </DataTrigger>
 
-                                        <Label Text="{Binding FechaEdicion}" TextColor="White" FontSize="12" />
+                                                <DataTrigger TargetType="Border" Binding="{Binding CategoriaTexto}" Value="Basura">
+                                                    <Setter Property="BackgroundColor" Value="#F3E8FF"></Setter>
+                                                </DataTrigger>
 
-                                        <Label Text="{Binding FechaSubida}" TextColor="#D8D8D8" FontSize="11"></Label>
-                                    </VerticalStackLayout>
+                                                <DataTrigger TargetType="Border" Binding="{Binding CategoriaTexto}" Value="Accidente">
+                                                    <Setter Property="BackgroundColor" Value="#F78981"></Setter>
+                                                </DataTrigger>
 
-                                    <Border Grid.Column="2" BackgroundColor="#FFE9A8" Stroke="Transparent" Padding="10,4" HorizontalOptions="End" VerticalOptions="Start" StrokeShape="RoundRectangle 20">
-                                        <Label Text="{Binding EstadoTexto}" TextColor="#7A5200" FontSize="11" FontAttributes="Bold" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"></Label>
-                                    </Border>
-                                </Grid>
-                            </Border>
+                                            </Border.Triggers>
+
+                                            <Image WidthRequest="25" HeightRequest="25" HorizontalOptions="Center" VerticalOptions="Center" Source="otro.png">
+                                                <Image.Triggers>
+                                                    <DataTrigger TargetType="Image" Binding="{Binding CategoriaTexto}" Value="Bache">
+                                                        <Setter Property="Source" Value="bache.png"></Setter>
+                                                    </DataTrigger>
+
+                                                    <DataTrigger TargetType="Image" Binding="{Binding CategoriaTexto}" Value="Fuga de agua">
+                                                        <Setter Property="Source" Value="agua.png"></Setter>
+                                                    </DataTrigger>
+
+                                                    <DataTrigger TargetType="Image" Binding="{Binding CategoriaTexto}" Value="Alumbrado publico">
+                                                        <Setter Property="Source" Value="alumbrado.png"></Setter>
+                                                    </DataTrigger>
+
+                                                    <DataTrigger TargetType="Image" Binding="{Binding CategoriaTexto}" Value="Basura">
+                                                        <Setter Property="Source" Value="basura.png"></Setter>
+                                                    </DataTrigger>
+
+                                                    <DataTrigger TargetType="Image" Binding="{Binding CategoriaTexto}" Value="Accidente">
+                                                        <Setter Property="Source" Value="accidente.png"></Setter>
+                                                    </DataTrigger>
+                                                </Image.Triggers>
+                                            </Image>
+                                        </Border>
+                                        <VerticalStackLayout Grid.Column="1" Spacing="3" VerticalOptions="Center">
+
+                                            <Label Text="{Binding Titulo}" TextColor="White" FontSize="15" FontAttributes="Bold"></Label>
+
+                                            <Label Text="{Binding NombreUsuario}" TextColor="White" FontSize="12"></Label>
+
+                                            <Label Text="{Binding FechaSubida, StringFormat='{0:dd \'de\' MMMM \'de\' yyyy}'}" TextColor="#D8D8D8" FontSize="11"></Label>
+                                        </VerticalStackLayout>
+
+                                        <Border Grid.Column="2" Stroke="Transparent" Padding="10,4" HorizontalOptions="End" VerticalOptions="Start" StrokeShape="RoundRectangle 20">
+                                            <Border.Triggers>
+                                                <DataTrigger TargetType="Border" Binding="{Binding EstadoTexto}" Value="Pendiente">
+                                                    <Setter Property="BackgroundColor" Value="#FFE9A8"></Setter>
+                                                </DataTrigger>
+
+                                                <DataTrigger TargetType="Border" Binding="{Binding EstadoTexto}" Value="En progreso">
+                                                    <Setter Property="BackgroundColor" Value="#B9E3FF"></Setter>
+                                                </DataTrigger>
+
+                                                <DataTrigger TargetType="Border" Binding="{Binding EstadoTexto}" Value="Resuelto">
+                                                    <Setter Property="BackgroundColor" Value="#C9F7C5"></Setter>
+                                                </DataTrigger>
+                                            </Border.Triggers>
+
+                                            <Label Text="{Binding EstadoTexto}" FontSize="11" FontAttributes="Bold" HorizontalTextAlignment="Center" VerticalTextAlignment="Center">
+                                                <Label.Triggers>
+                                                    <DataTrigger TargetType="Label" Binding="{Binding EstadoTexto}" Value="Pendiente">
+                                                        <Setter Property="TextColor" Value="#7A5200"></Setter>
+                                                    </DataTrigger>
+
+                                                    <DataTrigger TargetType="Label" Binding="{Binding EstadoTexto}" Value="En progreso">
+                                                        <Setter Property="TextColor" Value="#005B99"></Setter>
+                                                    </DataTrigger>
+
+                                                    <DataTrigger TargetType="Label" Binding="{Binding EstadoTexto}" Value="Resuelto">
+                                                        <Setter Property="TextColor" Value="#1E7A1E"></Setter>
+                                                    </DataTrigger>
+                                                </Label.Triggers>
+                                            </Label>
+                                        </Border>
+                                    </Grid>
+                                </Border>
+                            </Grid>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
-                <!--<Border Padding="14" StrokeShape="RoundRectangle 12" BackgroundColor="#2B2B29" Stroke="#4A4A45">
-                    <Grid ColumnDefinitions="52,*,Auto" ColumnSpacing="12">
-
-                        <Border WidthRequest="42" HeightRequest="42" StrokeShape="RoundRectangle 10" Padding="0" BackgroundColor="#FFF1E8" Stroke="Transparent" VerticalOptions="Center">
-                            <Label Text="Icono" TextColor="#E85B2A" FontSize="10" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" ></Label>
-                        </Border>
-
-                        <VerticalStackLayout Grid.Column="1" Spacing="3"
-                                VerticalOptions="Center">
-
-                            <Label Text="Bache peligroso" TextColor="White" FontSize="15" FontAttributes="Bold"></Label>
-
-                            <Label Text="Av. Juárez esq. Hidalgo" TextColor="White" FontSize="12" />
-
-                            <Label Text="IconoReloj  Hace 2 horas" TextColor="#D8D8D8" FontSize="11"></Label>
-                        </VerticalStackLayout>
-
-                        <Border Grid.Column="2" BackgroundColor="#FFE9A8" Stroke="Transparent" Padding="10,4" HorizontalOptions="End" VerticalOptions="Start" StrokeShape="RoundRectangle 20">
-                            <Label Text="Pendiente" TextColor="#7A5200" FontSize="11" FontAttributes="Bold" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"></Label>
-                        </Border>
-                    </Grid>
-                </Border>-->
-            </VerticalStackLayout>
+            </Grid>
         </RefreshView>
-
-        <!--Menu estatico-->
+        
         <Grid Grid.Row="2" HeightRequest="70" BackgroundColor="#2B2B29" ColumnDefinitions="*,*,*,*">
             <VerticalStackLayout Grid.Column="0" HorizontalOptions="Center" VerticalOptions="Center" Spacing="2">
                 <VerticalStackLayout.GestureRecognizers>

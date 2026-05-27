@@ -63,8 +63,7 @@
                 </Grid>
             </VerticalStackLayout>
         </ScrollView>
-
-        <!--Menu estatico-->
+        
         <Grid Grid.Row="2" VerticalOptions="End" HeightRequest="70" BackgroundColor="#2B2B29" ColumnDefinitions="*,*,*,*">
             <VerticalStackLayout Grid.Column="0" HorizontalOptions="Center" VerticalOptions="Center" Spacing="2">
                 <VerticalStackLayout.GestureRecognizers>
