@@ -20,23 +20,10 @@
 
         <ScrollView Grid.Row="1" Margin="0,20,0,0">
             <VerticalStackLayout Spacing="10">
-                <Border StrokeShape="RoundRectangle 14" BackgroundColor="#2B2B29" Stroke="#4A4A45"
-                        HeightRequest="300" Padding="0">
+                <Border StrokeShape="RoundRectangle 14" BackgroundColor="#2B2B29" Stroke="#4A4A45" HeightRequest="300" Padding="0">
                     <Grid>
-                        <Image Source="{Binding ImagenDetalleUrl}" Aspect="Fill">
-                            <Image.Triggers>
-                                <DataTrigger TargetType="Image" Binding="{Binding ImagenDetalleUrl}" Value="SIN_FOTO">
-                                    <Setter Property="IsVisible" Value="False"></Setter>
-                                </DataTrigger>
-                            </Image.Triggers>
-                        </Image>
-                        <Label Text="No hay fotografía disponible" TextColor="#E6E6C7" FontSize="14" HorizontalTextAlignment="Center" HorizontalOptions="Center" VerticalOptions="Center" IsVisible="False">
-                            <Label.Triggers>
-                                <DataTrigger TargetType="Label" Binding="{Binding ImagenDetalleUrl}" Value="SIN_FOTO">
-                                    <Setter Property="IsVisible" Value="True"></Setter>
-                                </DataTrigger>
-                            </Label.Triggers>
-                        </Label>
+                        <Image Source="{Binding ImagenDetalleUrl}" Aspect="Fill"></Image>
+                        <Label Text="No hay fotografía disponible" TextColor="#E6E6C7" FontSize="14" HorizontalTextAlignment="Center" HorizontalOptions="Center" VerticalOptions="Center" ZIndex="-1"></Label>
                     </Grid>
                 </Border>
 

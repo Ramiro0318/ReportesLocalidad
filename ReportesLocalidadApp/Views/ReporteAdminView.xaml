@@ -13,14 +13,11 @@
             <Label Grid.Row="0" Text="&lt;" TextColor="White" FontSize="14" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"></Label>
         </Border>
 
-        <Label Text="{Binding ReporteDetalle.Titulo}" TextColor="White" FontSize="20"
-           FontAttributes="Bold" HorizontalTextAlignment="Center"
-           VerticalTextAlignment="Center"></Label>
+        <Label Text="{Binding ReporteDetalle.Titulo}" TextColor="White" FontSize="20" FontAttributes="Bold" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"></Label>
 
         <ScrollView Grid.Row="1" Margin="0,20,0,0">
             <VerticalStackLayout Spacing="10">
-                <Border StrokeShape="RoundRectangle 14" BackgroundColor="#2B2B29" Stroke="#4A4A45"
-                    HeightRequest="300" Padding="0">
+                <Border StrokeShape="RoundRectangle 14" BackgroundColor="#2B2B29" Stroke="#4A4A45" HeightRequest="300" Padding="0">
                     <Grid>
                         <Image Source="{Binding ImagenDetalleUrl}" Aspect="AspectFill"></Image>
                         <Label Text="No hay fotografia disponible" TextColor="#E6E6C7" FontSize="14" HorizontalTextAlignment="Center" HorizontalOptions="Center" VerticalOptions="Center" ZIndex="-1"></Label>
