@@ -21,7 +21,10 @@
             <VerticalStackLayout Spacing="10">
                 <Border StrokeShape="RoundRectangle 14" BackgroundColor="#2B2B29" Stroke="#4A4A45"
                     HeightRequest="300" Padding="0">
-                    <Image Source="{Binding ImagenDetalleUrl}" Aspect="Fill"></Image>
+                    <Grid>
+                        <Image Source="{Binding ImagenDetalleUrl}" Aspect="AspectFill"></Image>
+                        <Label Text="No hay fotografia disponible" TextColor="#E6E6C7" FontSize="14" HorizontalTextAlignment="Center" HorizontalOptions="Center" VerticalOptions="Center" ZIndex="-1"></Label>
+                    </Grid>
                 </Border>
 
                 <Label Text="Cambiar fotografia" TextColor="White" FontAttributes="Bold" FontSize="15"
@@ -149,8 +152,7 @@
                         BackgroundColor="Transparent"></Picker>
                 </Border>
 
-                <Label Text="Descripcion" TextColor="White"
-                   FontSize="15" FontAttributes="Bold"></Label>
+                <Label Text="Descripcion" TextColor="White" FontSize="15" FontAttributes="Bold"></Label>
 
                 <Border StrokeShape="RoundRectangle 12" BackgroundColor="#2B2B29"
                     Stroke="#4A4A45" Padding="14">
@@ -162,8 +164,10 @@
                         AutoSize="TextChanges"></Editor>
                 </Border>
 
-                <Label Text="{Binding Mensaje}" TextColor="White" FontSize="13"></Label>
-                <Border StrokeShape="RoundRectangle 14" BackgroundColor="#2B2B29" Stroke="#4A4A45" Padding="10,5" HeightRequest="80">
+                
+                <Label Text="" TextColor="White" FontSize="15" FontAttributes="Bold"></Label>
+                <Label Text="Cambiar el estado" TextColor="White" FontSize="15" FontAttributes="Bold"></Label>
+                <Border StrokeShape="RoundRectangle 14" BackgroundColor="#2B2B29" Stroke="#4A4A45" Padding="10,10" HeightRequest="80">
                     <Grid>
                         <Picker Title="Selecciona un estado"
                             TitleColor="#D8D8D8" TextColor="White"
@@ -173,16 +177,11 @@
                         </Picker>
                     </Grid>    
                 </Border>
-                <Button Grid.Column="0" Text="Confirmar" HeightRequest="50"
-                    CornerRadius="15" FontAttributes="Bold" FontSize="15" 
-                        BackgroundColor="#F54927"
-                    TextColor="White"
-                    Command="{Binding CambiarEstadoReporteCommand}"></Button>
 
-                <Button Grid.Column="1" Text="Eliminar" HeightRequest="50" CornerRadius="15"
-                      FontAttributes="Bold" FontSize="15" BackgroundColor="#2B2B29"
-                      BorderColor="#FF4D4D" BorderWidth="1.5" TextColor="#FF4D4D"
-                       Command="{Binding EliminarReporteAdminCommand}"></Button>
+                <Label Text="{Binding Mensaje}" TextColor="White" FontSize="15" Margin="10, 5"></Label>
+                <Button Grid.Column="0" Text="Confirmar" HeightRequest="50" CornerRadius="15" FontAttributes="Bold" FontSize="15"  BackgroundColor="#F54927" TextColor="White" Command="{Binding CambiarEstadoReporteCommand}" IsVisible="{Binding PuedeConfirmarCambioEstado}"></Button>
+
+                <Button Grid.Column="1" Text="Eliminar" HeightRequest="50" CornerRadius="15" FontAttributes="Bold" FontSize="15" BackgroundColor="#2B2B29" BorderColor="#FF4D4D" BorderWidth="1.5" TextColor="#FF4D4D"  Command="{Binding EliminarReporteAdminCommand}"></Button>
 
             </VerticalStackLayout>
         </ScrollView>

@@ -32,7 +32,7 @@
                     </Entry>
 
                     <Label Text="CONFIRMAR CONTRASEÑA" FontSize="12" FontAttributes="Bold" TextColor="#80FFFFFF"></Label>
-                    <Entry Placeholder="••••••••" TextColor="White" IsPassword="TrueyPlaceholderColor ="#40FFFFFF" HeightRequest="50yBackgroundColor="#14FFFFFF" Text="{Binding ConfirmarPassword}">
+                    <Entry Placeholder="••••••••" TextColor="White" IsPassword="True" PlaceholderColor ="#40FFFFFF" HeightRequest="50" BackgroundColor="#14FFFFFF" Text="{Binding ConfirmarPassword}">
                     </Entry>
 
                     <Label Text="{Binding Mensaje}" HorizontalTextAlignment="Center" HorizontalOptions="Center" LineBreakMode="WordWrap" FontSize="15" TextColor="#90FFFFFF">
@@ -43,7 +43,7 @@
                         FontSize="15" BackgroundColor="#F54927" TextColor="White" Command="{Binding RegistrarCommand}">
                     </Button>
 
-                    <Button Text="Ya tengo cuenta" HeightRequest="50" CornerRadius="20"FontAttributes="Bold" FontSize="15" BackgroundColor="#1E1E1E" BorderColor="#F54927" BorderWidth="1" TextColor="#F54927" Command="{Binding IrLoginCommand}"></Button>
+                    <Button Text="Ya tengo cuenta" HeightRequest="50" CornerRadius="20" FontAttributes="Bold" FontSize="15" BackgroundColor="#1E1E1E" BorderColor="#F54927" BorderWidth="1" TextColor="#F54927" Command="{Binding IrLoginCommand}"></Button>
                 </VerticalStackLayout>
             </ScrollView>
 

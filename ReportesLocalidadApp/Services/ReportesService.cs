@@ -19,7 +19,7 @@ public class ReportesService
 
     public string? ObtenerUrlImagen(string? imgUrl)
     {
-        if (string.IsNullOrWhiteSpace(imgUrl)) { return null; }
+        if (string.IsNullOrWhiteSpace(imgUrl)) { return "SIN_FOTO"; }
 
         if (imgUrl.StartsWith("http")) { return imgUrl; }
 

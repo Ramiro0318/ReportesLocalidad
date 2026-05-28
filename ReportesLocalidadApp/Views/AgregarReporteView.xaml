@@ -73,8 +73,8 @@
                     <Editor Placeholder="Describe con detalle el problema..." PlaceholderColor="White" TextColor="White" BackgroundColor="Transparent" FontSize="13" AutoSize="TextChanges" Text="{Binding DescripcionReporte}"></Editor>
                 </Border>
 
-                <Label Text="{Binding Mensaje}" TextColor="White" FontSize="13"></Label>
-                <Label Text="{Binding ReportesPendientes, StringFormat='Reportes pendientes por subir: {0}'}" TextColor="#E6E6C7" FontSize="12"></Label>
+                <Label Text="{Binding Mensaje}" TextColor="White" FontSize="14"></Label>
+                <!--<Label Text="{Binding ReportesPendientes, StringFormat='Reportes pendientes por subir: {0}'}" TextColor="#E6E6C7" FontSize="12"></Label>-->
 
                 <Button Text="Enviar reporte" HeightRequest="50" CornerRadius="15" FontAttributes="Bold" BackgroundColor="#F54927" TextColor="White" Command="{Binding CrearReporteCommand}"></Button>
             </VerticalStackLayout>

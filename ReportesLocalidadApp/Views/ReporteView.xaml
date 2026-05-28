@@ -22,7 +22,22 @@
             <VerticalStackLayout Spacing="10">
                 <Border StrokeShape="RoundRectangle 14" BackgroundColor="#2B2B29" Stroke="#4A4A45"
                         HeightRequest="300" Padding="0">
-                    <Image Source="{Binding ImagenDetalleUrl}" Aspect="Fill"></Image>
+                    <Grid>
+                        <Image Source="{Binding ImagenDetalleUrl}" Aspect="Fill">
+                            <Image.Triggers>
+                                <DataTrigger TargetType="Image" Binding="{Binding ImagenDetalleUrl}" Value="SIN_FOTO">
+                                    <Setter Property="IsVisible" Value="False"></Setter>
+                                </DataTrigger>
+                            </Image.Triggers>
+                        </Image>
+                        <Label Text="No hay fotografia disponible" TextColor="#E6E6C7" FontSize="14" HorizontalTextAlignment="Center" HorizontalOptions="Center" VerticalOptions="Center" IsVisible="False">
+                            <Label.Triggers>
+                                <DataTrigger TargetType="Label" Binding="{Binding ImagenDetalleUrl}" Value="SIN_FOTO">
+                                    <Setter Property="IsVisible" Value="True"></Setter>
+                                </DataTrigger>
+                            </Label.Triggers>
+                        </Label>
+                    </Grid>
                 </Border>
 
                 <Label Text="Cambiar fotografia" TextColor="White" FontAttributes="Bold" FontSize="15"
@@ -152,9 +167,15 @@
                     <Editor Text="{Binding DescripcionDetalle}" IsReadOnly="{Binding CamposSoloLectura}" TextColor="#E6E6E6" BackgroundColor="Transparent" FontSize="13" AutoSize="TextChanges"></Editor>
                 </Border>
 
-                <Label Text="{Binding Mensaje}" TextColor="White" FontSize="13"></Label>
+                <Label Text="{Binding Mensaje}" TextColor="White" FontSize="14"></Label>
 
-                <Button Text="Editar" HeightRequest="50" CornerRadius="15" FontAttributes="Bold" FontSize="15"  BackgroundColor="#F54927" TextColor="White" IsVisible="{Binding PuedeEditarReporte}" Command="{Binding ActivarEdicionReporteCommand}"></Button>
+                <Button Text="Editar" HeightRequest="50" CornerRadius="15" FontAttributes="Bold" FontSize="15"  BackgroundColor="#F54927" TextColor="White" IsVisible="{Binding PuedeEditarReporte}" Command="{Binding ActivarEdicionReporteCommand}">
+                    <Button.Triggers>
+                        <DataTrigger TargetType="Button" Binding="{Binding EstaEditandoReporte}" Value="True">
+                            <Setter Property="IsVisible" Value="False"></Setter>
+                        </DataTrigger>
+                    </Button.Triggers>
+                </Button>
 
                 <Button Text="Confirmar edicion" HeightRequest="50" CornerRadius="15" FontAttributes="Bold" BackgroundColor="#F54927" TextColor="White" IsVisible="{Binding EstaEditandoReporte}" Command="{Binding GuardarEdicionReporteCommand}"></Button>
 

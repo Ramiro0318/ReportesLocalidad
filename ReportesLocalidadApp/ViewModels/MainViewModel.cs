@@ -19,6 +19,9 @@ public partial class MainViewModel : ObservableObject
     private string? fotoBase64;
     private bool enviandoReportesPendientes;
     private bool procesandoFoto;
+    private string estadoOriginalReporte = "Pendiente";
+    private bool preparandoDetalleReporte;
+    private bool estadoReporteFueModificado;
     private int reportesSaltados;
     private int reportesPropiosSaltados;
     private int elementosMostrados;
@@ -147,6 +150,23 @@ public partial class MainViewModel : ObservableObject
 
     [ObservableProperty]
     private string estadoSeleccionado = "Pendiente";
+
+    [ObservableProperty]
+    private bool puedeConfirmarCambioEstado;
+
+    partial void OnEstadoSeleccionadoChanged(string value)
+    {
+        if (preparandoDetalleReporte)
+        {
+            return;
+        }
+
+        if (value != estadoOriginalReporte || estadoReporteFueModificado)
+        {
+            estadoReporteFueModificado = true;
+            PuedeConfirmarCambioEstado = true;
+        }
+    }
 
     [ObservableProperty]
     private string estadoFiltroSeleccionado = "Todos";
@@ -920,6 +940,12 @@ public partial class MainViewModel : ObservableObject
 
             PrepararDetalleReporte(respuesta.Data, puedeEditar);
             await Shell.Current.GoToAsync(ruta);
+
+            if (ruta == "reporteAdmin")
+            {
+                await Task.Delay(100);
+                ReiniciarCambioEstadoAdmin();
+            }
         }
         finally
         {
@@ -929,6 +955,7 @@ public partial class MainViewModel : ObservableObject
 
     private void PrepararDetalleReporte(ReporteDetalleDto reporte, bool puedeEditar)
     {
+        preparandoDetalleReporte = true;
         ReporteDetalle = reporte;
         PuedeEditarReporte = puedeEditar;
         EstaEditandoReporte = false;
@@ -936,12 +963,23 @@ public partial class MainViewModel : ObservableObject
         TituloDetalle = reporte.Titulo;
         DescripcionDetalle = reporte.Descripcion;
         CategoriaDetalle = ObtenerTextoCategoria(reporte.IdCategoria);
+        estadoOriginalReporte = ObtenerTextoEstado(reporte.IdEstado);
         EstadoSeleccionado = ObtenerTextoEstado(reporte.IdEstado);
+        estadoReporteFueModificado = false;
+        PuedeConfirmarCambioEstado = false;
+        preparandoDetalleReporte = false;
         ImagenDetalleUrl = reportesService.ObtenerUrlImagen(reporte.ImgUrl);
         RutaImagen = null;
         ImagenSeleccionada = null;
         MostrarTextoImagen = true;
         fotoBase64 = null;
+    }
+
+    private void ReiniciarCambioEstadoAdmin()
+    {
+        estadoOriginalReporte = EstadoSeleccionado;
+        estadoReporteFueModificado = false;
+        PuedeConfirmarCambioEstado = false;
     }
 
     private string ObtenerTextoCategoria(int idCategoria)

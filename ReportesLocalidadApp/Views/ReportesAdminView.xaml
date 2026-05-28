@@ -22,7 +22,7 @@
                     <RoundRectangleGeometry CornerRadius="14" Rect="0,0,44,44"></RoundRectangleGeometry>
                 </Grid.Clip>
                 <Grid.GestureRecognizers>
-                    <TapGestureRecognizer></TapGestureRecognizer>
+                    <TapGestureRecognizer Command="{Binding LogoutCommand}"></TapGestureRecognizer>
                 </Grid.GestureRecognizers>
 
                 <Image Source="logout.png" HeightRequest="25"></Image>
@@ -161,7 +161,7 @@
                 </CollectionView>
             </Grid>
         </RefreshView>
-        <Grid Grid.RowSpan="2" Grid.ColumnSpan="2" ZIndex="10" BackgroundColor="#80000000" IsVisible="{Binding IsBusy}" InputTransparent="False">
+        <Grid Grid.RowSpan="4" Grid.ColumnSpan="2" ZIndex="10" BackgroundColor="#80000000" IsVisible="{Binding IsBusy}" InputTransparent="False">
             <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" Color="#F54927" WidthRequest="50" HeightRequest="50"></ActivityIndicator>
         </Grid>
     </Grid>
