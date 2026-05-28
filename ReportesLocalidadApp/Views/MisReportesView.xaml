@@ -85,7 +85,7 @@
 
                                             <Label Text="{Binding Titulo}" TextColor="White" FontSize="15" FontAttributes="Bold"></Label>
 
-                                            <Label Text="{Binding NombreUsuario}" TextColor="White" FontSize="12"></Label>
+                                            <!--<Label Text="{Binding NombreUsuario}" TextColor="White" FontSize="12"></Label>-->
 
                                             <Label Text="{Binding FechaSubida, StringFormat='{}{0:dd MMMM yyyy}'}" TextColor="#D8D8D8" FontSize="11" ></Label>
                                         </VerticalStackLayout>

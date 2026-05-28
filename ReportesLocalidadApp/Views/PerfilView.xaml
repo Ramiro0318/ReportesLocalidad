@@ -17,14 +17,14 @@
         <Grid Grid.Row="1" ColumnDefinitions="*,*,*" Margin="10,10,10,0" ColumnSpacing="10">
             <Border BackgroundColor="#2B2B29" Stroke="#4A4A45" StrokeThickness="1" StrokeShape="RoundRectangle 15">
                 <VerticalStackLayout Spacing="5" VerticalOptions="Center">
-                    <Label Text="{Binding TotalMisReportes}" TextColor="White" FontSize="22" FontAttributes="Bold" HorizontalTextAlignment="Center"></Label>
+                    <Label Text="{Binding TotalMisReportesTexto}" TextColor="White" FontSize="22" FontAttributes="Bold" HorizontalTextAlignment="Center"></Label>
                     <Label Text="Reportes" TextColor="White" FontSize="12" HorizontalTextAlignment="Center"></Label>
                 </VerticalStackLayout>
             </Border>
 
             <Border BackgroundColor="#2B2B29" Grid.Column="1" Stroke="#4A4A45" StrokeThickness="1" Padding="12" HeightRequest="80" StrokeShape="RoundRectangle 14">
                 <VerticalStackLayout Spacing="5" VerticalOptions="Center">
-                    <Label Text="{Binding ReportesAtendidos}" TextColor="White" FontSize="22" FontAttributes="Bold" HorizontalTextAlignment="Center"></Label>
+                    <Label Text="{Binding ReportesAtendidosTexto}" TextColor="White" FontSize="22" FontAttributes="Bold" HorizontalTextAlignment="Center"></Label>
                     <Label Text="Atendidos" TextColor="White" FontSize="12" HorizontalTextAlignment="Center"></Label>
                 </VerticalStackLayout>
             </Border>
@@ -32,7 +32,7 @@
             <Border BackgroundColor="#2B2B29" Grid.Column="2" Stroke="#4A4A45" StrokeThickness="1" Padding="12" HeightRequest="78" StrokeShape="RoundRectangle 14">
 
                 <VerticalStackLayout Spacing="5" VerticalOptions="Center">
-                    <Label Text="{Binding ReportesPendientesUsuario}" TextColor="White" FontSize="22" FontAttributes="Bold" HorizontalTextAlignment="Center"></Label>
+                    <Label Text="{Binding ReportesPendientesUsuarioTexto}" TextColor="White" FontSize="22" FontAttributes="Bold" HorizontalTextAlignment="Center"></Label>
                     <Label Text="Pendientes" TextColor="White" FontSize="12" HorizontalTextAlignment="Center"></Label>
                 </VerticalStackLayout>
             </Border>

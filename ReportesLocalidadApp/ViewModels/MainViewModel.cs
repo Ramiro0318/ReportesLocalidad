@@ -105,6 +105,15 @@ public partial class MainViewModel : ObservableObject
     private int reportesPendientesUsuario;
 
     [ObservableProperty]
+    private string totalMisReportesTexto = "0";
+
+    [ObservableProperty]
+    private string reportesAtendidosTexto = "0";
+
+    [ObservableProperty]
+    private string reportesPendientesUsuarioTexto = "0";
+
+    [ObservableProperty]
     private string nombreUsuario = "";
 
     [ObservableProperty]
@@ -486,6 +495,7 @@ public partial class MainViewModel : ObservableObject
                 TotalMisReportes = 0;
                 ReportesAtendidos = 0;
                 ReportesPendientesUsuario = 0;
+                ActualizarTextoConteosPerfil();
                 return;
             }
 
@@ -516,6 +526,24 @@ public partial class MainViewModel : ObservableObject
         TotalMisReportes = reportesParaContar.Count;
         ReportesAtendidos = reportesParaContar.Count(x => x.IdEstado == (int)Estados.Resuelto);
         ReportesPendientesUsuario = reportesParaContar.Count(x => x.IdEstado == (int)Estados.Pendiente);
+        ActualizarTextoConteosPerfil();
+    }
+
+    private void ActualizarTextoConteosPerfil()
+    {
+        TotalMisReportesTexto = ObtenerTextoConteo(TotalMisReportes);
+        ReportesAtendidosTexto = ObtenerTextoConteo(ReportesAtendidos);
+        ReportesPendientesUsuarioTexto = ObtenerTextoConteo(ReportesPendientesUsuario);
+    }
+
+    private string ObtenerTextoConteo(int cantidad)
+    {
+        if (cantidad >= CargaInicial)
+        {
+            return $"{CargaInicial}+";
+        }
+
+        return cantidad.ToString();
     }
 
     [RelayCommand]
@@ -1464,6 +1492,7 @@ public partial class MainViewModel : ObservableObject
         TotalMisReportes = 0;
         ReportesAtendidos = 0;
         ReportesPendientesUsuario = 0;
+        ActualizarTextoConteosPerfil();
         reportesSaltados = 0;
         reportesPropiosSaltados = 0;
         elementosMostrados = 0;
