@@ -89,7 +89,7 @@ public partial class MainViewModel : ObservableObject
     private bool isRefreshing;
 
     [ObservableProperty]
-    private string mensaje = string.Empty;
+    private string mensaje = "";
 
     [ObservableProperty]
     private int reportesPendientes;
@@ -104,13 +104,13 @@ public partial class MainViewModel : ObservableObject
     private int reportesPendientesUsuario;
 
     [ObservableProperty]
-    private string nombreUsuario = string.Empty;
+    private string nombreUsuario = "";
 
     [ObservableProperty]
-    private string tituloReporte = string.Empty;
+    private string tituloReporte = "";
 
     [ObservableProperty]
-    private string descripcionReporte = string.Empty;
+    private string descripcionReporte = "";
 
     [ObservableProperty]
     private string categoriaSeleccionada = "Bache";
@@ -140,10 +140,10 @@ public partial class MainViewModel : ObservableObject
     private bool camposSoloLectura = true;
 
     [ObservableProperty]
-    private string tituloDetalle = string.Empty;
+    private string tituloDetalle = "";
 
     [ObservableProperty]
-    private string descripcionDetalle = string.Empty;
+    private string descripcionDetalle = "";
 
     [ObservableProperty]
     private string categoriaDetalle = "Bache";
@@ -220,7 +220,7 @@ public partial class MainViewModel : ObservableObject
         try
         {
             IsBusy = true;
-            Mensaje = string.Empty;
+            Mensaje = "";
             await CargarNombreUsuarioAsync();
 
             reportesCargados.Clear();
@@ -357,7 +357,7 @@ public partial class MainViewModel : ObservableObject
         try
         {
             IsBusy = true;
-            Mensaje = string.Empty;
+            Mensaje = "";
             await CargarNombreUsuarioAsync();
 
             reportesPropiosCargados.Clear();
@@ -369,7 +369,7 @@ public partial class MainViewModel : ObservableObject
 
             if (idUsuario == 0)
             {
-                Mensaje = "No se encontro la sesion del usuario.";
+                Mensaje = "No se encontró la sesión del usuario.";
                 return;
             }
 
@@ -529,7 +529,7 @@ public partial class MainViewModel : ObservableObject
             ImagenSeleccionada = ImageSource.FromFile(resultado.RutaImagen);
             MostrarTextoImagen = false;
             fotoBase64 = resultado.FotoBase64;
-            Mensaje = "Fotografia tomada correctamente.";
+            Mensaje = "Fotografía tomada correctamente.";
             await MostrarToastAsync(Mensaje);
         }
         finally
@@ -562,7 +562,7 @@ public partial class MainViewModel : ObservableObject
             ImagenSeleccionada = ImageSource.FromFile(resultado.RutaImagen);
             MostrarTextoImagen = false;
             fotoBase64 = resultado.FotoBase64;
-            Mensaje = "Fotografia seleccionada correctamente.";
+            Mensaje = "Fotografía seleccionada correctamente.";
             await MostrarToastAsync(Mensaje);
         }
         finally
@@ -581,20 +581,20 @@ public partial class MainViewModel : ObservableObject
 
         if (string.IsNullOrWhiteSpace(TituloReporte))
         {
-            Mensaje = "Ingrese un titulo para el reporte.";
+            Mensaje = "Ingrese un título para el reporte.";
             return;
         }
 
         if (string.IsNullOrWhiteSpace(DescripcionReporte))
         {
-            Mensaje = "Ingrese una descripcion para el reporte.";
+            Mensaje = "Ingrese una descripción para el reporte.";
             return;
         }
 
         try
         {
             IsBusy = true;
-            Mensaje = string.Empty;
+            Mensaje = "";
 
             var idUsuario = await authService.GetIdUsuarioAsync();
 
@@ -648,8 +648,8 @@ public partial class MainViewModel : ObservableObject
             await AgregarReporteLista(respuesta.Data);
             ActualizarConteoPerfil();
 
-            TituloReporte = string.Empty;
-            DescripcionReporte = string.Empty;
+            TituloReporte = "";
+            DescripcionReporte = "";
             CategoriaSeleccionada = "Bache";
             RutaImagen = null;
             ImagenSeleccionada = null;
@@ -669,7 +669,7 @@ public partial class MainViewModel : ObservableObject
 
     private async Task AgregarReporteLista(ReporteDetalleDto reporte)
     {
-        var nombreUsuario = await authService.GetNombreUsuarioAsync() ?? string.Empty;
+        var nombreUsuario = await authService.GetNombreUsuarioAsync() ?? "";
 
         var reporteGeneral = new ReporteGeneralDto
         {
@@ -716,16 +716,16 @@ public partial class MainViewModel : ObservableObject
         await reportePendienteService.GuardarReportePendienteAsync(reporte);
         await CargarReportesPendientesAsync();
 
-        TituloReporte = string.Empty;
-        DescripcionReporte = string.Empty;
+        TituloReporte = "";
+        DescripcionReporte = "";
         CategoriaSeleccionada = "Bache";
         RutaImagen = null;
         ImagenSeleccionada = null;
         MostrarTextoImagen = true;
         fotoBase64 = null;
 
-        Mensaje = "No se pudo conectar con la API. El reporte se subira cuando vuelva la conexion.";
-        await MostrarToastAsync("Reporte guardado. Se subira cuando vuelva la conexion.");
+        Mensaje = "No se pudo conectar con la API. El reporte se subirá cuando vuelva la conexión.";
+        await MostrarToastAsync("Reporte guardado. Se subirá cuando vuelva la conexión.");
         await Shell.Current.GoToAsync("reportes");
     }
 
@@ -737,15 +737,15 @@ public partial class MainViewModel : ObservableObject
 
     private async Task CargarNombreUsuarioAsync()
     {
-        NombreUsuario = await authService.GetNombreUsuarioAsync() ?? string.Empty;
+        NombreUsuario = await authService.GetNombreUsuarioAsync() ?? "";
     }
 
     private async Task RevisarConexionAsync()
     {
         if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
         {
-            Mensaje = "Sin conexion a internet.";
-            await MostrarToastAsync("Sin conexion a internet.");
+            Mensaje = "Sin conexión a internet.";
+            await MostrarToastAsync("Sin conexión a internet.");
             return;
         }
 
@@ -758,7 +758,7 @@ public partial class MainViewModel : ObservableObject
             return;
         }
 
-        await MostrarToastAsync("Conexion recuperada.");
+        await MostrarToastAsync("Conexión recuperada.");
         await ReintentarReportes(true);
     }
 
@@ -916,7 +916,7 @@ public partial class MainViewModel : ObservableObject
         try
         {
             IsBusy = true;
-            Mensaje = string.Empty;
+            Mensaje = "";
 
             var respuesta = await reportesService.GetReporteAsync(idReporte);
 
@@ -1030,7 +1030,7 @@ public partial class MainViewModel : ObservableObject
 
         EstaEditandoReporte = true;
         CamposSoloLectura = false;
-        Mensaje = string.Empty;
+        Mensaje = "";
     }
 
     [RelayCommand]
@@ -1043,26 +1043,26 @@ public partial class MainViewModel : ObservableObject
 
         if (string.IsNullOrWhiteSpace(TituloDetalle))
         {
-            Mensaje = "Ingrese un titulo para el reporte.";
+            Mensaje = "Ingrese un título para el reporte.";
             return;
         }
 
         if (string.IsNullOrWhiteSpace(DescripcionDetalle))
         {
-            Mensaje = "Ingrese una descripcion para el reporte.";
+            Mensaje = "Ingrese una descripción para el reporte.";
             return;
         }
 
         try
         {
             IsBusy = true;
-            Mensaje = string.Empty;
+            Mensaje = "";
 
             var idUsuario = await authService.GetIdUsuarioAsync();
 
             if (idUsuario == 0)
             {
-                Mensaje = "No se encontro la sesion del usuario.";
+                Mensaje = "No se encontró la sesion del usuario.";
                 return;
             }
 
@@ -1120,13 +1120,13 @@ public partial class MainViewModel : ObservableObject
         try
         {
             IsBusy = true;
-            Mensaje = string.Empty;
+            Mensaje = "";
 
             var idUsuario = await authService.GetIdUsuarioAsync();
 
             if (idUsuario == 0)
             {
-                Mensaje = "No se encontro la sesion del usuario.";
+                Mensaje = "No se encontró la sesion del usuario.";
                 return;
             }
 
@@ -1255,7 +1255,7 @@ public partial class MainViewModel : ObservableObject
             return;
         }
 
-        var confirmar = await Shell.Current.DisplayAlert("Eliminar reporte", "Esta seguro que quiere eliminar este reporte?", "Aceptar", "Cancelar");
+        var confirmar = await Shell.Current.DisplayAlert("Eliminar reporte", "Está seguro que quiere eliminar este reporte?", "Aceptar", "Cancelar");
 
         if (!confirmar)
         {
@@ -1265,13 +1265,13 @@ public partial class MainViewModel : ObservableObject
         try
         {
             IsBusy = true;
-            Mensaje = string.Empty;
+            Mensaje = "";
 
             var idUsuario = await authService.GetIdUsuarioAsync();
 
             if (idUsuario == 0)
             {
-                Mensaje = "No se encontro la sesion del usuario.";
+                Mensaje = "No se encontró la sesión del usuario.";
                 return;
             }
 
@@ -1312,13 +1312,13 @@ public partial class MainViewModel : ObservableObject
         try
         {
             IsBusy = true;
-            Mensaje = string.Empty;
+            Mensaje = "";
 
             var idUsuario = await authService.GetIdUsuarioAsync();
 
             if (idUsuario == 0)
             {
-                Mensaje = "No se encontro la sesion del usuario.";
+                Mensaje = "No se encontró la sesión del usuario.";
                 return;
             }
 
@@ -1427,7 +1427,7 @@ public partial class MainViewModel : ObservableObject
         Reportes.Clear();
         MisReportes.Clear();
         ReporteDetalle = null;
-        NombreUsuario = string.Empty;
+        NombreUsuario = "";
         TotalMisReportes = 0;
         ReportesAtendidos = 0;
         ReportesPendientesUsuario = 0;
@@ -1437,6 +1437,6 @@ public partial class MainViewModel : ObservableObject
         elementosPropiosMostrados = 0;
         EstadoFiltroSeleccionado = "Todos";
         CategoriaFiltroSeleccionada = "Todos";
-        Mensaje = string.Empty;
+        Mensaje = "";
     }
 }

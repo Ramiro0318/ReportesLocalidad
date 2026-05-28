@@ -45,7 +45,7 @@ public class ReporteService
             return new ApiResponse<Reportes>
             {
                 Success = false,
-                Message = "Categoria no encontrada."
+                Message = "Categoría no encontrada."
             };
         }
 
@@ -141,7 +141,7 @@ public class ReporteService
         return new ApiResponse<ReporteAEditarDto>
         {
             Success = true,
-            Message = "Reporte obtenido para edicion.",
+            Message = "Reporte obtenido para edición.",
             Data = reporte
         };
     }
@@ -175,7 +175,7 @@ public class ReporteService
             return new ApiResponse<Reportes>
             {
                 Success = false,
-                Message = "Categoria no encontrada."
+                Message = "Categoría no encontrada."
             };
         }
 
@@ -284,7 +284,7 @@ public class ReporteService
 
         var estado = ObtenerTextoEstado(reporte.IdEstado);
         var titulo = "Reporte actualizado";
-        var mensaje = $"Tu reporte \"{reporte.Titulo}\" cambio a {estado}.";
+        var mensaje = $"Tu reporte \"{reporte.Titulo}\" cambió a {estado}.";
 
         logger.LogInformation("Enviando notificacion Firebase al usuario del reporte {IdReporte}.", reporte.Id);
         await firebaseNotificationService.EnviarNotificacionAsync(tokenFirebase, titulo, mensaje);

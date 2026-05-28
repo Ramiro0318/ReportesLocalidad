@@ -30,7 +30,7 @@
                                 </DataTrigger>
                             </Image.Triggers>
                         </Image>
-                        <Label Text="No hay fotografia disponible" TextColor="#E6E6C7" FontSize="14" HorizontalTextAlignment="Center" HorizontalOptions="Center" VerticalOptions="Center" IsVisible="False">
+                        <Label Text="No hay fotografía disponible" TextColor="#E6E6C7" FontSize="14" HorizontalTextAlignment="Center" HorizontalOptions="Center" VerticalOptions="Center" IsVisible="False">
                             <Label.Triggers>
                                 <DataTrigger TargetType="Label" Binding="{Binding ImagenDetalleUrl}" Value="SIN_FOTO">
                                     <Setter Property="IsVisible" Value="True"></Setter>
@@ -40,7 +40,7 @@
                     </Grid>
                 </Border>
 
-                <Label Text="Cambiar fotografia" TextColor="White" FontAttributes="Bold" FontSize="15"
+                <Label Text="Cambiar fotografía" TextColor="White" FontAttributes="Bold" FontSize="15"
                        IsVisible="{Binding EstaEditandoReporte}"></Label>
                 <Grid ColumnDefinitions="*,*" ColumnSpacing="10" IsVisible="{Binding EstaEditandoReporte}">
                     <Border Grid.Column="0" Stroke="#4A4A45" StrokeShape="RoundRectangle 10" StrokeThickness="1" StrokeDashArray="4,3" BackgroundColor="#242421" Padding="12" HeightRequest="78">
@@ -49,7 +49,7 @@
                         </Border.GestureRecognizers>
                         <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="6">
                             <Label Text="Icono" TextColor="#E6E6C7" FontSize="12" HorizontalTextAlignment="Center"></Label>
-                            <Label Text="Camara" TextColor="#E6E6C7" FontSize="12" HorizontalTextAlignment="Center"></Label>
+                            <Label Text="Cámara" TextColor="#E6E6C7" FontSize="12" HorizontalTextAlignment="Center"></Label>
                         </VerticalStackLayout>
                     </Border>
                     <Border Grid.Column="1" Stroke="#4A4A45" StrokeShape="RoundRectangle 10" StrokeThickness="1" StrokeDashArray="4,3" BackgroundColor="#242421" Padding="12" HeightRequest="78">
@@ -58,7 +58,7 @@
                         </Border.GestureRecognizers>
                         <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="6">
                             <Label Text="Icono" TextColor="#E6E6C7" FontSize="12" HorizontalTextAlignment="Center"></Label>
-                            <Label Text="Galeria" TextColor="#E6E6C7" FontSize="12" HorizontalTextAlignment="Center"></Label>
+                            <Label Text="Galería" TextColor="#E6E6C7" FontSize="12" HorizontalTextAlignment="Center"></Label>
                         </VerticalStackLayout>
                     </Border>
                 </Grid>
@@ -153,17 +153,14 @@
                     </Border>
                 </Grid>
 
-                <Label Text="Categoria" TextColor="White" FontSize="15" FontAttributes="Bold"></Label>
-                <Border StrokeShape="RoundRectangle 12" BackgroundColor="#2B2B29"
-                        Stroke="#4A4A45" Padding="10">
+                <Label Text="Categoría" TextColor="White" FontSize="15" FontAttributes="Bold"></Label>
+                <Border StrokeShape="RoundRectangle 12" BackgroundColor="#2B2B29" Stroke="#4A4A45" Padding="10">
                     <Picker ItemsSource="{Binding CategoriasDisponibles}" SelectedItem="{Binding CategoriaDetalle}" IsEnabled="{Binding EstaEditandoReporte}" TextColor="White" BackgroundColor="Transparent"></Picker>
                 </Border>
 
-                <Label Text="Descripcion" TextColor="White"
-                       FontSize="15" FontAttributes="Bold"></Label>
+                <Label Text="Descripción" TextColor="White" FontSize="15" FontAttributes="Bold"></Label>
 
-                <Border StrokeShape="RoundRectangle 12" BackgroundColor="#2B2B29"
-                        Stroke="#4A4A45" Padding="14">
+                <Border StrokeShape="RoundRectangle 12" BackgroundColor="#2B2B29" Stroke="#4A4A45" Padding="14">
                     <Editor Text="{Binding DescripcionDetalle}" IsReadOnly="{Binding CamposSoloLectura}" TextColor="#E6E6E6" BackgroundColor="Transparent" FontSize="13" AutoSize="TextChanges"></Editor>
                 </Border>
 

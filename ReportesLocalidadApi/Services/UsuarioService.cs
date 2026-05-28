@@ -54,7 +54,7 @@ public class UsuarioService
             return new ApiResponse<AuthResponseDto>
             {
                 Success = false,
-                Message = "Usuario o contrasena incorrectos."
+                Message = "Usuario o contraseña incorrectos."
             };
         }
 
@@ -65,7 +65,7 @@ public class UsuarioService
             return new ApiResponse<AuthResponseDto>
             {
                 Success = false,
-                Message = "Usuario o contrasena incorrectos."
+                Message = "Usuario o contraseña incorrectos."
             };
         }
 
@@ -76,7 +76,7 @@ public class UsuarioService
         return new ApiResponse<AuthResponseDto>
         {
             Success = true,
-            Message = "Inicio de sesion correcto.",
+            Message = "Inicio de sesión correcto.",
             Data = new AuthResponseDto
             {
                 AccessToken = jwtService.GenerarAccessToken(usuario),
@@ -96,7 +96,7 @@ public class UsuarioService
             return new ApiResponse<AuthResponseDto>
             {
                 Success = false,
-                Message = "Refresh token invalido o expirado."
+                Message = "Refresh token inválido o expirado."
             };
         }
 
@@ -141,7 +141,7 @@ public class UsuarioService
         return new ApiResponse<object>
         {
             Success = true,
-            Message = "Sesion cerrada correctamente."
+            Message = "Sesión cerrada correctamente."
         };
     }
 

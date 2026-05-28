@@ -45,7 +45,7 @@ public class FirebaseNotificationService
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "No se pudo enviar la notificacion Firebase.");
+            logger.LogError(ex, "No se pudo enviar la notificación Firebase.");
         }
     }
 
@@ -63,7 +63,7 @@ public class FirebaseNotificationService
 
             if (string.IsNullOrWhiteSpace(rutaArchivo) || !File.Exists(rutaArchivo))
             {
-                logger.LogWarning("No se encontro el archivo de Firebase en la ruta {RutaArchivo}.", rutaArchivo);
+                logger.LogWarning("No se encontró el archivo de Firebase en la ruta {RutaArchivo}.", rutaArchivo);
                 return false;
             }
 

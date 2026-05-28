@@ -26,7 +26,7 @@
         <ScrollView Grid.Row="1" BackgroundColor="#0F0F0F" Grid.ColumnSpan="2">
             <VerticalStackLayout Padding="10" Spacing="20">
 
-                <Label Text="Titulo del reporte" TextColor="White" FontSize="15" FontAttributes="Bold"></Label>
+                <Label Text="Título del reporte" TextColor="White" FontSize="15" FontAttributes="Bold"></Label>
                 <Border Stroke="#4A4A45" StrokeThickness="1" BackgroundColor="#242421" Padding="10"
                         StrokeShape="RoundRectangle 10">
                     <Entry Placeholder="Ej. Bache grande en avenida principal" PlaceholderColor="White" TextColor="White" BackgroundColor="Transparent" MaxLength="120" Text="{Binding TituloReporte}"></Entry>
@@ -38,7 +38,7 @@
                     <Picker Title="Tipo de incidente" TextColor="White" BackgroundColor="Transparent" ItemsSource="{Binding CategoriasDisponibles}" SelectedItem="{Binding CategoriaSeleccionada}"></Picker>
                 </Border>
 
-                <Label Text="Evidencia fotografica" TextColor="White" FontAttributes="Bold" FontSize="15"></Label>
+                <Label Text="Evidencia fotográfica" TextColor="White" FontAttributes="Bold" FontSize="15"></Label>
                 <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
                     <Border Grid.Column="0" Stroke="#4A4A45" StrokeShape="RoundRectangle 10" StrokeThickness="1" StrokeDashArray="4,3" BackgroundColor="#242421" Padding="12" HeightRequest="78">
                         <Border.GestureRecognizers>
@@ -46,7 +46,7 @@
                         </Border.GestureRecognizers>
                         <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="6">
                             <Label Text="Icono" TextColor="#E6E6C7" FontSize="12" HorizontalTextAlignment="Center"></Label>
-                            <Label Text="Camara" TextColor="#E6E6C7" FontSize="12" HorizontalTextAlignment="Center"></Label>
+                            <Label Text="Cámara" TextColor="#E6E6C7" FontSize="12" HorizontalTextAlignment="Center"></Label>
                         </VerticalStackLayout>
                     </Border>
                     <Border Grid.Column="1" Stroke="#4A4A45" StrokeShape="RoundRectangle 10" StrokeThickness="1" StrokeDashArray="4,3" BackgroundColor="#242421" Padding="12" HeightRequest="78">
@@ -55,7 +55,7 @@
                         </Border.GestureRecognizers>
                         <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="6">
                             <Label Text="Icono" TextColor="#E6E6C7" FontSize="12" HorizontalTextAlignment="Center"></Label>
-                            <Label Text="Galeria" TextColor="#E6E6C7" FontSize="12" HorizontalTextAlignment="Center"></Label>
+                            <Label Text="Galería" TextColor="#E6E6C7" FontSize="12" HorizontalTextAlignment="Center"></Label>
                         </VerticalStackLayout>
                     </Border>
                 </Grid>
@@ -67,7 +67,7 @@
                     </Grid>
                 </Border>
 
-                <Label Text="Descripcion del problema" TextColor="White" FontSize="15" FontAttributes="Bold"></Label>
+                <Label Text="Descripción del problema" TextColor="White" FontSize="15" FontAttributes="Bold"></Label>
                 <Border Stroke="#4A4A45" StrokeThickness="1" BackgroundColor="#242421" Padding="10"
                         HeightRequest="120" StrokeShape="RoundRectangle 10">
                     <Editor Placeholder="Describe con detalle el problema..." PlaceholderColor="White" TextColor="White" BackgroundColor="Transparent" FontSize="13" AutoSize="TextChanges" Text="{Binding DescripcionReporte}"></Editor>

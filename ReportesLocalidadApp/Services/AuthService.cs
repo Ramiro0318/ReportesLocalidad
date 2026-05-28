@@ -39,7 +39,7 @@ public class AuthService
                 return new ApiResponse<UsuarioRespuestaDto>
                 {
                     Success = false,
-                    Message = error?.Message ?? "No se pudo iniciar sesion."
+                    Message = error?.Message ?? "No se pudo iniciar sesión."
                 };
             }
 
@@ -60,7 +60,7 @@ public class AuthService
             return new ApiResponse<UsuarioRespuestaDto>
             {
                 Success = false,
-                Message = resultado?.Message ?? "No se pudo iniciar sesion."
+                Message = resultado?.Message ?? "No se pudo iniciar sesión."
             };
         }
         catch

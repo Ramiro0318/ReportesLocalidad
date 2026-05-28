@@ -10,8 +10,8 @@ namespace ReportesLocalidadApp.Models.DTOs
     public class SubirReporteDto
     {
         public int Id { get; set; }
-        public string Titulo { get; set; } = string.Empty;
-        public string Descripcion { get; set; } = string.Empty;
+        public string Titulo { get; set; } = "";
+        public string Descripcion { get; set; } = "";
         public string? Direccion { get; set; }
         public string? Foto { get; set; }
         public int IdUsuario { get; set; }
@@ -22,8 +22,8 @@ namespace ReportesLocalidadApp.Models.DTOs
     public class EditarReporteDto
     {
         public int Id { get; set; }
-        public string Titulo { get; set; } = string.Empty;
-        public string Descripcion { get; set; } = string.Empty;
+        public string Titulo { get; set; } = "";
+        public string Descripcion { get; set; } = "";
         public string? Direccion { get; set; }
         public string? Foto { get; set; }
         public int IdUsuario { get; set; }
@@ -33,8 +33,8 @@ namespace ReportesLocalidadApp.Models.DTOs
     public class ReporteDetalleDto
     {
         public int Id { get; set; }
-        public string Titulo { get; set; } = string.Empty;
-        public string Descripcion { get; set; } = string.Empty;
+        public string Titulo { get; set; } = "";
+        public string Descripcion { get; set; } = "";
         public string? Direccion { get; set; }
         public string? ImgUrl { get; set; }
         public DateTime FechaSubida { get; set; }
@@ -71,8 +71,8 @@ namespace ReportesLocalidadApp.Models.DTOs
     public class ReporteAEditarDto
     {
         public int Id { get; set; }
-        public string Titulo { get; set; } = string.Empty;
-        public string Descripcion { get; set; } = string.Empty;
+        public string Titulo { get; set; } = "";
+        public string Descripcion { get; set; } = "";
         public string? Direccion { get; set; }
         public string? ImgUrl { get; set; }
         public int IdUsuario { get; set; }
@@ -82,7 +82,7 @@ namespace ReportesLocalidadApp.Models.DTOs
     public class ReportePropioDto
     {
         public int Id { get; set; }
-        public string Titulo { get; set; } = string.Empty;
+        public string Titulo { get; set; } = "";
         public DateTime FechaSubida { get; set; }
         public DateTime? FechaEdicion { get; set; }
         public int IdEstado { get; set; }
@@ -114,7 +114,7 @@ namespace ReportesLocalidadApp.Models.DTOs
 
     public class ReporteGeneralDto : ReportePropioDto
     {
-        public string NombreUsuario { get; set; } = string.Empty;
+        public string NombreUsuario { get; set; } = "";
     }
 
     public class CambiarEstadoReporteDto

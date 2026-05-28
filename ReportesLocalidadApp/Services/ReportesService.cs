@@ -9,7 +9,7 @@ public class ReportesService
     private readonly HttpClient http;
     private readonly AuthService authService;
     private const string Endpoint = "api/reportes";
-    public string UltimoErrorConexion { get; private set; } = string.Empty;
+    public string UltimoErrorConexion { get; private set; } = "";
 
     public ReportesService(HttpClient http, AuthService authService)
     {
@@ -43,7 +43,7 @@ public class ReportesService
     {
         try
         {
-            UltimoErrorConexion = string.Empty;
+            UltimoErrorConexion = "";
             await authService.PrepararTokenAsync();
             var response = await http.PostAsJsonAsync($"{Endpoint}/crearReporte", subirReporteDto);
 
@@ -76,7 +76,7 @@ public class ReportesService
             return new ApiResponse<ReporteDetalleDto>
             {
                 Success = false,
-                Message = "La API respondio, pero no se pudo leer la respuesta."
+                Message = "La API respondió, pero no se pudo leer la respuesta."
             };
         }
     }
@@ -307,14 +307,14 @@ public class ReportesService
             return new ApiResponse<T>
             {
                 Success = false,
-                Message = $"La API rechazo la solicitud. Codigo: {(int)response.StatusCode}"
+                Message = $"La API rechazó la solicitud. Código: {(int)response.StatusCode}"
             };
         }
 
         return new ApiResponse<T>
         {
             Success = false,
-            Message = "La API no devolvio una respuesta valida."
+            Message = "La API no devolvió una respuesta válida."
         };
     }
 
@@ -323,7 +323,7 @@ public class ReportesService
         return new ApiResponse<T>
         {
             Success = false,
-            Message = "Sesion vencida. Inicia sesion nuevamente."
+            Message = "Sesión vencida. Inicia sesión nuevamente."
         };
     }
 }

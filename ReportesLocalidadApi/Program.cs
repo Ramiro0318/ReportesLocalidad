@@ -15,7 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 if (string.IsNullOrWhiteSpace(connectionString))
 {
-    throw new InvalidOperationException("No se encontro la cadena de conexion.");
+    throw new InvalidOperationException("No se encontró la cadena de conexión.");
 }
 
 builder.Services.AddControllers();
@@ -31,7 +31,7 @@ var jwtAudience = builder.Configuration["Jwt:Audience"];
 
 if (string.IsNullOrWhiteSpace(jwtKey))
 {
-    throw new InvalidOperationException("No se encontro la llave JWT.");
+    throw new InvalidOperationException("No se encontró la llave JWT.");
 }
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

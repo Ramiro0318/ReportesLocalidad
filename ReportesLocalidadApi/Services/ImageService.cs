@@ -37,7 +37,7 @@ public class ImageService
 
         if (bytesImagen.Length > (8 * 1024 * 1024))
         {
-            throw new InvalidOperationException("La imagen excede el tamano maximo permitido.");
+            throw new InvalidOperationException("La imagen excede el tamaño maximo permitido.");
         }
 
         var webRootPath = environment.WebRootPath;

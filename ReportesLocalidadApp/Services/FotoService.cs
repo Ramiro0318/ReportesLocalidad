@@ -25,34 +25,34 @@ public class FotoService
 
             if (permiso != PermissionStatus.Granted)
             {
-                return (null, null, $"No se concedio permiso para usar la camara. Estado: {permiso}");
+                return (null, null, $"No se concedió permiso para usar la cámara. Estado: {permiso}");
             }
 
             if (!MediaPicker.Default.IsCaptureSupported)
             {
-                return (null, null, "El dispositivo no permite tomar fotografias.");
+                return (null, null, "El dispositivo no permite tomar fotografías.");
             }
 
             var photo = await MediaPicker.Default.CapturePhotoAsync();
 
             if (photo is null)
             {
-                return (null, null, "No se tomo ninguna fotografia.");
+                return (null, null, "No se tomo ninguna fotografía.");
             }
 
             return await GuardarImagenAsync(photo);
         }
         catch (FeatureNotSupportedException)
         {
-            return (null, null, "La camara no esta disponible en este dispositivo.");
+            return (null, null, "La cámara no esta disponible en este dispositivo.");
         }
         catch (PermissionException)
         {
-            return (null, null, "No se concedio permiso para usar la camara.");
+            return (null, null, "No se concedió permiso para usar la cámara.");
         }
         catch
         {
-            return (null, null, "No se pudo abrir la camara.");
+            return (null, null, "No se pudo abrir la cámara.");
         }
     }
 
@@ -64,22 +64,22 @@ public class FotoService
 
             if (photo is null)
             {
-                return (null, null, "No se selecciono ninguna fotografia.");
+                return (null, null, "No se seleccionó ninguna fotografía.");
             }
 
             return await GuardarImagenAsync(photo);
         }
         catch (FeatureNotSupportedException)
         {
-            return (null, null, "La galeria no esta disponible en este dispositivo.");
+            return (null, null, "La galería no esta disponible en este dispositivo.");
         }
         catch (PermissionException)
         {
-            return (null, null, "No se concedio permiso para abrir la galeria.");
+            return (null, null, "No se concedió permiso para abrir la galería.");
         }
         catch
         {
-            return (null, null, "No se pudo abrir la galeria.");
+            return (null, null, "No se pudo abrir la galería.");
         }
     }
 
@@ -113,7 +113,7 @@ public class FotoService
 
             if (buffer.Length > MaxSizeBytes)
             {
-                return (null, null, "La imagen excede el tamano maximo permitido.");
+                return (null, null, "La imagen excede el tamaño maximo permitido.");
             }
 
             var base64 = $"{ObtenerPrefijoBase64(Path.GetExtension(rutaComprimida).ToLower())}{Convert.ToBase64String(buffer)}";
@@ -122,7 +122,7 @@ public class FotoService
         }
         catch
         {
-            return (null, null, "No se pudo procesar la fotografia.");
+            return (null, null, "No se pudo procesar la fotografía.");
         }
     }
 

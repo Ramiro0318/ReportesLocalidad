@@ -13,16 +13,16 @@ public partial class AuthViewModel : ObservableObject
     private bool isBusy;
 
     [ObservableProperty]
-    private string mensaje = string.Empty;
+    private string mensaje = "";
 
     [ObservableProperty]
-    private string nombreUsuario = string.Empty;
+    private string nombreUsuario = "";
 
     [ObservableProperty]
-    private string password = string.Empty;
+    private string password = "";
 
     [ObservableProperty]
-    private string confirmarPassword = string.Empty;
+    private string confirmarPassword = "";
 
     public AuthViewModel(AuthService authService)
     {
@@ -41,7 +41,7 @@ public partial class AuthViewModel : ObservableObject
         {
             sesionRevisada = true;
             IsBusy = true;
-            Mensaje = string.Empty;
+            Mensaje = "";
 
             var sesion = await authService.ObtenerSesionGuardadaAsync();
 
@@ -89,14 +89,14 @@ public partial class AuthViewModel : ObservableObject
 
         if (string.IsNullOrWhiteSpace(NombreUsuario) || string.IsNullOrWhiteSpace(Password))
         {
-            Mensaje = "Ingrese usuario y contrasena.";
+            Mensaje = "Ingrese usuario y contraseña.";
             return;
         }
 
         try
         {
             IsBusy = true;
-            Mensaje = string.Empty;
+            Mensaje = "";
 
             var respuesta = await authService.LoginAsync(NombreUsuario, Password);
 
@@ -141,20 +141,20 @@ public partial class AuthViewModel : ObservableObject
 
         if (string.IsNullOrWhiteSpace(NombreUsuario) || string.IsNullOrWhiteSpace(Password))
         {
-            Mensaje = "Ingrese usuario y contrasena.";
+            Mensaje = "Ingrese usuario y contraseña.";
             return;
         }
 
         if (Password != ConfirmarPassword)
         {
-            Mensaje = "Las contrasenas no coinciden.";
+            Mensaje = "Las contraseñas no coinciden.";
             return;
         }
 
         try
         {
             IsBusy = true;
-            Mensaje = string.Empty;
+            Mensaje = "";
 
             var respuesta = await authService.RegistrarAsync(NombreUsuario, Password);
 
@@ -180,9 +180,9 @@ public partial class AuthViewModel : ObservableObject
 
     private void LimpiarCampos()
     {
-        NombreUsuario = string.Empty;
-        Password = string.Empty;
-        ConfirmarPassword = string.Empty;
-        Mensaje = string.Empty;
+        NombreUsuario = "";
+        Password = "";
+        ConfirmarPassword = "";
+        Mensaje = "";
     }
 }
