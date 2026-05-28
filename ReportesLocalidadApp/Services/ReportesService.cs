@@ -297,7 +297,7 @@ public class ReportesService
             respuesta = null;
         }
 
-        if (respuesta is not null)
+        if (respuesta != null)
         {
             return respuesta;
         }

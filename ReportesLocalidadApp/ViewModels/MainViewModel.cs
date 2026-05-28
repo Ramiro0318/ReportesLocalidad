@@ -1073,7 +1073,7 @@ public partial class MainViewModel : ObservableObject
 
         var reportePropio = MisReportes.FirstOrDefault(x => x.Id == reporte.Id);
 
-        if (reportePropio is not null)
+        if (reportePropio != null)
         {
             var posicion = MisReportes.IndexOf(reportePropio);
             MisReportes[posicion] = reportePropioActualizado;
@@ -1081,7 +1081,7 @@ public partial class MainViewModel : ObservableObject
 
         var reportePropioCargado = reportesPropiosCargados.FirstOrDefault(x => x.Id == reporte.Id);
 
-        if (reportePropioCargado is not null)
+        if (reportePropioCargado != null)
         {
             var posicion = reportesPropiosCargados.IndexOf(reportePropioCargado);
             reportesPropiosCargados[posicion] = reportePropioActualizado;
@@ -1089,7 +1089,7 @@ public partial class MainViewModel : ObservableObject
 
         var reporteGeneral = Reportes.FirstOrDefault(x => x.Id == reporte.Id);
 
-        if (reporteGeneral is not null)
+        if (reporteGeneral != null)
         {
             var reporteGeneralActualizado = new ReporteGeneralDto
             {
@@ -1107,7 +1107,7 @@ public partial class MainViewModel : ObservableObject
 
             var reporteGeneralCargado = reportesCargados.FirstOrDefault(x => x.Id == reporte.Id);
 
-            if (reporteGeneralCargado is not null)
+            if (reporteGeneralCargado != null)
             {
                 var posicionCargado = reportesCargados.IndexOf(reporteGeneralCargado);
                 reportesCargados[posicionCargado] = reporteGeneralActualizado;
@@ -1121,28 +1121,28 @@ public partial class MainViewModel : ObservableObject
     {
         var reportePropio = MisReportes.FirstOrDefault(x => x.Id == idReporte);
 
-        if (reportePropio is not null)
+        if (reportePropio != null)
         {
             MisReportes.Remove(reportePropio);
         }
 
         var reportePropioCargado = reportesPropiosCargados.FirstOrDefault(x => x.Id == idReporte);
 
-        if (reportePropioCargado is not null)
+        if (reportePropioCargado != null)
         {
             reportesPropiosCargados.Remove(reportePropioCargado);
         }
 
         var reporteGeneral = Reportes.FirstOrDefault(x => x.Id == idReporte);
 
-        if (reporteGeneral is not null)
-        {
+        if (reporteGeneral != null)
+        {   
             Reportes.Remove(reporteGeneral);
         }
 
         var reporteGeneralCargado = reportesCargados.FirstOrDefault(x => x.Id == idReporte);
 
-        if (reporteGeneralCargado is not null)
+        if (reporteGeneralCargado != null)
         {
             reportesCargados.Remove(reporteGeneralCargado);
         }

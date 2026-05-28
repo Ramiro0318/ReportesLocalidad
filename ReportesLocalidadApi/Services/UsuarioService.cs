@@ -91,7 +91,7 @@ public class UsuarioService
         var refreshToken = await context.RefreshTokens.Include(refreshToken => refreshToken.IdUsuarioNavigation)
             .FirstOrDefaultAsync(refreshToken => refreshToken.Token == refreshTokenDto.RefreshToken);
 
-        if (refreshToken is null || refreshToken.FechaRevocacion is not null || refreshToken.FechaExpiracion <= DateTime.Now)
+        if (refreshToken is null || refreshToken.FechaRevocacion != null || refreshToken.FechaExpiracion <= DateTime.Now)
         {
             return new ApiResponse<AuthResponseDto>
             {

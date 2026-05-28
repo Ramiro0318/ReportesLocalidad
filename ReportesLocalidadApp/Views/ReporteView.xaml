@@ -6,11 +6,12 @@
              Shell.NavBarIsVisible="False">
     <Grid RowDefinitions="Auto,*" BackgroundColor="#0F0F0F" Padding="10">
         <Border WidthRequest="38" Grid.Row="0" Grid.Column="0" HeightRequest="38" StrokeShape="RoundRectangle 12"
-                BackgroundColor="#2B2B29" Stroke="#4A4A45" Padding="0" VerticalOptions="Center" HorizontalOptions="Start">
+                BackgroundColor="#2B2B29" ZIndex="999" Stroke="#4A4A45" VerticalOptions="Center" HorizontalOptions="Start">
             <Border.GestureRecognizers>
-                <TapGestureRecognizer Command="{Binding VolverReporteCommand}"></TapGestureRecognizer>
+                <TapGestureRecognizer Command="{Binding IrInicioCommand}"></TapGestureRecognizer>
             </Border.GestureRecognizers>
-            <Label Grid.Row="0" Text="&lt;" TextColor="White" FontSize="14" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"></Label>
+            <Label Grid.Row="0" Text="&lt;" TextColor="White" FontSize="14" HorizontalTextAlignment="Center" VerticalTextAlignment="Center">
+            </Label>
         </Border>
 
         <Label Text="{Binding ReporteDetalle.Titulo}" TextColor="White" FontSize="20"
@@ -19,14 +20,9 @@
 
         <ScrollView Grid.Row="1" Margin="0,20,0,0">
             <VerticalStackLayout Spacing="10">
-
                 <Border StrokeShape="RoundRectangle 14" BackgroundColor="#2B2B29" Stroke="#4A4A45"
-                        HeightRequest="230" Padding="0">
-                    <Grid>
-                        <Image Source="{Binding ImagenDetalleUrl}" Aspect="AspectFill"></Image>
-                        <Label Text="Imagen del reporte" TextColor="LightGray"
-                               HorizontalOptions="Center" VerticalOptions="Center"></Label>
-                    </Grid>
+                        HeightRequest="300" Padding="0">
+                    <Image Source="{Binding ImagenDetalleUrl}" Aspect="Fill"></Image>
                 </Border>
 
                 <Label Text="Cambiar fotografia" TextColor="White" FontAttributes="Bold" FontSize="15"
@@ -63,28 +59,86 @@
                 </Border>
 
                 <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
-                    <Border BackgroundColor="#FFE9A8" Stroke="Transparent" Padding="10,4"
-                            HorizontalOptions="Start" StrokeShape="RoundRectangle 20">
-                        <Label Text="{Binding ReporteDetalle.EstadoTexto}" TextColor="#7A5200" FontSize="11"
-                               FontAttributes="Bold" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"></Label>
+                    <Border Stroke="Transparent" Padding="10,5" HorizontalOptions="Start" StrokeShape="RoundRectangle 20">
+                        <Border.Triggers>
+                                <DataTrigger TargetType="Border" Binding="{Binding ReporteDetalle.EstadoTexto}" Value="Pendiente">
+                                    <Setter Property="BackgroundColor" Value="#FFE9A8"></Setter>
+                                </DataTrigger>
+
+                                <DataTrigger TargetType="Border" Binding="{Binding ReporteDetalle.EstadoTexto}" Value="En progreso">
+                                    <Setter Property="BackgroundColor" Value="#B9E3FF"></Setter>
+                                </DataTrigger>
+
+                                <DataTrigger TargetType="Border" Binding="{Binding ReporteDetalle.EstadoTexto}" Value="Resuelto">
+                                    <Setter Property="BackgroundColor" Value="#C9F7C5"></Setter>
+                                </DataTrigger>
+                            </Border.Triggers>
+
+                        <Label Text="{Binding ReporteDetalle.EstadoTexto}" FontSize="11" FontAttributes="Bold" HorizontalTextAlignment="Center" VerticalTextAlignment="Center">
+                            <Label.Triggers>
+                                <DataTrigger TargetType="Label" Binding="{Binding ReporteDetalle.EstadoTexto}" Value="Pendiente">
+                                    <Setter Property="TextColor" Value="#7A5200"></Setter>
+                                </DataTrigger>
+
+                                <DataTrigger TargetType="Label" Binding="{Binding ReporteDetalle.EstadoTexto}" Value="En progreso">
+                                    <Setter Property="TextColor" Value="#005B99"></Setter>
+                                </DataTrigger>
+
+                                <DataTrigger TargetType="Label" Binding="{Binding ReporteDetalle.EstadoTexto}" Value="Resuelto">
+                                    <Setter Property="TextColor" Value="#1E7A1E"></Setter>
+                                </DataTrigger>
+                            </Label.Triggers>
+                        </Label>
                     </Border>
 
-                    <Border Grid.Column="1" BackgroundColor="#FFF1E8" Stroke="Transparent" Padding="10,4"
-                            HorizontalOptions="End" StrokeShape="RoundRectangle 20">
-                        <Label Text="{Binding ReporteDetalle.CategoriaTexto}" TextColor="#E85B2A" FontSize="11"
-                               FontAttributes="Bold" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"></Label>
+                    <Border Grid.Column="1" BackgroundColor="LightGray" Stroke="Transparent" Padding="15,10"
+                            HorizontalOptions="End" StrokeShape="RoundRectangle 20" Margin="0,0,10,0">
+                        <Border.Triggers>
+                            <DataTrigger TargetType="Border" Binding="{Binding ReporteDetalle.CategoriaTexto}" Value="Bache">
+                                <Setter Property="BackgroundColor" Value="#F5D8B3"></Setter>
+                            </DataTrigger>
+                            
+                            <DataTrigger TargetType="Border" Binding="{Binding ReporteDetalle.CategoriaTexto}" Value="Fuga de agua">
+                                <Setter Property="BackgroundColor" Value="#E8F5FF"></Setter>
+                            </DataTrigger>
+                            
+                            <DataTrigger TargetType="Border" Binding="{Binding ReporteDetalle.CategoriaTexto}" Value="Alumbrado publico">
+                                <Setter Property="BackgroundColor" Value="#EEFBE3"></Setter>
+                            </DataTrigger>
+                            
+                            <DataTrigger TargetType="Border" Binding="{Binding ReporteDetalle.CategoriaTexto}" Value="Basura">
+                                <Setter Property="BackgroundColor" Value="#F3E8FF"></Setter>
+                            </DataTrigger>
+                            
+                            <DataTrigger TargetType="Border" Binding="{Binding ReporteDetalle.CategoriaTexto}" Value="Accidente">
+                                <Setter Property="BackgroundColor" Value="#FFE5E5"></Setter>
+                            </DataTrigger>
+                        </Border.Triggers>
+                        <Label Text="{Binding ReporteDetalle.CategoriaTexto}" FontSize="11" FontAttributes="Bold" TextColor="Black" HorizontalTextAlignment="Center" VerticalTextAlignment="Center">
+                            <Label.Triggers>
+                                <DataTrigger TargetType="Label" Binding="{Binding ReporteDetalle.CategoriaTexto}" Value="Bache">
+                                    <Setter Property="TextColor" Value="#E85B2A"></Setter>
+                                </DataTrigger>
+                                
+                                <DataTrigger TargetType="Label" Binding="{Binding ReporteDetalle.CategoriaTexto}" Value="Fuga de agua">
+                                    <Setter Property="TextColor" Value="#247FD4"></Setter>
+                                </DataTrigger>
+                                
+                                <DataTrigger TargetType="Label" Binding="{Binding ReporteDetalle.CategoriaTexto}" Value="Alumbrado publico">
+                                    <Setter Property="TextColor" Value="#5C9F10"></Setter>
+                                </DataTrigger>
+                                
+                                <DataTrigger TargetType="Label" Binding="{Binding ReporteDetalle.CategoriaTexto}" Value="Basura">
+                                    <Setter Property="TextColor" Value="Gray"></Setter>
+                                </DataTrigger>
+                                
+                                <DataTrigger TargetType="Label" Binding="{Binding ReporteDetalle.CategoriaTexto}" Value="Accidente">
+                                    <Setter Property="TextColor" Value="#D62828"></Setter>
+                                </DataTrigger>
+                            </Label.Triggers>
+                        </Label>
                     </Border>
                 </Grid>
-
-                <Label Text="Titulo" TextColor="White" FontSize="15" FontAttributes="Bold"></Label>
-                <Border StrokeShape="RoundRectangle 12" BackgroundColor="#2B2B29"
-                        Stroke="#4A4A45" Padding="10">
-                    <Entry Text="{Binding TituloDetalle}"
-                           IsReadOnly="{Binding CamposSoloLectura}"
-                           TextColor="White"
-                           PlaceholderColor="LightGray"
-                           BackgroundColor="Transparent"></Entry>
-                </Border>
 
                 <Label Text="Categoria" TextColor="White" FontSize="15" FontAttributes="Bold"></Label>
                 <Border StrokeShape="RoundRectangle 12" BackgroundColor="#2B2B29"
@@ -94,23 +148,6 @@
                             IsEnabled="{Binding EstaEditandoReporte}"
                             TextColor="White"
                             BackgroundColor="Transparent"></Picker>
-                </Border>
-
-                <Label Text="Ubicacion" TextColor="White" FontSize="15" FontAttributes="Bold"></Label>
-                <Border StrokeShape="RoundRectangle 12" BackgroundColor="#2B2B29" Stroke="#4A4A45"
-                        Padding="14" HeightRequest="90">
-                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
-                        <Label Text="IconoUbicacion" TextColor="#F05A2A"
-                               FontSize="15" VerticalOptions="Center"></Label>
-                        <VerticalStackLayout Grid.Column="1" Spacing="4" VerticalOptions="Center">
-                            <Label Text="{Binding ReporteDetalle.Direccion}"
-                                   TextColor="White" FontSize="13"
-                                   FontAttributes="Bold"></Label>
-
-                            <Label Text="Sin direccion registrada" TextColor="LightGray"
-                                   FontSize="12"></Label>
-                        </VerticalStackLayout>
-                    </Grid>
                 </Border>
 
                 <Label Text="Descripcion" TextColor="White"
@@ -129,29 +166,20 @@
                 <Label Text="{Binding Mensaje}" TextColor="White" FontSize="13"></Label>
 
                 <Button Text="Editar"
-                        HeightRequest="50"
-                        CornerRadius="15"
-                        FontAttributes="Bold"
-                        BackgroundColor="#1E4BE3"
-                        TextColor="White"
+                       HeightRequest="50"
+                    CornerRadius="15" FontAttributes="Bold" FontSize="15" 
+                        BackgroundColor="#F54927" TextColor="White"
                         IsVisible="{Binding PuedeEditarReporte}"
                         Command="{Binding ActivarEdicionReporteCommand}"></Button>
 
-                <Button Text="Confirmar edicion"
-                        HeightRequest="50"
-                        CornerRadius="15"
-                        FontAttributes="Bold"
-                        BackgroundColor="#F54927"
-                        TextColor="White"
+                <Button Text="Confirmar edicion" HeightRequest="50" CornerRadius="15"
+                        FontAttributes="Bold" BackgroundColor="#F54927" TextColor="White"
                         IsVisible="{Binding EstaEditandoReporte}"
                         Command="{Binding GuardarEdicionReporteCommand}"></Button>
 
-                <Button Text="Eliminar"
-                        HeightRequest="50"
-                        CornerRadius="15"
-                        FontAttributes="Bold"
-                        BackgroundColor="#FF122E"
-                        TextColor="White"
+                <Button Text="Eliminar"  HeightRequest="50" CornerRadius="15"
+                      FontAttributes="Bold" FontSize="15" BackgroundColor="#2B2B29"
+                      BorderColor="#FF4D4D" BorderWidth="1.5" TextColor="#FF4D4D"
                         IsVisible="{Binding PuedeEditarReporte}"
                         Command="{Binding EliminarReporteCommand}"></Button>
 

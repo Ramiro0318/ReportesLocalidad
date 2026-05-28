@@ -37,7 +37,7 @@ namespace ReportesLocalidadApp
                 var token = await FirebaseMessaging.Instance.GetToken();
                 var tokenService = IPlatformApplication.Current?.Services.GetService<FirebaseTokenService>();
 
-                if (tokenService is not null && !string.IsNullOrWhiteSpace(token?.ToString()))
+                if (tokenService != null && !string.IsNullOrWhiteSpace(token?.ToString()))
                 {
                     await tokenService.GuardarTokenAsync(token.ToString());
                 }

@@ -55,7 +55,7 @@ public class ReportePendienteService
         var reportes = await ObtenerReportesPendientesAsync();
         var reporte = reportes.FirstOrDefault(x => x.ClientRequestId == clientRequestId);
 
-        if (reporte is not null)
+        if (reporte != null)
         {
             reportes.Remove(reporte);
             await GuardarListaAsync(reportes);

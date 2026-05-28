@@ -51,7 +51,7 @@ public class FirebaseNotificationService
 
     private bool InicializarFirebase()
     {
-        if (firebaseInicializado || FirebaseApp.DefaultInstance is not null)
+        if (firebaseInicializado || FirebaseApp.DefaultInstance != null)
         {
             firebaseInicializado = true;
             return true;

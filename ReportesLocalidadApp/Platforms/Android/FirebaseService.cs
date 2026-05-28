@@ -14,14 +14,14 @@ public class FirebaseService : FirebaseMessagingService
 
         var tokenService = IPlatformApplication.Current?.Services.GetService<FirebaseTokenService>();
 
-        if (tokenService is not null)
+        if (tokenService != null)
         {
             await tokenService.GuardarTokenAsync(token);
         }
 
         var authService = IPlatformApplication.Current?.Services.GetService<AuthService>();
 
-        if (authService is not null)
+        if (authService != null)
         {
             await authService.EnviarTokenFirebaseAsync();
         }

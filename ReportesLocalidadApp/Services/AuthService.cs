@@ -45,7 +45,7 @@ public class AuthService
 
             var resultado = await response.Content.ReadFromJsonAsync<ApiResponse<AuthResponseDto>>();
 
-            if (resultado?.Success == true && resultado.Data is not null)
+            if (resultado?.Success == true && resultado.Data != null)
             {
                 await GuardarSesionAsync(resultado.Data);
 
@@ -235,7 +235,7 @@ public class AuthService
 
             var resultado = await response.Content.ReadFromJsonAsync<ApiResponse<AuthResponseDto>>();
 
-            if (resultado?.Success == true && resultado.Data is not null)
+            if (resultado?.Success == true && resultado.Data != null)
             {
                 await GuardarSesionAsync(resultado.Data);
                 return true;
