@@ -770,10 +770,38 @@ public partial class MainViewModel : ObservableObject
         await Shell.Current.GoToAsync("//reportes");
     }
 
+    private async Task GuardarEdicionPendienteAsync(int idReporte, EditarReporteDto reporteEditado)
+    {
+        await reportePendienteService.GuardarEdicionPendienteAsync(idReporte, reporteEditado);
+        await CargarReportesPendientesAsync();
+        Mensaje = "No se pudo conectar con la API. La edición se enviará cuando vuelva la conexión.";
+        await MostrarToastAsync("Edición guardada. Se enviará cuando vuelva la conexión.");
+        await Shell.Current.GoToAsync("//misReportes");
+    }
+
+    private async Task GuardarEliminacionPendienteAsync(int idReporte, int idUsuario, string rutaRegreso)
+    {
+        await reportePendienteService.GuardarEliminacionPendienteAsync(idReporte, idUsuario);
+        await CargarReportesPendientesAsync();
+        QuitarReporteDeListas(idReporte);
+        ReporteDetalle = null;
+        Mensaje = "No se pudo conectar con la API. La eliminación se enviará cuando vuelva la conexión.";
+        await MostrarToastAsync("Eliminación guardada. Se enviará cuando vuelva la conexión.");
+        await Shell.Current.GoToAsync(rutaRegreso);
+    }
+
+    private async Task GuardarCambioEstadoPendienteAsync(int idReporte, CambiarEstadoReporteDto cambiarEstadoDto)
+    {
+        await reportePendienteService.GuardarCambioEstadoPendienteAsync(idReporte, cambiarEstadoDto);
+        await CargarReportesPendientesAsync();
+        Mensaje = "No se pudo conectar con la API. El cambio de estado se enviará cuando vuelva la conexión.";
+        await MostrarToastAsync("Cambio de estado guardado. Se enviará cuando vuelva la conexión.");
+        await Shell.Current.GoToAsync("//adminReportes");
+    }
     private async Task CargarReportesPendientesAsync()
     {
-        var reportesPendientesLocales = await reportePendienteService.ObtenerReportesPendientesAsync();
-        ReportesPendientes = reportesPendientesLocales.Count;
+        var accionesPendientes = await reportePendienteService.ObtenerAccionesPendientesAsync();
+        ReportesPendientes = accionesPendientes.Count;
     }
 
     private async Task CargarNombreUsuarioAsync()
@@ -831,9 +859,9 @@ public partial class MainViewModel : ObservableObject
         {
             enviandoReportesPendientes = true;
 
-            var reportesPendientesLocales = await reportePendienteService.ObtenerReportesPendientesAsync();
+            var accionesPendientes = await reportePendienteService.ObtenerAccionesPendientesAsync();
 
-            if (reportesPendientesLocales.Count == 0)
+            if (accionesPendientes.Count == 0)
             {
                 ReportesPendientes = 0;
                 return;
@@ -841,9 +869,9 @@ public partial class MainViewModel : ObservableObject
 
             var enviados = 0;
 
-            foreach (var reportePendiente in reportesPendientesLocales)
+            foreach (var accionPendiente in accionesPendientes)
             {
-                var respuesta = await reportesService.CrearReporteAsync(reportePendiente);
+                var respuesta = await EnviarAccionPendienteAsync(accionPendiente);
 
                 if (respuesta is null)
                 {
@@ -851,7 +879,7 @@ public partial class MainViewModel : ObservableObject
 
                     if (apiDisponible)
                     {
-                        Mensaje = "La API responde, pero un reporte pendiente no pudo enviarse. Revisa que la imagen no sea demasiado pesada.";
+                        Mensaje = "La API responde, pero un pendiente no pudo enviarse. Revisa que la imagen no sea demasiado pesada.";
 
                         if (mostrarAlerta)
                         {
@@ -864,13 +892,13 @@ public partial class MainViewModel : ObservableObject
 
                 if (ReporteDuplicado(respuesta.Message))
                 {
-                    await reportePendienteService.EliminarReportePendienteAsync(reportePendiente.ClientRequestId);
+                    await reportePendienteService.EliminarAccionPendienteAsync(accionPendiente.IdPendiente);
                     continue;
                 }
 
                 if (ErrorNoReintentable(respuesta.Message))
                 {
-                    await reportePendienteService.EliminarReportePendienteAsync(reportePendiente.ClientRequestId);
+                    await reportePendienteService.EliminarAccionPendienteAsync(accionPendiente.IdPendiente);
                     Mensaje = respuesta.Message;
                     await MostrarToastAsync(respuesta.Message);
                     continue;
@@ -881,8 +909,8 @@ public partial class MainViewModel : ObservableObject
                     continue;
                 }
 
-                await reportePendienteService.EliminarReportePendienteAsync(reportePendiente.ClientRequestId);
-                await AgregarReporteLista(respuesta.Data);
+                await reportePendienteService.EliminarAccionPendienteAsync(accionPendiente.IdPendiente);
+                await AplicarAccionPendienteEnListasAsync(accionPendiente, respuesta.Data);
                 ActualizarConteoPerfil();
                 enviados++;
             }
@@ -891,11 +919,11 @@ public partial class MainViewModel : ObservableObject
 
             if (enviados > 0)
             {
-                Mensaje = $"Se enviaron {enviados} reportes pendientes.";
+                Mensaje = $"Se procesaron {enviados} pendientes.";
 
                 if (mostrarAlerta)
                 {
-                    await MostrarToastAsync($"Se enviaron {enviados} reportes pendientes.");
+                    await MostrarToastAsync($"Se procesaron {enviados} pendientes.");
                 }
             }
         }
@@ -905,6 +933,54 @@ public partial class MainViewModel : ObservableObject
         }
     }
 
+    private async Task<ApiResponse<ReporteDetalleDto>?> EnviarAccionPendienteAsync(AccionPendienteDto accionPendiente)
+    {
+        if (accionPendiente.Tipo == "Crear" && accionPendiente.SubirReporte != null)
+        {
+            return await reportesService.CrearReporteAsync(accionPendiente.SubirReporte);
+        }
+
+        if (accionPendiente.Tipo == "Editar" && accionPendiente.EditarReporte != null)
+        {
+            return await reportesService.EditarReporteAsync(accionPendiente.IdReporte, accionPendiente.EditarReporte);
+        }
+
+        if (accionPendiente.Tipo == "Eliminar")
+        {
+            return await reportesService.EliminarReporteAsync(accionPendiente.IdReporte, accionPendiente.IdUsuario);
+        }
+
+        if (accionPendiente.Tipo == "CambiarEstado" && accionPendiente.CambiarEstado != null)
+        {
+            return await reportesService.CambiarEstadoAsync(accionPendiente.IdReporte, accionPendiente.CambiarEstado);
+        }
+
+        return new ApiResponse<ReporteDetalleDto>
+        {
+            Success = false,
+            Message = "Acción pendiente no válida."
+        };
+    }
+
+    private async Task AplicarAccionPendienteEnListasAsync(AccionPendienteDto accionPendiente, ReporteDetalleDto? reporte)
+    {
+        if (accionPendiente.Tipo == "Crear" && reporte != null)
+        {
+            await AgregarReporteLista(reporte);
+            return;
+        }
+
+        if ((accionPendiente.Tipo == "Editar" || accionPendiente.Tipo == "CambiarEstado") && reporte != null)
+        {
+            ActualizarReporteEnListas(reporte);
+            return;
+        }
+
+        if (accionPendiente.Tipo == "Eliminar")
+        {
+            QuitarReporteDeListas(accionPendiente.IdReporte);
+        }
+    }
     private bool ReporteDuplicado(string? mensaje)
     {
         return !string.IsNullOrWhiteSpace(mensaje) &&
@@ -921,7 +997,11 @@ public partial class MainViewModel : ObservableObject
         return mensaje.Contains("demasiado grande", StringComparison.OrdinalIgnoreCase) ||
             mensaje.Contains("formato", StringComparison.OrdinalIgnoreCase) ||
             mensaje.Contains("base64", StringComparison.OrdinalIgnoreCase) ||
-            mensaje.Contains("Categoria", StringComparison.OrdinalIgnoreCase);
+            mensaje.Contains("Categoria", StringComparison.OrdinalIgnoreCase) ||
+            mensaje.Contains("Reporte no encontrado", StringComparison.OrdinalIgnoreCase) ||
+            mensaje.Contains("Acción pendiente no válida", StringComparison.OrdinalIgnoreCase) ||
+            mensaje.Contains("No puedes", StringComparison.OrdinalIgnoreCase) ||
+            mensaje.Contains("Solo un administrador", StringComparison.OrdinalIgnoreCase);
     }
 
     private async Task MostrarToastAsync(string mensaje)
@@ -1118,11 +1198,26 @@ public partial class MainViewModel : ObservableObject
                 IdCategoria = ObtenerIdCategoria(CategoriaDetalle)
             };
 
+            if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
+            {
+                await GuardarEdicionPendienteAsync(ReporteDetalle.Id, reporteEditado);
+                return;
+            }
+
             var respuesta = await reportesService.EditarReporteAsync(ReporteDetalle.Id, reporteEditado);
 
             if (respuesta is null)
             {
-                Mensaje = "No se pudo conectar con la API.";
+                var apiDisponible = await reportesService.ApiDisponibleAsync();
+
+                if (!apiDisponible)
+                {
+                    await GuardarEdicionPendienteAsync(ReporteDetalle.Id, reporteEditado);
+                    return;
+                }
+
+                Mensaje = "La API responde, pero no pudo editar el reporte.";
+                await MostrarToastAsync(Mensaje);
                 return;
             }
 
@@ -1171,11 +1266,26 @@ public partial class MainViewModel : ObservableObject
                 return;
             }
 
+            if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
+            {
+                await GuardarEliminacionPendienteAsync(ReporteDetalle.Id, idUsuario, "//misReportes");
+                return;
+            }
+
             var respuesta = await reportesService.EliminarReporteAsync(ReporteDetalle.Id, idUsuario);
 
             if (respuesta is null)
             {
-                Mensaje = "No se pudo conectar con la API.";
+                var apiDisponible = await reportesService.ApiDisponibleAsync();
+
+                if (!apiDisponible)
+                {
+                    await GuardarEliminacionPendienteAsync(ReporteDetalle.Id, idUsuario, "//misReportes");
+                    return;
+                }
+
+                Mensaje = "La API responde, pero no pudo eliminar el reporte.";
+                await MostrarToastAsync(Mensaje);
                 return;
             }
 
@@ -1316,11 +1426,26 @@ public partial class MainViewModel : ObservableObject
                 return;
             }
 
+            if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
+            {
+                await GuardarEliminacionPendienteAsync(ReporteDetalle.Id, idUsuario, "//adminReportes");
+                return;
+            }
+
             var respuesta = await reportesService.EliminarReporteAsync(ReporteDetalle.Id, idUsuario);
 
             if (respuesta is null)
             {
-                Mensaje = "No se pudo conectar con la API.";
+                var apiDisponible = await reportesService.ApiDisponibleAsync();
+
+                if (!apiDisponible)
+                {
+                    await GuardarEliminacionPendienteAsync(ReporteDetalle.Id, idUsuario, "//adminReportes");
+                    return;
+                }
+
+                Mensaje = "La API responde, pero no pudo eliminar el reporte.";
+                await MostrarToastAsync(Mensaje);
                 return;
             }
 
@@ -1369,11 +1494,26 @@ public partial class MainViewModel : ObservableObject
                 IdUsuario = idUsuario
             };
 
+            if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
+            {
+                await GuardarCambioEstadoPendienteAsync(ReporteDetalle.Id, cambiarEstadoDto);
+                return;
+            }
+
             var respuesta = await reportesService.CambiarEstadoAsync(ReporteDetalle.Id, cambiarEstadoDto);
 
             if (respuesta is null)
             {
-                Mensaje = "No se pudo conectar con la API.";
+                var apiDisponible = await reportesService.ApiDisponibleAsync();
+
+                if (!apiDisponible)
+                {
+                    await GuardarCambioEstadoPendienteAsync(ReporteDetalle.Id, cambiarEstadoDto);
+                    return;
+                }
+
+                Mensaje = "La API responde, pero no pudo cambiar el estado.";
+                await MostrarToastAsync(Mensaje);
                 return;
             }
 
