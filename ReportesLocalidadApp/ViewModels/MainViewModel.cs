@@ -19,6 +19,10 @@ public partial class MainViewModel : ObservableObject
     private string? fotoBase64;
     private bool enviandoReportesPendientes;
     private bool procesandoFoto;
+    private bool estaNavegando;
+    private bool cargandoReportesGenerales;
+    private bool cargandoReportesPropios;
+    private bool cargandoPerfil;
     private string estadoOriginalReporte = "Pendiente";
     private bool preparandoDetalleReporte;
     private bool estadoReporteFueModificado;
@@ -39,9 +43,6 @@ public partial class MainViewModel : ObservableObject
         Reportes = new ObservableCollection<ReporteGeneralDto>();
         MisReportes = new ObservableCollection<ReportePropioDto>();
         Connectivity.Current.ConnectivityChanged += async (sender, args) => await RevisarConexionAsync();
-        _ = CargarReportesPendientesAsync();
-        _ = ReintentarReportesSiApiDisponible(false);
-        _ = CargarNombreUsuarioAsync();
     }
 
     public ObservableCollection<ReporteGeneralDto> Reportes { get; }
@@ -212,23 +213,19 @@ public partial class MainViewModel : ObservableObject
 
     private async Task CargarReportesGeneralesAsync()
     {
-        if (IsBusy)
+        if (cargandoReportesGenerales)
         {
             return;
         }
 
         try
         {
+            cargandoReportesGenerales = true;
             IsBusy = true;
             Mensaje = "";
             await CargarNombreUsuarioAsync();
 
-            reportesCargados.Clear();
-            Reportes.Clear();
-            reportesSaltados = 0;
-            elementosMostrados = 0;
-
-            var respuesta = await reportesService.GetReportesAsync(reportesSaltados, CargaInicial);
+            var respuesta = await reportesService.GetReportesAsync(0, CargaInicial);
 
             if (respuesta is null)
             {
@@ -242,13 +239,16 @@ public partial class MainViewModel : ObservableObject
                 return;
             }
 
+            reportesCargados.Clear();
             reportesCargados.AddRange(respuesta.Data);
-            reportesSaltados += respuesta.Data.Count;
+            reportesSaltados = respuesta.Data.Count;
+            elementosMostrados = 0;
             AplicarFiltrosReportesAdmin();
             await ReintentarReportesSiApiDisponible(false);
         }
         finally
         {
+            cargandoReportesGenerales = false;
             IsBusy = false;
         }
     }
@@ -256,7 +256,7 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     private async Task CargarMasReportesAdmin()
     {
-        if (IsBusy)
+        if (IsBusy || cargandoReportesGenerales)
         {
             return;
         }
@@ -349,21 +349,17 @@ public partial class MainViewModel : ObservableObject
 
     private async Task CargarMisReportesAsync()
     {
-        if (IsBusy)
+        if (cargandoReportesPropios)
         {
             return;
         }
 
         try
         {
+            cargandoReportesPropios = true;
             IsBusy = true;
             Mensaje = "";
             await CargarNombreUsuarioAsync();
-
-            reportesPropiosCargados.Clear();
-            MisReportes.Clear();
-            reportesPropiosSaltados = 0;
-            elementosPropiosMostrados = 0;
 
             var idUsuario = await authService.GetIdUsuarioAsync();
 
@@ -373,7 +369,7 @@ public partial class MainViewModel : ObservableObject
                 return;
             }
 
-            var respuesta = await reportesService.GetByUsuarioAsync(idUsuario, reportesPropiosSaltados, CargaInicial);
+            var respuesta = await reportesService.GetByUsuarioAsync(idUsuario, 0, CargaInicial);
 
             if (respuesta is null)
             {
@@ -387,14 +383,18 @@ public partial class MainViewModel : ObservableObject
                 return;
             }
 
+            reportesPropiosCargados.Clear();
             reportesPropiosCargados.AddRange(respuesta.Data);
-            reportesPropiosSaltados += respuesta.Data.Count;
+            MisReportes.Clear();
+            reportesPropiosSaltados = respuesta.Data.Count;
+            elementosPropiosMostrados = 0;
             MostrarSiguientesPropios();
             ActualizarConteoPerfil();
             await ReintentarReportesSiApiDisponible(false);
         }
         finally
         {
+            cargandoReportesPropios = false;
             IsBusy = false;
         }
     }
@@ -402,7 +402,7 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     private async Task CargarMasMisReportes()
     {
-        if (IsBusy)
+        if (IsBusy || cargandoReportesPropios)
         {
             return;
         }
@@ -468,30 +468,43 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     private async Task CargarPerfil()
     {
-        await CargarNombreUsuarioAsync();
-        await CargarReportesPendientesAsync();
-
-        var idUsuario = await authService.GetIdUsuarioAsync();
-
-        if (idUsuario == 0)
+        if (cargandoPerfil)
         {
-            TotalMisReportes = 0;
-            ReportesAtendidos = 0;
-            ReportesPendientesUsuario = 0;
             return;
         }
 
-        var respuesta = await reportesService.GetByUsuarioAsync(idUsuario, 0, CargaInicial);
-
-        if (respuesta is null || !respuesta.Success || respuesta.Data is null)
+        try
         {
+            cargandoPerfil = true;
+            await CargarNombreUsuarioAsync();
+            await CargarReportesPendientesAsync();
+
+            var idUsuario = await authService.GetIdUsuarioAsync();
+
+            if (idUsuario == 0)
+            {
+                TotalMisReportes = 0;
+                ReportesAtendidos = 0;
+                ReportesPendientesUsuario = 0;
+                return;
+            }
+
+            var respuesta = await reportesService.GetByUsuarioAsync(idUsuario, 0, CargaInicial);
+
+            if (respuesta is null || !respuesta.Success || respuesta.Data is null)
+            {
+                ActualizarConteoPerfil();
+                return;
+            }
+
+            reportesPropiosCargados.Clear();
+            reportesPropiosCargados.AddRange(respuesta.Data);
             ActualizarConteoPerfil();
-            return;
         }
-
-        reportesPropiosCargados.Clear();
-        reportesPropiosCargados.AddRange(respuesta.Data);
-        ActualizarConteoPerfil();
+        finally
+        {
+            cargandoPerfil = false;
+        }
     }
 
     private void ActualizarConteoPerfil()
@@ -659,7 +672,7 @@ public partial class MainViewModel : ObservableObject
             await MostrarToastAsync("Reporte creado correctamente.");
             await ReintentarReportesSiApiDisponible(false);
 
-            await Shell.Current.GoToAsync("reportes");
+            await Shell.Current.GoToAsync("//reportes");
         }
         finally
         {
@@ -726,7 +739,7 @@ public partial class MainViewModel : ObservableObject
 
         Mensaje = "No se pudo conectar con la API. El reporte se subirá cuando vuelva la conexión.";
         await MostrarToastAsync("Reporte guardado. Se subirá cuando vuelva la conexión.");
-        await Shell.Current.GoToAsync("reportes");
+        await Shell.Current.GoToAsync("//reportes");
     }
 
     private async Task CargarReportesPendientesAsync()
@@ -943,7 +956,7 @@ public partial class MainViewModel : ObservableObject
 
             if (ruta == "reporteAdmin")
             {
-                await Task.Delay(100);
+                await Task.Delay(50);
                 ReiniciarCambioEstadoAdmin();
             }
         }
@@ -1148,7 +1161,7 @@ public partial class MainViewModel : ObservableObject
             ReporteDetalle = null;
             Mensaje = respuesta.Message;
             await MostrarToastAsync("Reporte eliminado correctamente.");
-            await Shell.Current.GoToAsync("misReportes");
+            await Shell.Current.GoToAsync("//misReportes");
         }
         finally
         {
@@ -1293,7 +1306,7 @@ public partial class MainViewModel : ObservableObject
             ReporteDetalle = null;
             Mensaje = respuesta.Message;
             await MostrarToastAsync("Reporte eliminado correctamente.");
-            await Shell.Current.GoToAsync("adminReportes");
+            await Shell.Current.GoToAsync("//adminReportes");
         }
         finally
         {
@@ -1346,7 +1359,7 @@ public partial class MainViewModel : ObservableObject
             ActualizarReporteEnListas(respuesta.Data);
             Mensaje = respuesta.Message;
             await MostrarToastAsync("Estado actualizado correctamente.");
-            await Shell.Current.GoToAsync("adminReportes");
+            await Shell.Current.GoToAsync("//adminReportes");
         }
         finally
         {
@@ -1356,47 +1369,67 @@ public partial class MainViewModel : ObservableObject
 
 
     //Navegacion
+    private async Task NavegarAsync(string ruta)
+    {
+        if (estaNavegando)
+        {
+            return;
+        }
+
+        try
+        {
+            estaNavegando = true;
+            IsBusy = true;
+            await Task.Delay(50);
+            await Shell.Current.GoToAsync(ruta);
+        }
+        finally
+        {
+            IsBusy = false;
+            estaNavegando = false;
+        }
+    }
+
     [RelayCommand]
     private async Task VolverReporte()
     {
         if (PuedeEditarReporte)
         {
-            await Shell.Current.GoToAsync("misReportes");
+            await NavegarAsync("//misReportes");
             return;
         }
 
-        await Shell.Current.GoToAsync("reportes");
+        await NavegarAsync("//reportes");
     }
 
     [RelayCommand]
     private async Task IrInicio()
     {
-        await Shell.Current.GoToAsync("reportes");
+        await NavegarAsync("//reportes");
     }
 
     [RelayCommand]
     private async Task IrAgregarReporte()
     {
-        await Shell.Current.GoToAsync("agregarReporte");
+        await NavegarAsync("//agregarReporte");
     }
 
     [RelayCommand]
     private async Task IrMisReportes()
     {
-        await Shell.Current.GoToAsync("misReportes");
+        await NavegarAsync("//misReportes");
     }
 
     [RelayCommand]
     private async Task IrPerfil()
     {
-        await CargarNombreUsuarioAsync();
-        await Shell.Current.GoToAsync("perfil");
+        await NavegarAsync("//perfil");
     }
 
     [RelayCommand]
     private async Task IrAdminReportes()
     {
-        await Shell.Current.GoToAsync("adminReportes");
+        await NavegarAsync("//adminReportes");
     }
 
     [RelayCommand]

@@ -12,4 +12,29 @@
         ContentTemplate="{DataTemplate views:LoginView}"
         Route="login" />
 
+    <ShellContent
+        Title="Inicio"
+        ContentTemplate="{DataTemplate views:InicioView}"
+        Route="reportes" />
+
+    <ShellContent
+        Title="Agregar"
+        ContentTemplate="{DataTemplate views:AgregarReporteView}"
+        Route="agregarReporte" />
+
+    <ShellContent
+        Title="Mis reportes"
+        ContentTemplate="{DataTemplate views:MisReportesView}"
+        Route="misReportes" />
+
+    <ShellContent
+        Title="Perfil"
+        ContentTemplate="{DataTemplate views:PerfilView}"
+        Route="perfil" />
+
+    <ShellContent
+        Title="Administrador"
+        ContentTemplate="{DataTemplate views:ReportesAdminView}"
+        Route="adminReportes" />
+
 </Shell>

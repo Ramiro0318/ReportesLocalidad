@@ -16,6 +16,7 @@ public partial class MisReportesView : ContentPage
 
         if (BindingContext is MainViewModel viewModel && viewModel.MisReportes.Count == 0)
         {
+            await Task.Delay(100);
             await viewModel.CargarMisReportesCommand.ExecuteAsync(null);
         }
     }

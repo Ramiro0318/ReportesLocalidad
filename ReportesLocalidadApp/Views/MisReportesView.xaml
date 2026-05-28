@@ -17,9 +17,9 @@
             </VerticalStackLayout>
         </Grid>
 
-        <RefreshView Grid.Row="1"  IsRefreshing="{Binding IsRefreshing}" Command="{Binding CargarReportesCommand}">
+        <RefreshView Grid.Row="1"  IsRefreshing="{Binding IsRefreshing}" Command="{Binding CargarMisReportesCommand}">
             <Grid RowDefinitions="auto,*" Padding="5">
-                <CollectionView ItemsSource="{Binding Reportes}" Grid.Row="1">
+                <CollectionView ItemsSource="{Binding MisReportes}" Grid.Row="1">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <Grid>
@@ -131,7 +131,7 @@
         </RefreshView>
 
         <Grid Grid.Row="2" HeightRequest="70" BackgroundColor="#2B2B29" ColumnDefinitions="*,*,*,*">
-            <VerticalStackLayout Grid.Column="0" HorizontalOptions="Center" VerticalOptions="Center" Spacing="2">
+            <VerticalStackLayout Grid.Column="0" HorizontalOptions="Center" VerticalOptions="Center" Spacing="2" MinimumWidthRequest="60">
                 <VerticalStackLayout.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding IrInicioCommand}"></TapGestureRecognizer>
                 </VerticalStackLayout.GestureRecognizers>
@@ -139,7 +139,7 @@
                 <Label Text="Inicio" TextColor="White" FontSize="11" HorizontalTextAlignment="Center"></Label>
             </VerticalStackLayout>
 
-            <VerticalStackLayout Grid.Column="2" HorizontalOptions="Center" VerticalOptions="Center" Spacing="2">
+            <VerticalStackLayout Grid.Column="2" HorizontalOptions="Center" VerticalOptions="Center" Spacing="2" MinimumWidthRequest="60">
                 <VerticalStackLayout.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding IrAgregarReporteCommand}"></TapGestureRecognizer>
                 </VerticalStackLayout.GestureRecognizers>
@@ -147,7 +147,7 @@
                 <Label Text="Agregar" TextColor="White" FontSize="11" HorizontalTextAlignment="Center"></Label>
             </VerticalStackLayout>
 
-            <VerticalStackLayout Grid.Column="1" HorizontalOptions="Center" VerticalOptions="Center" Spacing="2">
+            <VerticalStackLayout Grid.Column="1" HorizontalOptions="Center" VerticalOptions="Center" Spacing="2" MinimumWidthRequest="60">
                 <VerticalStackLayout.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding IrMisReportesCommand}"></TapGestureRecognizer>
                 </VerticalStackLayout.GestureRecognizers>
@@ -155,7 +155,7 @@
                 <Label Text="Mis reportes" TextColor="#F05A2A" FontSize="11" HorizontalTextAlignment="Center"></Label>
             </VerticalStackLayout>
 
-            <VerticalStackLayout Grid.Column="3" HorizontalOptions="Center" VerticalOptions="Center" Spacing="2">
+            <VerticalStackLayout Grid.Column="3" HorizontalOptions="Center" VerticalOptions="Center" Spacing="2" MinimumWidthRequest="60">
                 <VerticalStackLayout.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding IrPerfilCommand}"></TapGestureRecognizer>
                 </VerticalStackLayout.GestureRecognizers>

@@ -52,11 +52,11 @@ public partial class AuthViewModel : ObservableObject
 
             if (sesion.IdRol == 2)
             {
-                await Shell.Current.GoToAsync("adminReportes");
+                await Shell.Current.GoToAsync("//adminReportes");
             }
             else
             {
-                await Shell.Current.GoToAsync("reportes");
+                await Shell.Current.GoToAsync("//reportes");
             }
         }
         finally
@@ -117,12 +117,12 @@ public partial class AuthViewModel : ObservableObject
             if (respuesta.Data.IdRol == 2)
             {
                 LimpiarCampos();
-                await Shell.Current.GoToAsync("adminReportes");
+                await Shell.Current.GoToAsync("//adminReportes");
             }
             else
             {
                 LimpiarCampos();
-                await Shell.Current.GoToAsync("reportes");
+                await Shell.Current.GoToAsync("//reportes");
             }
         }
         finally

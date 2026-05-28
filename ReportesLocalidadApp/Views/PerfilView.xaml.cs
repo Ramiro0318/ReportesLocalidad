@@ -16,6 +16,7 @@ public partial class PerfilView : ContentPage
 
         if (BindingContext is MainViewModel viewModel)
         {
+            await Task.Delay(100);
             await viewModel.CargarPerfilCommand.ExecuteAsync(null);
         }
     }
