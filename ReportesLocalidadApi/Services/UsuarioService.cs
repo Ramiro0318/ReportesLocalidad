@@ -135,8 +135,16 @@ public class UsuarioService
         if (refreshToken.FechaRevocacion is null)
         {
             refreshToken.FechaRevocacion = DateTime.Now;
-            await context.SaveChangesAsync();
         }
+
+        var usuario = await context.Usuarios.FirstOrDefaultAsync(usuario => usuario.Id == refreshToken.IdUsuario);
+
+        if (usuario != null)
+        {
+            usuario.TokenFirebase = null;
+        }
+
+        await context.SaveChangesAsync();
 
         return new ApiResponse<object>
         {
@@ -165,6 +173,15 @@ public class UsuarioService
                 Success = false,
                 Message = "Usuario no encontrado."
             };
+        }
+
+        var usuariosConMismoToken = await context.Usuarios
+            .Where(usuario => usuario.TokenFirebase == tokenFirebaseDto.Token && usuario.Id != idUsuario)
+            .ToListAsync();
+
+        foreach (var usuarioConToken in usuariosConMismoToken)
+        {
+            usuarioConToken.TokenFirebase = null;
         }
 
         usuario.TokenFirebase = tokenFirebaseDto.Token;
