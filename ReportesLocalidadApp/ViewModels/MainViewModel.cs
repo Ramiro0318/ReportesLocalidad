@@ -60,6 +60,25 @@ public partial class MainViewModel : ObservableObject
         "Resuelto"
     };
 
+    public List<string> CategoriasFiltro { get; } = new()
+    {
+        "Todos",
+        "Bache",
+        "Fuga de agua",
+        "Basura",
+        "Alumbrado publico",
+        "Accidente",
+        "Otro"
+    };
+
+    public List<string> EstadosFiltro { get; } = new()
+    {
+        "Todos",
+        "Pendiente",
+        "En progreso",
+        "Resuelto"
+    };
+
     [ObservableProperty]
     private bool isBusy;
 
@@ -129,6 +148,22 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty]
     private string estadoSeleccionado = "Pendiente";
 
+    [ObservableProperty]
+    private string estadoFiltroSeleccionado = "Todos";
+
+    [ObservableProperty]
+    private string categoriaFiltroSeleccionada = "Todos";
+
+    partial void OnEstadoFiltroSeleccionadoChanged(string value)
+    {
+        AplicarFiltrosReportesAdmin();
+    }
+
+    partial void OnCategoriaFiltroSeleccionadaChanged(string value)
+    {
+        AplicarFiltrosReportesAdmin();
+    }
+
     [RelayCommand]
     private async Task CargarReportes()
     {
@@ -189,7 +224,7 @@ public partial class MainViewModel : ObservableObject
 
             reportesCargados.AddRange(respuesta.Data);
             reportesSaltados += respuesta.Data.Count;
-            MostrarSiguientesReportes();
+            AplicarFiltrosReportesAdmin();
             await ReintentarReportesSiApiDisponible(false);
         }
         finally
@@ -232,7 +267,7 @@ public partial class MainViewModel : ObservableObject
 
             reportesCargados.AddRange(respuesta.Data);
             reportesSaltados += respuesta.Data.Count;
-            MostrarSiguientesReportes();
+            AplicarFiltrosReportesAdmin();
         }
         finally
         {
@@ -253,6 +288,30 @@ public partial class MainViewModel : ObservableObject
         }
 
         elementosMostrados += reportesParaMostrar.Count;
+    }
+
+    private void AplicarFiltrosReportesAdmin()
+    {
+        Reportes.Clear();
+
+        var reportesFiltrados = reportesCargados.AsEnumerable();
+
+        if (!string.IsNullOrWhiteSpace(EstadoFiltroSeleccionado) && EstadoFiltroSeleccionado != "Todos")
+        {
+            reportesFiltrados = reportesFiltrados.Where(reporte => reporte.EstadoTexto == EstadoFiltroSeleccionado);
+        }
+
+        if (!string.IsNullOrWhiteSpace(CategoriaFiltroSeleccionada) && CategoriaFiltroSeleccionada != "Todos")
+        {
+            reportesFiltrados = reportesFiltrados.Where(reporte => reporte.CategoriaTexto == CategoriaFiltroSeleccionada);
+        }
+
+        foreach (var reporte in reportesFiltrados)
+        {
+            Reportes.Add(reporte);
+        }
+
+        elementosMostrados = Reportes.Count;
     }
 
     [RelayCommand]
@@ -1338,6 +1397,8 @@ public partial class MainViewModel : ObservableObject
         reportesPropiosSaltados = 0;
         elementosMostrados = 0;
         elementosPropiosMostrados = 0;
+        EstadoFiltroSeleccionado = "Todos";
+        CategoriaFiltroSeleccionada = "Todos";
         Mensaje = string.Empty;
     }
 }

@@ -34,9 +34,7 @@
             <VerticalStackLayout Spacing="5">
                 <Label Text="Estado" TextColor="#E6E6C7" FontSize="12" FontAttributes="Bold"></Label>
                 <Border Stroke="#4A4A45" StrokeThickness="1" BackgroundColor="#2B2B29" StrokeShape="RoundRectangle 12" Padding="10,1" HeightRequest="50">
-                    <Picker Title="Todos" TitleColor="#D8D8D8" TextColor="White" BackgroundColor="Transparent" FontSize="13"
-                    ItemsSource="{Binding EstadosFiltro}"
-                    SelectedItem="{Binding EstadoFiltroSeleccionado}"></Picker>
+                    <Picker Title="Todos" TitleColor="#D8D8D8" TextColor="White" BackgroundColor="Transparent" FontSize="13" ItemsSource="{Binding EstadosFiltro}" SelectedItem="{Binding EstadoFiltroSeleccionado}"></Picker>
                 </Border>
             </VerticalStackLayout>
 
@@ -44,9 +42,7 @@
             <VerticalStackLayout Grid.Column="1" Spacing="5">
                 <Label Text="Categoría" TextColor="#E6E6C7" FontSize="12" FontAttributes="Bold"></Label>
                 <Border Stroke="#4A4A45" StrokeThickness="1" BackgroundColor="#2B2B29" StrokeShape="RoundRectangle 12" Padding="10,1" HeightRequest="50">
-                    <Picker Title="Todas" TitleColor="#D8D8D8" TextColor="White" BackgroundColor="Transparent" FontSize="13"
-                    ItemsSource="{Binding CategoriasFiltro}"
-                    SelectedItem="{Binding CategoriaFiltroSeleccionada}"></Picker>
+                    <Picker Title="Todas" TitleColor="#D8D8D8" TextColor="White" BackgroundColor="Transparent" FontSize="13" ItemsSource="{Binding CategoriasFiltro}" SelectedItem="{Binding CategoriaFiltroSeleccionada}"></Picker>
                 </Border>
             </VerticalStackLayout>
         </Grid>

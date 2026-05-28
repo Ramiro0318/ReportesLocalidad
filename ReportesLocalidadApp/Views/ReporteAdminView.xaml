@@ -51,9 +51,7 @@
                     IsVisible="{Binding EstaEditandoReporte}">
                     <Grid>
                         <Image Source="{Binding ImagenSeleccionada}" Aspect="AspectFill"></Image>
-                        <Label Text="Nueva imagen" TextColor="#E6E6C7" FontSize="12" HorizontalTextAlignment="Center"
-                           HorizontalOptions="Center" VerticalOptions="Center"
-                           IsVisible="{Binding MostrarTextoImagen}"></Label>
+                        <Label Text="Nueva imagen" TextColor="#E6E6C7" FontSize="12" HorizontalTextAlignment="Center" HorizontalOptions="Center" VerticalOptions="Center" IsVisible="{Binding MostrarTextoImagen}"></Label>
                     </Grid>
                 </Border>
 

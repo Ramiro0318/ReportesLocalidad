@@ -17,10 +17,8 @@
         <Grid Grid.Row="1" ColumnDefinitions="*,*,*" Margin="10,10,10,0" ColumnSpacing="10">
             <Border BackgroundColor="#2B2B29" Stroke="#4A4A45" StrokeThickness="1" StrokeShape="RoundRectangle 15">
                 <VerticalStackLayout Spacing="5" VerticalOptions="Center">
-                    <Label Text="{Binding TotalMisReportes}" TextColor="White" FontSize="22"
-                       FontAttributes="Bold" HorizontalTextAlignment="Center"></Label>
-                    <Label Text="Reportes" TextColor="White" FontSize="12"
-                       HorizontalTextAlignment="Center"></Label>
+                    <Label Text="{Binding TotalMisReportes}" TextColor="White" FontSize="22" FontAttributes="Bold" HorizontalTextAlignment="Center"></Label>
+                    <Label Text="Reportes" TextColor="White" FontSize="12" HorizontalTextAlignment="Center"></Label>
                 </VerticalStackLayout>
             </Border>
 
@@ -31,10 +29,7 @@
                 </VerticalStackLayout>
             </Border>
 
-            <Border BackgroundColor="#2B2B29" Grid.Column="2" Stroke="#4A4A45" 
-                StrokeThickness="1" Padding="12"
-                HeightRequest="78"
-                StrokeShape="RoundRectangle 14">
+            <Border BackgroundColor="#2B2B29" Grid.Column="2" Stroke="#4A4A45" StrokeThickness="1" Padding="12" HeightRequest="78" StrokeShape="RoundRectangle 14">
 
                 <VerticalStackLayout Spacing="5" VerticalOptions="Center">
                     <Label Text="{Binding ReportesPendientesUsuario}" TextColor="White" FontSize="22" FontAttributes="Bold" HorizontalTextAlignment="Center"></Label>
@@ -46,18 +41,9 @@
 
         <ScrollView Grid.Row="2" VerticalOptions="Center">
             <VerticalStackLayout Padding="14,16" Spacing="10">
-                <Label Text="{Binding ReportesPendientes, StringFormat='Reportes pendientes por subir: {0}'}"
-                       TextColor="#F54927"
-                       FontSize="13"
-                       FontAttributes="Bold"
-                       HorizontalTextAlignment="Center"></Label>
+                <Label Text="{Binding ReportesPendientes, StringFormat='Reportes pendientes por subir: {0}'}" TextColor="#F54927" FontSize="13" FontAttributes="Bold" HorizontalTextAlignment="Center"></Label>
                 <Grid>
-                    <Button Text="Cerrar sesión" HeightRequest="50" 
-                    CornerRadius="15" BorderWidth="1"
-                    BackgroundColor="#2B2B29"
-                    FontAttributes="Bold" TextColor="#F54927" BorderColor="#F54927"
-                    VerticalOptions="End"
-                    Command="{Binding LogoutCommand}">
+                    <Button Text="Cerrar sesión" HeightRequest="50" CornerRadius="15" BorderWidth="1" BackgroundColor="#2B2B29" FontAttributes="Bold" TextColor="#F54927" BorderColor="#F54927" VerticalOptions="End" Command="{Binding LogoutCommand}">
                     </Button>
 
                 </Grid>
@@ -70,7 +56,7 @@
                     <TapGestureRecognizer Command="{Binding IrInicioCommand}"></TapGestureRecognizer>
                 </VerticalStackLayout.GestureRecognizers>
                 <Image Source="inicio.png"  WidthRequest="25"></Image>
-                <Label Text="Inicio" TextColor="#F05A2A" FontSize="11" HorizontalTextAlignment="Center"></Label>
+                <Label Text="Inicio" TextColor="White" FontSize="11" HorizontalTextAlignment="Center"></Label>
             </VerticalStackLayout>
 
             <VerticalStackLayout Grid.Column="2" HorizontalOptions="Center" VerticalOptions="Center" Spacing="2">
@@ -94,7 +80,7 @@
                     <TapGestureRecognizer Command="{Binding IrPerfilCommand}"></TapGestureRecognizer>
                 </VerticalStackLayout.GestureRecognizers>
                 <Image Source="perfil.png"  WidthRequest="30"></Image>
-                <Label Text="Perfil" TextColor="White" FontSize="11" HorizontalTextAlignment="Center"></Label>
+                <Label Text="Perfil" TextColor="#F05A2A" FontSize="11" HorizontalTextAlignment="Center"></Label>
             </VerticalStackLayout>
         </Grid>
         <Grid Grid.RowSpan="2" Grid.ColumnSpan="2" ZIndex="10" BackgroundColor="#80000000" IsVisible="{Binding IsBusy}" InputTransparent="False">

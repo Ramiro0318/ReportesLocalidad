@@ -21,8 +21,7 @@
             <Label Text="&lt;" HorizontalOptions="Center" VerticalOptions="Center" VerticalTextAlignment="Center" FontSize="20" TextColor="White"></Label>
         </Border>
 
-        <Label VerticalTextAlignment="Center" Grid.Row="0" Grid.Column="1" HorizontalTextAlignment="Center"
-               Text="Nuevo reporte" TextColor="White" FontSize="20" FontAttributes="Bold" Margin="0,0,40,0"></Label>
+        <Label VerticalTextAlignment="Center" Grid.Row="0" Grid.Column="1" HorizontalTextAlignment="Center" Text="Nuevo reporte" TextColor="White" FontSize="20" FontAttributes="Bold" Margin="0,0,40,0"></Label>
 
         <ScrollView Grid.Row="1" BackgroundColor="#0F0F0F" Grid.ColumnSpan="2">
             <VerticalStackLayout Padding="10" Spacing="20">
@@ -30,22 +29,13 @@
                 <Label Text="Titulo del reporte" TextColor="White" FontSize="15" FontAttributes="Bold"></Label>
                 <Border Stroke="#4A4A45" StrokeThickness="1" BackgroundColor="#242421" Padding="10"
                         StrokeShape="RoundRectangle 10">
-                    <Entry Placeholder="Ej. Bache grande en avenida principal"
-                           PlaceholderColor="White"
-                           TextColor="White"
-                           BackgroundColor="Transparent"
-                           MaxLength="120"
-                           Text="{Binding TituloReporte}"></Entry>
+                    <Entry Placeholder="Ej. Bache grande en avenida principal" PlaceholderColor="White" TextColor="White" BackgroundColor="Transparent" MaxLength="120" Text="{Binding TituloReporte}"></Entry>
                 </Border>
 
                 <Label Text="Tipo de incidente" TextColor="White" FontSize="15" FontAttributes="Bold"></Label>
                 <Border Stroke="#4A4A45" StrokeThickness="1" BackgroundColor="#242421" Padding="10"
                         StrokeShape="RoundRectangle 10">
-                    <Picker Title="Tipo de incidente"
-                            TextColor="White"
-                            BackgroundColor="Transparent"
-                            ItemsSource="{Binding CategoriasDisponibles}"
-                            SelectedItem="{Binding CategoriaSeleccionada}"></Picker>
+                    <Picker Title="Tipo de incidente" TextColor="White" BackgroundColor="Transparent" ItemsSource="{Binding CategoriasDisponibles}" SelectedItem="{Binding CategoriaSeleccionada}"></Picker>
                 </Border>
 
                 <Label Text="Evidencia fotografica" TextColor="White" FontAttributes="Bold" FontSize="15"></Label>
@@ -73,45 +63,20 @@
                 <Border Stroke="#4A4A45" StrokeShape="RoundRectangle 10" StrokeThickness="1" StrokeDashArray="4,3" BackgroundColor="#242421" Padding="12" HeightRequest="200">
                     <Grid>
                         <Image Source="{Binding ImagenSeleccionada}" Aspect="AspectFill"></Image>
-                        <Label Text="Imagen" TextColor="#E6E6C7" FontSize="12" HorizontalTextAlignment="Center"
-                               HorizontalOptions="Center" VerticalOptions="Center"
-                               IsVisible="{Binding MostrarTextoImagen}"></Label>
-                    </Grid>
-                </Border>
-
-                <Label Text="Ubicacion" TextColor="White" FontSize="15" FontAttributes="Bold"></Label>
-                <Border Stroke="#4A4A45" StrokeShape="RoundRectangle 10" StrokeThickness="1" BackgroundColor="#242421" Padding="12"
-                        HeightRequest="82">
-                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
-                        <Label Text="Icono" TextColor="#F05A2A" FontSize="15" VerticalOptions="Center"></Label>
-
-                        <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="5">
-                            <Label Text="Seleccionar ubicacion" TextColor="White" FontSize="14"
-                                   FontAttributes="Bold"></Label>
-                            <Label Text="Usar ubicacion actual o elegir en el mapa" TextColor="#D8D8D8" FontSize="12"></Label>
-                        </VerticalStackLayout>
+                        <Label Text="Imagen" TextColor="#E6E6C7" FontSize="12" HorizontalTextAlignment="Center" HorizontalOptions="Center" VerticalOptions="Center" IsVisible="{Binding MostrarTextoImagen}"></Label>
                     </Grid>
                 </Border>
 
                 <Label Text="Descripcion del problema" TextColor="White" FontSize="15" FontAttributes="Bold"></Label>
                 <Border Stroke="#4A4A45" StrokeThickness="1" BackgroundColor="#242421" Padding="10"
                         HeightRequest="120" StrokeShape="RoundRectangle 10">
-                    <Editor Placeholder="Describe con detalle el problema..."
-                            PlaceholderColor="White"
-                            TextColor="White"
-                            BackgroundColor="Transparent"
-                            FontSize="13"
-                            AutoSize="TextChanges"
-                            Text="{Binding DescripcionReporte}"></Editor>
+                    <Editor Placeholder="Describe con detalle el problema..." PlaceholderColor="White" TextColor="White" BackgroundColor="Transparent" FontSize="13" AutoSize="TextChanges" Text="{Binding DescripcionReporte}"></Editor>
                 </Border>
 
                 <Label Text="{Binding Mensaje}" TextColor="White" FontSize="13"></Label>
-                <Label Text="{Binding ReportesPendientes, StringFormat='Reportes pendientes por subir: {0}'}"
-                       TextColor="#E6E6C7"
-                       FontSize="12"></Label>
+                <Label Text="{Binding ReportesPendientes, StringFormat='Reportes pendientes por subir: {0}'}" TextColor="#E6E6C7" FontSize="12"></Label>
 
-                <Button Text="Enviar reporte" HeightRequest="50" CornerRadius="15" FontAttributes="Bold"
-                        BackgroundColor="#F54927" TextColor="White" Command="{Binding CrearReporteCommand}"></Button>
+                <Button Text="Enviar reporte" HeightRequest="50" CornerRadius="15" FontAttributes="Bold" BackgroundColor="#F54927" TextColor="White" Command="{Binding CrearReporteCommand}"></Button>
             </VerticalStackLayout>
         </ScrollView>
         <Grid Grid.RowSpan="2" Grid.ColumnSpan="2" ZIndex="10" BackgroundColor="#80000000" IsVisible="{Binding IsBusy}" InputTransparent="False">

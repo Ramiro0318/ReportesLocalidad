@@ -138,7 +138,7 @@
         <Grid Grid.Row="2" HeightRequest="70" BackgroundColor="#2B2B29" ColumnDefinitions="*,*,*,*">
             <VerticalStackLayout Grid.Column="0" HorizontalOptions="Center" VerticalOptions="Center" Spacing="2">
                 <Image Source="inicio.png"  WidthRequest="25"></Image>
-                <Label Text="Inicio" TextColor="White" FontSize="11" HorizontalTextAlignment="Center"></Label>
+                <Label Text="Inicio" TextColor="#F05A2A" FontSize="11" HorizontalTextAlignment="Center"></Label>
             </VerticalStackLayout>
 
             <VerticalStackLayout Grid.Column="2" HorizontalOptions="Center" VerticalOptions="Center" Spacing="2">

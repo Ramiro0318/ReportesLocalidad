@@ -129,7 +129,7 @@
                 </CollectionView>
             </Grid>
         </RefreshView>
-        
+
         <Grid Grid.Row="2" HeightRequest="70" BackgroundColor="#2B2B29" ColumnDefinitions="*,*,*,*">
             <VerticalStackLayout Grid.Column="0" HorizontalOptions="Center" VerticalOptions="Center" Spacing="2">
                 <VerticalStackLayout.GestureRecognizers>
@@ -151,8 +151,8 @@
                 <VerticalStackLayout.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding IrMisReportesCommand}"></TapGestureRecognizer>
                 </VerticalStackLayout.GestureRecognizers>
-                <Image Source="reporte.png"  WidthRequest="25"></Image>
-                <Label Text="Mis reprotes" TextColor="White" FontSize="11" HorizontalTextAlignment="Center"></Label>
+                <Image Source="reporte.png" WidthRequest="25"></Image>
+                <Label Text="Mis reprotes" TextColor="#F05A2A" FontSize="11" HorizontalTextAlignment="Center"></Label>
             </VerticalStackLayout>
 
             <VerticalStackLayout Grid.Column="3" HorizontalOptions="Center" VerticalOptions="Center" Spacing="2">

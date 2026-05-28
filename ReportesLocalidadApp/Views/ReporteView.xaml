@@ -52,9 +52,7 @@
                         IsVisible="{Binding EstaEditandoReporte}">
                     <Grid>
                         <Image Source="{Binding ImagenSeleccionada}" Aspect="AspectFill"></Image>
-                        <Label Text="Nueva imagen" TextColor="#E6E6C7" FontSize="12" HorizontalTextAlignment="Center"
-                               HorizontalOptions="Center" VerticalOptions="Center"
-                               IsVisible="{Binding MostrarTextoImagen}"></Label>
+                        <Label Text="Nueva imagen" TextColor="#E6E6C7" FontSize="12" HorizontalTextAlignment="Center" HorizontalOptions="Center" VerticalOptions="Center" IsVisible="{Binding MostrarTextoImagen}"></Label>
                     </Grid>
                 </Border>
 
@@ -143,11 +141,7 @@
                 <Label Text="Categoria" TextColor="White" FontSize="15" FontAttributes="Bold"></Label>
                 <Border StrokeShape="RoundRectangle 12" BackgroundColor="#2B2B29"
                         Stroke="#4A4A45" Padding="10">
-                    <Picker ItemsSource="{Binding CategoriasDisponibles}"
-                            SelectedItem="{Binding CategoriaDetalle}"
-                            IsEnabled="{Binding EstaEditandoReporte}"
-                            TextColor="White"
-                            BackgroundColor="Transparent"></Picker>
+                    <Picker ItemsSource="{Binding CategoriasDisponibles}" SelectedItem="{Binding CategoriaDetalle}" IsEnabled="{Binding EstaEditandoReporte}" TextColor="White" BackgroundColor="Transparent"></Picker>
                 </Border>
 
                 <Label Text="Descripcion" TextColor="White"
@@ -155,33 +149,16 @@
 
                 <Border StrokeShape="RoundRectangle 12" BackgroundColor="#2B2B29"
                         Stroke="#4A4A45" Padding="14">
-                    <Editor Text="{Binding DescripcionDetalle}"
-                            IsReadOnly="{Binding CamposSoloLectura}"
-                            TextColor="#E6E6E6"
-                            BackgroundColor="Transparent"
-                            FontSize="13"
-                            AutoSize="TextChanges"></Editor>
+                    <Editor Text="{Binding DescripcionDetalle}" IsReadOnly="{Binding CamposSoloLectura}" TextColor="#E6E6E6" BackgroundColor="Transparent" FontSize="13" AutoSize="TextChanges"></Editor>
                 </Border>
 
                 <Label Text="{Binding Mensaje}" TextColor="White" FontSize="13"></Label>
 
-                <Button Text="Editar"
-                       HeightRequest="50"
-                    CornerRadius="15" FontAttributes="Bold" FontSize="15" 
-                        BackgroundColor="#F54927" TextColor="White"
-                        IsVisible="{Binding PuedeEditarReporte}"
-                        Command="{Binding ActivarEdicionReporteCommand}"></Button>
+                <Button Text="Editar" HeightRequest="50" CornerRadius="15" FontAttributes="Bold" FontSize="15"  BackgroundColor="#F54927" TextColor="White" IsVisible="{Binding PuedeEditarReporte}" Command="{Binding ActivarEdicionReporteCommand}"></Button>
 
-                <Button Text="Confirmar edicion" HeightRequest="50" CornerRadius="15"
-                        FontAttributes="Bold" BackgroundColor="#F54927" TextColor="White"
-                        IsVisible="{Binding EstaEditandoReporte}"
-                        Command="{Binding GuardarEdicionReporteCommand}"></Button>
+                <Button Text="Confirmar edicion" HeightRequest="50" CornerRadius="15" FontAttributes="Bold" BackgroundColor="#F54927" TextColor="White" IsVisible="{Binding EstaEditandoReporte}" Command="{Binding GuardarEdicionReporteCommand}"></Button>
 
-                <Button Text="Eliminar"  HeightRequest="50" CornerRadius="15"
-                      FontAttributes="Bold" FontSize="15" BackgroundColor="#2B2B29"
-                      BorderColor="#FF4D4D" BorderWidth="1.5" TextColor="#FF4D4D"
-                        IsVisible="{Binding PuedeEditarReporte}"
-                        Command="{Binding EliminarReporteCommand}"></Button>
+                <Button Text="Eliminar"  HeightRequest="50" CornerRadius="15" FontAttributes="Bold" FontSize="15" BackgroundColor="#2B2B29" BorderColor="#FF4D4D" BorderWidth="1.5" TextColor="#FF4D4D" IsVisible="{Binding PuedeEditarReporte}" Command="{Binding EliminarReporteCommand}"></Button>
 
             </VerticalStackLayout>
         </ScrollView>

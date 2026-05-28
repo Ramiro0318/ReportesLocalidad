@@ -9,50 +9,42 @@
             <ScrollView Grid.Row="0">
                 <VerticalStackLayout Grid.Row="0" VerticalOptions="Center" Spacing="10" Padding="30,0,30,0">
                     <Border WidthRequest="80" HeightRequest="80" Stroke="Transparent" Margin="10">
-                            <Border.StrokeShape>
-                                <RoundRectangle CornerRadius="20"></RoundRectangle>
-                            </Border.StrokeShape>
-                            <Border.Background>
-                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                    <GradientStop Color="#F2694E" Offset="0"></GradientStop>
-                                    <GradientStop Color="#F54927" Offset="1"></GradientStop>
-                                </LinearGradientBrush>
-                            </Border.Background>
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="20"></RoundRectangle>
+                        </Border.StrokeShape>
+                        <Border.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                <GradientStop Color="#F2694E" Offset="0"></GradientStop>
+                                <GradientStop Color="#F54927" Offset="1"></GradientStop>
+                            </LinearGradientBrush>
+                        </Border.Background>
 
                         <Image Source="ciudad.png" WidthRequest="60" HeightRequest="60" HorizontalOptions="Center" VerticalOptions="Center"></Image>
-                        </Border>
-                        <Label Text="Ciudad Activa" FontSize="25" FontAttributes="Bold" TextColor="White" HorizontalOptions="Center"></Label>
-                        <Label Text="Tu ciudad, tu voz" FontSize="15" TextColor="#80FFFFFF" HorizontalOptions="Center"></Label>
-                    
+                    </Border>
+                    <Label Text="Ciudad Activa" FontSize="25" FontAttributes="Bold" TextColor="White" HorizontalOptions="Center"></Label>
+                    <Label Text="Tu ciudad, tu voz" FontSize="15" TextColor="#80FFFFFF" HorizontalOptions="Center"></Label>
 
-                    
-                        <Label Text="USUARIO" FontSize="12" FontAttributes="Bold" TextColor="#80FFFFFF"></Label>
-                        <Entry Placeholder="Ej. Carlos" TextColor="White" Margin="0" 
-                                 PlaceholderColor="#40FFFFFF"
-                                 HeightRequest="50" BackgroundColor="#14FFFFFF" Text="{Binding NombreUsuario}">
-                        </Entry>
-                    
 
-                    
-                        <Label Text="CONTRASEÑA" FontSize="12" FontAttributes="Bold" TextColor="#80FFFFFF"></Label>
-                        <Entry IsPassword="True" Placeholder="••••••••" TextColor="White" 
+
+                    <Label Text="USUARIO" FontSize="12" FontAttributes="Bold" TextColor="#80FFFFFF"></Label>
+                    <Entry Placeholder="Ej. Carlos" TextColor="White" Margin="0" PlaceholderColor="#40FFFFFF" HeightRequest="50" BackgroundColor="#14FFFFFF" Text="{Binding NombreUsuario}">
+                    </Entry>
+
+
+
+                    <Label Text="CONTRASEÑA" FontSize="12" FontAttributes="Bold" TextColor="#80FFFFFF"></Label>
+                    <Entry IsPassword="True" Placeholder="••••••••" TextColor="White" 
                                 PlaceholderColor="#40FFFFFF" HeightRequest="50"
                                 BackgroundColor="#14FFFFFF" Text="{Binding Password}">
-                        </Entry>
-                    
+                    </Entry>
+
 
                     <Label Text="{Binding Mensaje}" HorizontalTextAlignment="Center" HorizontalOptions="Center"
                     LineBreakMode="WordWrap" FontSize="15" TextColor="#90FFFFFF" ></Label>
 
-                    <Button Text="Iniciar sesión" HeightRequest="50" CornerRadius="18" FontAttributes="Bold" Margin="0,0,0,10"
-                            FontSize="15" BackgroundColor="#F54927" TextColor="White" 
-                            Command="{Binding LoginCommand}"></Button>
+                    <Button Text="Iniciar sesión" HeightRequest="50" CornerRadius="18" FontAttributes="Bold" Margin="0,0,0,10" FontSize="15" BackgroundColor="#F54927" TextColor="White"  Command="{Binding LoginCommand}"></Button>
 
-                    <Button Text="Crear cuenta" HeightRequest="50" CornerRadius="20" 
-                            FontAttributes="Bold" FontSize="15" 
-                            BackgroundColor="#1E1E1E" BorderColor="#F54927"
-                            BorderWidth="1" TextColor="#F54927"
-                            Command="{Binding IrRegistroCommand}"></Button>
+                    <Button Text="Crear cuenta" HeightRequest="50" CornerRadius="20" FontAttributes="Bold" FontSize="15" BackgroundColor="#1E1E1E" BorderColor="#F54927" BorderWidth="1" TextColor="#F54927" Command="{Binding IrRegistroCommand}"></Button>
                 </VerticalStackLayout>
             </ScrollView>
 
