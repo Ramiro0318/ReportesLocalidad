@@ -9,9 +9,4 @@ public partial class ReporteView : ContentPage
 		InitializeComponent();
 		BindingContext = viewModel;
 	}
-
-    private async void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
-    {
-        await Shell.Current.GoToAsync("..");
-    }
 }

@@ -11,7 +11,7 @@ namespace ReportesLocalidadApp
         public static MauiApp CreateMauiApp()
         {
             var builder = MauiApp.CreateBuilder();
-            builder 
+            builder
                 .UseMauiApp<App>()
                 .ConfigureFonts(fonts =>
                 {

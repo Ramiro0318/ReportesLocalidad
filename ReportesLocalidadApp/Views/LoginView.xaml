@@ -24,23 +24,14 @@
                     <Label Text="Ciudad Activa" FontSize="25" FontAttributes="Bold" TextColor="White" HorizontalOptions="Center"></Label>
                     <Label Text="Tu ciudad, tu voz" FontSize="15" TextColor="#80FFFFFF" HorizontalOptions="Center"></Label>
 
-
-
                     <Label Text="USUARIO" FontSize="12" FontAttributes="Bold" TextColor="#80FFFFFF"></Label>
-                    <Entry Placeholder="Ej. Carlos" TextColor="White" Margin="0" PlaceholderColor="#40FFFFFF" HeightRequest="50" BackgroundColor="#14FFFFFF" Text="{Binding NombreUsuario}">
-                    </Entry>
-
-
+                    <Entry Placeholder="Ej. Carlos" TextColor="White" Margin="0" PlaceholderColor="#40FFFFFF" HeightRequest="50" BackgroundColor="#14FFFFFF" Text="{Binding NombreUsuario}"></Entry>
 
                     <Label Text="CONTRASEÑA" FontSize="12" FontAttributes="Bold" TextColor="#80FFFFFF"></Label>
-                    <Entry IsPassword="True" Placeholder="••••••••" TextColor="White" 
-                                PlaceholderColor="#40FFFFFF" HeightRequest="50"
-                                BackgroundColor="#14FFFFFF" Text="{Binding Password}">
-                    </Entry>
+                    <Entry IsPassword="True" Placeholder="••••••••" TextColor="White" PlaceholderColor="#40FFFFFF" HeightRequest="50" BackgroundColor="#14FFFFFF" Text="{Binding Password}"></Entry>
 
 
-                    <Label Text="{Binding Mensaje}" HorizontalTextAlignment="Center" HorizontalOptions="Center"
-                    LineBreakMode="WordWrap" FontSize="15" TextColor="#90FFFFFF" ></Label>
+                    <Label Text="{Binding Mensaje}" HorizontalTextAlignment="Center" HorizontalOptions="Center" LineBreakMode="WordWrap" FontSize="15" TextColor="#90FFFFFF"></Label>
 
                     <Button Text="Iniciar sesión" HeightRequest="50" CornerRadius="18" FontAttributes="Bold" Margin="0,0,0,10" FontSize="15" BackgroundColor="#F54927" TextColor="White"  Command="{Binding LoginCommand}"></Button>
 
@@ -48,8 +39,7 @@
                 </VerticalStackLayout>
             </ScrollView>
 
-            <Label Grid.Row="1" Text="© Designed by: Alfredo Mata and Ramiro Valverde"  FontSize="15"
-                TextColor="#40FFFFFF" HorizontalOptions="Center"></Label>
+            <Label Grid.Row="1" Text="© Designed by: Alfredo Mata and Ramiro Valverde" FontSize="15" TextColor="#40FFFFFF" HorizontalOptions="Center"></Label>
         </Grid>
 
         <Grid BackgroundColor="#80000000" IsVisible="{Binding IsBusy}" InputTransparent="False" ZIndex="10">

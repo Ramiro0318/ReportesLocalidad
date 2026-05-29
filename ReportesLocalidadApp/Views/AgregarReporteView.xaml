@@ -12,9 +12,7 @@
             </LinearGradientBrush>
         </Grid.Background>
 
-        <Border WidthRequest="44" HeightRequest="44" Grid.Row="0" Grid.Column="0"
-                Margin="10,0,0,10" BackgroundColor="#50000000" HorizontalOptions="Start"
-                StrokeThickness="0" StrokeShape="RoundRectangle 14">
+        <Border WidthRequest="44" HeightRequest="44" Grid.Row="0" Grid.Column="0" Margin="10,0,0,10" BackgroundColor="#50000000" HorizontalOptions="Start" StrokeThickness="0" StrokeShape="RoundRectangle 14">
             <Border.GestureRecognizers>
                 <TapGestureRecognizer Command="{Binding IrInicioCommand}"></TapGestureRecognizer>
             </Border.GestureRecognizers>
@@ -27,14 +25,12 @@
             <VerticalStackLayout Padding="10" Spacing="20">
 
                 <Label Text="Título del reporte" TextColor="White" FontSize="15" FontAttributes="Bold"></Label>
-                <Border Stroke="#4A4A45" StrokeThickness="1" BackgroundColor="#242421" Padding="10"
-                        StrokeShape="RoundRectangle 10">
+                <Border Stroke="#4A4A45" StrokeThickness="1" BackgroundColor="#242421" Padding="10" StrokeShape="RoundRectangle 10">
                     <Entry Placeholder="Ej. Bache grande en avenida principal" PlaceholderColor="White" TextColor="White" BackgroundColor="Transparent" MaxLength="120" Text="{Binding TituloReporte}"></Entry>
                 </Border>
 
                 <Label Text="Tipo de incidente" TextColor="White" FontSize="15" FontAttributes="Bold"></Label>
-                <Border Stroke="#4A4A45" StrokeThickness="1" BackgroundColor="#242421" Padding="10"
-                        StrokeShape="RoundRectangle 10">
+                <Border Stroke="#4A4A45" StrokeThickness="1" BackgroundColor="#242421" Padding="10" StrokeShape="RoundRectangle 10">
                     <Picker Title="Tipo de incidente" TextColor="White" BackgroundColor="Transparent" ItemsSource="{Binding CategoriasDisponibles}" SelectedItem="{Binding CategoriaSeleccionada}"></Picker>
                 </Border>
 
@@ -68,8 +64,7 @@
                 </Border>
 
                 <Label Text="Descripción del problema" TextColor="White" FontSize="15" FontAttributes="Bold"></Label>
-                <Border Stroke="#4A4A45" StrokeThickness="1" BackgroundColor="#242421" Padding="10"
-                        HeightRequest="120" StrokeShape="RoundRectangle 10">
+                <Border Stroke="#4A4A45" StrokeThickness="1" BackgroundColor="#242421" Padding="10" HeightRequest="120" StrokeShape="RoundRectangle 10">
                     <Editor Placeholder="Describe con detalle el problema..." PlaceholderColor="White" TextColor="White" BackgroundColor="Transparent" FontSize="13" AutoSize="TextChanges" Text="{Binding DescripcionReporte}"></Editor>
                 </Border>
 

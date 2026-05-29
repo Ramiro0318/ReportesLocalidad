@@ -21,6 +21,7 @@
                 <Grid.Clip>
                     <RoundRectangleGeometry CornerRadius="14" Rect="0,0,44,44"></RoundRectangleGeometry>
                 </Grid.Clip>
+                
                 <Grid.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding LogoutCommand}"></TapGestureRecognizer>
                 </Grid.GestureRecognizers>
@@ -67,8 +68,7 @@
                             <Grid>
                                 <Border Padding="15" Margin="0,10,0,0" StrokeShape="RoundRectangle 12" BackgroundColor="#2B2B29" Stroke="DarkGray">
                                     <Border.GestureRecognizers>
-                                        <TapGestureRecognizer Command="{Binding BindingContext.AbrirReporteAdminCommand, Source={x:Reference PaginaReportesAdmin}}"
-                                                CommandParameter="{Binding .}"></TapGestureRecognizer>
+                                        <TapGestureRecognizer Command="{Binding BindingContext.AbrirReporteAdminCommand, Source={x:Reference PaginaReportesAdmin}}" CommandParameter="{Binding .}"></TapGestureRecognizer>
                                     </Border.GestureRecognizers>
                                     <Grid ColumnDefinitions="52,*,Auto" ColumnSpacing="10">
                                         <Border WidthRequest="40" HeightRequest="40" StrokeShape="RoundRectangle 10" Stroke="Transparent">
@@ -96,7 +96,6 @@
                                                 <DataTrigger TargetType="Border" Binding="{Binding CategoriaTexto}" Value="Accidente">
                                                     <Setter Property="BackgroundColor" Value="#F78981"></Setter>
                                                 </DataTrigger>
-
                                             </Border.Triggers>
 
                                             <Image WidthRequest="24" HeightRequest="24" HorizontalOptions="Center" VerticalOptions="Center" Source="otro.png">
