@@ -87,9 +87,11 @@ public partial class AuthViewModel : ObservableObject
             return;
         }
 
-        if (string.IsNullOrWhiteSpace(NombreUsuario) || string.IsNullOrWhiteSpace(Password))
+        var mensajeValidacion = ValidarUsuario();
+
+        if (!string.IsNullOrWhiteSpace(mensajeValidacion))
         {
-            Mensaje = "Ingrese usuario y contraseÃ±a.";
+            Mensaje = mensajeValidacion;
             return;
         }
 
@@ -100,13 +102,13 @@ public partial class AuthViewModel : ObservableObject
 
             var respuesta = await authService.LoginAsync(NombreUsuario, Password);
 
-            if (respuesta is null)
+            if (respuesta == null)
             {
                 Mensaje = "No se pudo conectar con la API.";
                 return;
             }
 
-            if (!respuesta.Success || respuesta.Data is null)
+            if (!respuesta.Success)
             {
                 Mensaje = respuesta.Message;
                 return;
@@ -114,7 +116,7 @@ public partial class AuthViewModel : ObservableObject
 
             Mensaje = respuesta.Message;
 
-            if (respuesta.Data.IdRol == 2)
+            if (respuesta.Data!.IdRol == 2)
             {
                 LimpiarCampos();
                 await Shell.Current.GoToAsync("//adminReportes");
@@ -139,15 +141,17 @@ public partial class AuthViewModel : ObservableObject
             return;
         }
 
-        if (string.IsNullOrWhiteSpace(NombreUsuario) || string.IsNullOrWhiteSpace(Password))
+        var mensajeValidacion = ValidarUsuario();
+
+        if (!string.IsNullOrWhiteSpace(mensajeValidacion))
         {
-            Mensaje = "Ingrese usuario y contraseÃ±a.";
+            Mensaje = mensajeValidacion;
             return;
         }
 
         if (Password != ConfirmarPassword)
         {
-            Mensaje = "Las contraseÃ±as no coinciden.";
+            Mensaje = "Las contraseñas no coinciden.";
             return;
         }
 
@@ -158,7 +162,7 @@ public partial class AuthViewModel : ObservableObject
 
             var respuesta = await authService.RegistrarAsync(NombreUsuario, Password);
 
-            if (respuesta is null)
+            if (respuesta == null)
             {
                 Mensaje = "No se pudo conectar con la API.";
                 return;
@@ -185,4 +189,29 @@ public partial class AuthViewModel : ObservableObject
         ConfirmarPassword = "";
         Mensaje = "";
     }
+
+    private string ValidarUsuario()
+    {
+        var usuario = NombreUsuario.Trim();
+
+        if (string.IsNullOrWhiteSpace(usuario) || string.IsNullOrWhiteSpace(Password))
+        {
+            return "Ingrese usuario y contraseña.";
+        }
+
+        if (usuario.Length > 40)
+        {
+            return "El usuario no puede tener más de 40 caracteres.";
+        }
+
+        if (Password.Length < 6 || Password.Length > 30)
+        {
+            return "La contraseña debe tener entre 6 y 30 caracteres.";
+        }
+
+        return "";
+    }
+
+
+
 }

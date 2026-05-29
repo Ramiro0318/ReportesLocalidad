@@ -6,11 +6,11 @@ namespace ReportesLocalidadApp.Services;
 
 public class AuthService
 {
-    private const string AccessTokenKey = "access_token";
-    private const string RefreshTokenKey = "refresh_token";
-    private const string IdUsuarioKey = "id_usuario";
-    private const string NombreUsuarioKey = "nombre_usuario";
-    private const string IdRolKey = "id_rol";
+    private string AccessTokenKey = "access_token";
+    private string RefreshTokenKey = "refresh_token";
+    private string IdUsuarioKey = "id_usuario";
+    private string NombreUsuarioKey = "nombre_usuario";
+    private string IdRolKey = "id_rol";
 
     private readonly HttpClient client;
     private readonly FirebaseTokenService firebaseTokenService;
@@ -107,9 +107,7 @@ public class AuthService
         var nombreUsuario = await SecureStorage.Default.GetAsync(NombreUsuarioKey);
         var idRolTexto = await SecureStorage.Default.GetAsync(IdRolKey);
 
-        if (!int.TryParse(idTexto, out var idUsuario) ||
-            !int.TryParse(idRolTexto, out var idRol) ||
-            string.IsNullOrWhiteSpace(nombreUsuario))
+        if (!int.TryParse(idTexto, out var idUsuario) || !int.TryParse(idRolTexto, out var idRol) || string.IsNullOrWhiteSpace(nombreUsuario))
         {
             return null;
         }
@@ -126,7 +124,7 @@ public class AuthService
     {
         var sesion = await ObtenerSesionAsync();
 
-        if (sesion is null)
+        if (sesion == null)
         {
             return null;
         }
@@ -149,7 +147,7 @@ public class AuthService
         return int.TryParse(idTexto, out var idUsuario) ? idUsuario : 0;
     }
 
-    public async Task<string?> GetNombreUsuarioAsync()
+    public async Task<string?>  GetNombreUsuarioAsync()
     {
         return await SecureStorage.Default.GetAsync(NombreUsuarioKey);
     }
@@ -204,11 +202,11 @@ public class AuthService
         }
     }
 
-    public async Task<bool> EstaAutenticadoAsync()
-    {
-        var accessToken = await GetAccessTokenAsync();
-        return !string.IsNullOrWhiteSpace(accessToken);
-    }
+    //public async Task<bool> Autenticado()
+    //{
+    //    var accessToken = await GetAccessTokenAsync();
+    //    return !string.IsNullOrWhiteSpace(accessToken);
+    //}
 
     public async Task<bool> RefreshTokenAsync()
     {

@@ -2,7 +2,8 @@ namespace ReportesLocalidadApp.Services;
 
 public class FirebaseTokenService
 {
-    private const string FirebaseTokenKey = "firebase_token";
+    //no se si debe ser un service separado
+    private string FirebaseTokenKey = "firebase_token";
 
     public async Task GuardarTokenAsync(string token)
     {

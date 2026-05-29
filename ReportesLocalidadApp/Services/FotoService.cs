@@ -4,7 +4,7 @@ namespace ReportesLocalidadApp.Services;
 
 public class FotoService
 {
-    private const int MaxSizeBytes = 8 * 1024 * 1024;
+    private int MaxSizeBytes = 8 * 1024 * 1024;
     private readonly FotoHelper fotoHelper;
 
     public FotoService(FotoHelper fotoHelper)
@@ -29,13 +29,13 @@ public class FotoService
             }
 
             if (!MediaPicker.Default.IsCaptureSupported)
-            {
+            {   //No sé si sea posible darse este caso, pero como ya funciona, lo dejo por si las dudas
                 return (null, null, "El dispositivo no permite tomar fotografías.");
             }
 
             var photo = await MediaPicker.Default.CapturePhotoAsync();
 
-            if (photo is null)
+            if (photo == null)  //Validacion local
             {
                 return (null, null, "No se tomo ninguna fotografía.");
             }
@@ -45,10 +45,6 @@ public class FotoService
         catch (FeatureNotSupportedException)
         {
             return (null, null, "La cámara no esta disponible en este dispositivo.");
-        }
-        catch (PermissionException)
-        {
-            return (null, null, "No se concedió permiso para usar la cámara.");
         }
         catch
         {
@@ -102,7 +98,7 @@ public class FotoService
             var nombreArchivo = $"{Guid.NewGuid()}{extension}";
             var localFilePath = Path.Combine(FileSystem.CacheDirectory, nombreArchivo);
 
-            await using (var sourceStream = await photo.OpenReadAsync())
+            await using (var sourceStream = await photo.OpenReadAsync())        //sirve para liberar correctamente un recurso asíncrono cuando terminas de usarlo.
             await using (var localFileStream = File.OpenWrite(localFilePath))
             {
                 await sourceStream.CopyToAsync(localFileStream);
@@ -116,7 +112,17 @@ public class FotoService
                 return (null, null, "La imagen excede el tamaño maximo permitido.");
             }
 
-            var base64 = $"{ObtenerPrefijoBase64(Path.GetExtension(rutaComprimida).ToLower())}{Convert.ToBase64String(buffer)}";
+            //var base64 = $"{ObtenerPrefijoBase64(Path.GetExtension(rutaComprimida).ToLower())}{Convert.ToBase64String(buffer)}";
+
+            var extensionComprimida = Path.GetExtension(rutaComprimida).ToLower();
+            var prefijoBase64 = "data:image/jpeg;base64,";
+
+            if (extensionComprimida == ".png")
+            {
+                prefijoBase64 = "data:image/png;base64,";
+            }
+
+            var base64 = $"{prefijoBase64}{Convert.ToBase64String(buffer)}";
 
             return (rutaComprimida, base64, null);
         }
@@ -126,13 +132,13 @@ public class FotoService
         }
     }
 
-    private string ObtenerPrefijoBase64(string extension)
-    {
-        if (extension == ".png")
-        {
-            return "data:image/png;base64,";
-        }
+    //private string ObtenerPrefijoBase64(string extension)
+    //{
+    //    if (extension == ".png")
+    //    {
+    //        return "data:image/png;base64,";
+    //    }
 
-        return "data:image/jpeg;base64,";
-    }
+    //    return "data:image/jpeg;base64,";
+    //}
 }

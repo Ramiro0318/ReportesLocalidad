@@ -50,6 +50,18 @@
         <RefreshView Grid.Row="2"  IsRefreshing="{Binding IsRefreshing}" Command="{Binding CargarReportesCommand}">
             <Grid RowDefinitions="auto,*" Padding="5">
                 <CollectionView ItemsSource="{Binding Reportes}" Grid.Row="1">
+                    
+                    <CollectionView.Footer>
+                        <Grid Padding="0,12,0,20">
+                            <Border WidthRequest="48" HeightRequest="48" StrokeShape="RoundRectangle 24" BackgroundColor="#F54927" Stroke="Transparent" HorizontalOptions="Center">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding CargarMasReportesCommand}"></TapGestureRecognizer>
+                                </Border.GestureRecognizers>
+                                <Label Text="+" TextColor="White" FontSize="28" FontAttributes="Bold" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"></Label>
+                            </Border>
+                        </Grid>
+                    </CollectionView.Footer>
+                    
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <Grid>

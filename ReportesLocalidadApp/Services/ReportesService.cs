@@ -17,13 +17,14 @@ public class ReportesService
         this.authService = authService;
     }
 
-    public string? ObtenerUrlImagen(string? imgUrl)
+    public string ObtenerUrlImagen(string? imgUrl)
     {
-        if (string.IsNullOrWhiteSpace(imgUrl)) { return "SIN_FOTO"; }
+        if (string.IsNullOrWhiteSpace(imgUrl))
+        {
+            return "SIN_FOTO";
+        }
 
-        if (imgUrl.StartsWith("http")) { return imgUrl; }
-
-        return new Uri(http.BaseAddress!, imgUrl.TrimStart('/')).ToString();
+        return new Uri(http.BaseAddress!, imgUrl.TrimStart('/')).ToString();    //Wooow eso hace indica que el dato no será null
     }
 
     public async Task<bool> ApiDisponibleAsync()
@@ -101,33 +102,6 @@ public class ReportesService
             }
 
             return await LeerRespuestaAsync<ReporteDetalleDto>(response);
-        }
-        catch
-        {
-            return null;
-        }
-    }
-
-    public async Task<ApiResponse<ReporteAEditarDto>?> GetReporteEditarAsync(int idReporte)
-    {
-        try
-        {
-            await authService.PrepararTokenAsync();
-            var response = await http.GetAsync($"{Endpoint}/getReporteEditar/{idReporte}");
-
-            if (response.StatusCode == HttpStatusCode.Unauthorized)
-            {
-                var tokenActualizado = await authService.RefreshTokenAsync();
-
-                if (!tokenActualizado)
-                {
-                    return CrearRespuestaNoAutorizada<ReporteAEditarDto>();
-                }
-
-                response = await http.GetAsync($"{Endpoint}/getReporteEditar/{idReporte}");
-            }
-
-            return await LeerRespuestaAsync<ReporteAEditarDto>(response);
         }
         catch
         {

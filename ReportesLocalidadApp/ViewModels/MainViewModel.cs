@@ -184,7 +184,7 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty]
     private string categoriaFiltroSeleccionada = "Todos";
 
-    partial void OnEstadoFiltroSeleccionadoChanged(string value)
+    partial void OnEstadoFiltroSeleccionadoChanged(string value)    //Estos son métodos evento que detectan el cambio de una observablele Property
     {
         AplicarFiltrosReportesAdmin();
     }
@@ -236,13 +236,13 @@ public partial class MainViewModel : ObservableObject
 
             var respuesta = await reportesService.GetReportesAsync(0, CargaInicial);
 
-            if (respuesta is null)
+            if (respuesta == null)
             {
                 Mensaje = "No se pudo conectar con la API.";
                 return;
             }
 
-            if (!respuesta.Success || respuesta.Data is null)
+            if (!respuesta.Success || respuesta.Data == null)
             {
                 Mensaje = respuesta.Message;
                 return;
@@ -263,40 +263,31 @@ public partial class MainViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async Task CargarMasReportesAdmin()
+    private async Task CargarMasReportes()
     {
         if (IsBusy || cargandoReportesGenerales)
         {
             return;
         }
 
-        if (elementosMostrados < reportesCargados.Count)
+        var reportesFiltrados = ObtenerReportesFiltrados();
+        var mostroReportes = false;
+
+        if (elementosMostrados < reportesFiltrados.Count)
         {
             MostrarSiguientesReportes();
-            return;
+            mostroReportes = true;
         }
 
         try
         {
             IsBusy = true;
+            await CargarMasReportesDesdeApiAsync();
 
-            var respuesta = await reportesService.GetReportesAsync(reportesSaltados, CantidadVisible);
-
-            if (respuesta is null)
+            if (!mostroReportes && elementosMostrados < ObtenerReportesFiltrados().Count)
             {
-                Mensaje = "No se pudo conectar con la API.";
-                return;
+                MostrarSiguientesReportes();
             }
-
-            if (!respuesta.Success || respuesta.Data is null)
-            {
-                Mensaje = respuesta.Message;
-                return;
-            }
-
-            reportesCargados.AddRange(respuesta.Data);
-            reportesSaltados += respuesta.Data.Count;
-            AplicarFiltrosReportesAdmin();
         }
         finally
         {
@@ -304,12 +295,29 @@ public partial class MainViewModel : ObservableObject
         }
     }
 
+    private async Task CargarMasReportesDesdeApiAsync()
+    {
+        var respuesta = await reportesService.GetReportesAsync(reportesSaltados, CantidadVisible);
+
+        if (respuesta == null)
+        {
+            Mensaje = "No se pudo conectar con la API.";
+            return;
+        }
+
+        if (!respuesta.Success || respuesta.Data == null)
+        {
+            Mensaje = respuesta.Message;
+            return;
+        }
+
+        reportesCargados.AddRange(respuesta.Data);
+        reportesSaltados += respuesta.Data.Count;
+    }
+
     private void MostrarSiguientesReportes()
     {
-        var reportesParaMostrar = reportesCargados
-            .Skip(elementosMostrados)
-            .Take(CantidadVisible)
-            .ToList();
+        var reportesParaMostrar = ObtenerReportesFiltrados().Skip(elementosMostrados).Take(CantidadVisible).ToList();
 
         foreach (var reporte in reportesParaMostrar)
         {
@@ -322,7 +330,12 @@ public partial class MainViewModel : ObservableObject
     private void AplicarFiltrosReportesAdmin()
     {
         Reportes.Clear();
+        elementosMostrados = 0;
+        MostrarSiguientesReportes();
+    }
 
+    private List<ReporteGeneralDto> ObtenerReportesFiltrados()
+    {
         var reportesFiltrados = reportesCargados.AsEnumerable();
 
         if (!string.IsNullOrWhiteSpace(EstadoFiltroSeleccionado) && EstadoFiltroSeleccionado != "Todos")
@@ -335,12 +348,7 @@ public partial class MainViewModel : ObservableObject
             reportesFiltrados = reportesFiltrados.Where(reporte => reporte.CategoriaTexto == CategoriaFiltroSeleccionada);
         }
 
-        foreach (var reporte in reportesFiltrados)
-        {
-            Reportes.Add(reporte);
-        }
-
-        elementosMostrados = Reportes.Count;
+        return reportesFiltrados.ToList();
     }
 
     [RelayCommand]
@@ -380,13 +388,13 @@ public partial class MainViewModel : ObservableObject
 
             var respuesta = await reportesService.GetByUsuarioAsync(idUsuario, 0, CargaInicial);
 
-            if (respuesta is null)
+            if (respuesta == null)
             {
                 Mensaje = "No se pudo conectar con la API.";
                 return;
             }
 
-            if (!respuesta.Success || respuesta.Data is null)
+            if (!respuesta.Success || respuesta.Data == null)
             {
                 Mensaje = respuesta.Message;
                 return;
@@ -436,13 +444,13 @@ public partial class MainViewModel : ObservableObject
 
             var respuesta = await reportesService.GetByUsuarioAsync(idUsuario, reportesPropiosSaltados, CantidadVisible);
 
-            if (respuesta is null)
+            if (respuesta == null)
             {
                 Mensaje = "No se pudo conectar con la API.";
                 return;
             }
 
-            if (!respuesta.Success || respuesta.Data is null)
+            if (!respuesta.Success || respuesta.Data == null)
             {
                 Mensaje = respuesta.Message;
                 return;
@@ -501,7 +509,7 @@ public partial class MainViewModel : ObservableObject
 
             var respuesta = await reportesService.GetByUsuarioAsync(idUsuario, 0, CargaInicial);
 
-            if (respuesta is null || !respuesta.Success || respuesta.Data is null)
+            if (respuesta == null || !respuesta.Success || respuesta.Data == null)
             {
                 ActualizarConteoPerfil();
                 return;
@@ -519,9 +527,7 @@ public partial class MainViewModel : ObservableObject
 
     private void ActualizarConteoPerfil()
     {
-        var reportesParaContar = reportesPropiosCargados.Count > 0
-            ? reportesPropiosCargados
-            : MisReportes.ToList();
+        var reportesParaContar = reportesPropiosCargados.Count > 0 ? reportesPropiosCargados : MisReportes.ToList();
 
         TotalMisReportes = reportesParaContar.Count;
         ReportesAtendidos = reportesParaContar.Count(x => x.IdEstado == (int)Estados.Resuelto);
@@ -546,6 +552,41 @@ public partial class MainViewModel : ObservableObject
         return cantidad.ToString();
     }
 
+    private string ValidacionReporte(string titulo, string descripcion, string? direccion)
+    {
+        if (string.IsNullOrWhiteSpace(titulo))
+        {
+            return "Ingrese un título para el reporte.";
+        }
+
+        if (titulo.Length < 3)
+        {
+            return "Ingrese un título con al menos 3 caracteres.";
+        }
+
+        if (titulo.Length > 120)
+        {
+            return "Ingrese un título con un máximo de 120 caracteres.";
+        }
+
+        if (string.IsNullOrWhiteSpace(descripcion))
+        {
+            return "Ingrese una descripción para el reporte.";
+        }
+
+        if (descripcion.Length > 800)
+        {
+            return "Ingrese una descripción con un máximo de 800 caracteres.";
+        }
+
+        if (!string.IsNullOrWhiteSpace(direccion) && direccion.Length > 500)
+        {
+            return "Ingrese una dirección con un máximo de 500 caracteres.";
+        }
+
+        return "";
+    }
+
     [RelayCommand]
     private async Task TomarFoto()
     {
@@ -559,7 +600,7 @@ public partial class MainViewModel : ObservableObject
             procesandoFoto = true;
             var resultado = await fotoService.TomarFotoAsync();
 
-            if (resultado.RutaImagen is null || resultado.FotoBase64 is null)
+            if (resultado.RutaImagen == null || resultado.FotoBase64 == null)
             {
                 Mensaje = resultado.Error ?? "No se pudo tomar la foto.";
                 await MostrarToastAsync(Mensaje);
@@ -592,7 +633,7 @@ public partial class MainViewModel : ObservableObject
             procesandoFoto = true;
             var resultado = await fotoService.SeleccionarFotoAsync();
 
-            if (resultado.RutaImagen is null || resultado.FotoBase64 is null)
+            if (resultado.RutaImagen == null || resultado.FotoBase64 == null)
             {
                 Mensaje = resultado.Error ?? "No se pudo seleccionar la foto.";
                 await MostrarToastAsync(Mensaje);
@@ -620,15 +661,11 @@ public partial class MainViewModel : ObservableObject
             return;
         }
 
-        if (string.IsNullOrWhiteSpace(TituloReporte))
-        {
-            Mensaje = "Ingrese un título para el reporte.";
-            return;
-        }
+        var mensajeValidacion = ValidacionReporte(TituloReporte, DescripcionReporte, "");
 
-        if (string.IsNullOrWhiteSpace(DescripcionReporte))
+        if (!string.IsNullOrWhiteSpace(mensajeValidacion))
         {
-            Mensaje = "Ingrese una descripción para el reporte.";
+            Mensaje = mensajeValidacion;
             return;
         }
 
@@ -652,7 +689,7 @@ public partial class MainViewModel : ObservableObject
                 Direccion = null,
                 Foto = fotoBase64,
                 IdUsuario = idUsuario,
-                IdCategoria = ObtenerIdCategoria(CategoriaSeleccionada),
+                IdCategoria = GetIdCategoria(CategoriaSeleccionada),
                 ClientRequestId = Guid.NewGuid().ToString()
             };
 
@@ -664,7 +701,7 @@ public partial class MainViewModel : ObservableObject
 
             var respuesta = await reportesService.CrearReporteAsync(reporte);
 
-            if (respuesta is null)
+            if (respuesta == null)
             {
                 var apiDisponible = await reportesService.ApiDisponibleAsync();
 
@@ -679,7 +716,7 @@ public partial class MainViewModel : ObservableObject
                 return;
             }
 
-            if (!respuesta.Success || respuesta.Data is null)
+            if (!respuesta.Success || respuesta.Data == null)
             {
                 Mensaje = respuesta.Message;
                 await MostrarToastAsync(Mensaje);
@@ -873,7 +910,7 @@ public partial class MainViewModel : ObservableObject
             {
                 var respuesta = await EnviarAccionPendienteAsync(accionPendiente);
 
-                if (respuesta is null)
+                if (respuesta == null)
                 {
                     var apiDisponible = await reportesService.ApiDisponibleAsync();
 
@@ -890,21 +927,22 @@ public partial class MainViewModel : ObservableObject
                     continue;
                 }
 
-                if (ReporteDuplicado(respuesta.Message))
+                if (!string.IsNullOrWhiteSpace(respuesta.Message) && respuesta.Message.Contains("ya fue registrado", StringComparison.OrdinalIgnoreCase))
                 {
                     await reportePendienteService.EliminarAccionPendienteAsync(accionPendiente.IdPendiente);
                     continue;
                 }
 
-                if (ErrorNoReintentable(respuesta.Message))
+                if (!string.IsNullOrWhiteSpace(respuesta.Message) && respuesta.Message.Contains("demasiado grande", StringComparison.OrdinalIgnoreCase) || respuesta.Message.Contains("formato", StringComparison.OrdinalIgnoreCase) || respuesta.Message.Contains("base64", StringComparison.OrdinalIgnoreCase) || respuesta.Message.Contains("Categoria", StringComparison.OrdinalIgnoreCase) || respuesta.Message.Contains("Reporte no encontrado", StringComparison.OrdinalIgnoreCase) || respuesta.Message.Contains("Acción pendiente no válida", StringComparison.OrdinalIgnoreCase) || respuesta.Message.Contains("No puedes", StringComparison.OrdinalIgnoreCase) || respuesta.Message.Contains("Solo un administrador", StringComparison.OrdinalIgnoreCase))
                 {
+
                     await reportePendienteService.EliminarAccionPendienteAsync(accionPendiente.IdPendiente);
                     Mensaje = respuesta.Message;
                     await MostrarToastAsync(respuesta.Message);
                     continue;
                 }
 
-                if (!respuesta.Success || respuesta.Data is null)
+                if (!respuesta.Success || respuesta.Data == null)
                 {
                     continue;
                 }
@@ -981,28 +1019,7 @@ public partial class MainViewModel : ObservableObject
             QuitarReporteDeListas(accionPendiente.IdReporte);
         }
     }
-    private bool ReporteDuplicado(string? mensaje)
-    {
-        return !string.IsNullOrWhiteSpace(mensaje) &&
-            mensaje.Contains("ya fue registrado", StringComparison.OrdinalIgnoreCase);
-    }
 
-    private bool ErrorNoReintentable(string? mensaje)
-    {
-        if (string.IsNullOrWhiteSpace(mensaje))
-        {
-            return false;
-        }
-
-        return mensaje.Contains("demasiado grande", StringComparison.OrdinalIgnoreCase) ||
-            mensaje.Contains("formato", StringComparison.OrdinalIgnoreCase) ||
-            mensaje.Contains("base64", StringComparison.OrdinalIgnoreCase) ||
-            mensaje.Contains("Categoria", StringComparison.OrdinalIgnoreCase) ||
-            mensaje.Contains("Reporte no encontrado", StringComparison.OrdinalIgnoreCase) ||
-            mensaje.Contains("Acción pendiente no válida", StringComparison.OrdinalIgnoreCase) ||
-            mensaje.Contains("No puedes", StringComparison.OrdinalIgnoreCase) ||
-            mensaje.Contains("Solo un administrador", StringComparison.OrdinalIgnoreCase);
-    }
 
     private async Task MostrarToastAsync(string mensaje)
     {
@@ -1041,13 +1058,13 @@ public partial class MainViewModel : ObservableObject
 
             var respuesta = await reportesService.GetReporteAsync(idReporte);
 
-            if (respuesta is null)
+            if (respuesta == null)
             {
                 Mensaje = "No se pudo conectar con la API.";
                 return;
             }
 
-            if (!respuesta.Success || respuesta.Data is null)
+            if (!respuesta.Success || respuesta.Data == null)
             {
                 Mensaje = respuesta.Message;
                 return;
@@ -1065,7 +1082,9 @@ public partial class MainViewModel : ObservableObject
             if (ruta == "reporteAdmin")
             {
                 await Task.Delay(50);
-                ReiniciarCambioEstadoAdmin();
+                estadoOriginalReporte = EstadoSeleccionado;
+                estadoReporteFueModificado = false;
+                PuedeConfirmarCambioEstado = false;
             }
         }
         finally
@@ -1083,9 +1102,9 @@ public partial class MainViewModel : ObservableObject
         CamposSoloLectura = true;
         TituloDetalle = reporte.Titulo;
         DescripcionDetalle = reporte.Descripcion;
-        CategoriaDetalle = ObtenerTextoCategoria(reporte.IdCategoria);
-        estadoOriginalReporte = ObtenerTextoEstado(reporte.IdEstado);
-        EstadoSeleccionado = ObtenerTextoEstado(reporte.IdEstado);
+        CategoriaDetalle = GetTextoCategoria(reporte.IdCategoria);
+        estadoOriginalReporte = GetTextoEstado(reporte.IdEstado);
+        EstadoSeleccionado = GetTextoEstado(reporte.IdEstado);
         estadoReporteFueModificado = false;
         PuedeConfirmarCambioEstado = false;
         preparandoDetalleReporte = false;
@@ -1096,14 +1115,7 @@ public partial class MainViewModel : ObservableObject
         fotoBase64 = null;
     }
 
-    private void ReiniciarCambioEstadoAdmin()
-    {
-        estadoOriginalReporte = EstadoSeleccionado;
-        estadoReporteFueModificado = false;
-        PuedeConfirmarCambioEstado = false;
-    }
-
-    private string ObtenerTextoCategoria(int idCategoria)
+    private string GetTextoCategoria(int idCategoria)
     {
         if (idCategoria == (int)Categorias.Bache) return "Bache";
         if (idCategoria == (int)Categorias.Fuga_de_agua) return "Fuga de agua";
@@ -1114,7 +1126,7 @@ public partial class MainViewModel : ObservableObject
         return "Bache";
     }
 
-    private int ObtenerIdCategoria(string categoria)
+    private int GetIdCategoria(string categoria)
     {
         if (categoria == "Bache") return (int)Categorias.Bache;
         if (categoria == "Fuga de agua") return (int)Categorias.Fuga_de_agua;
@@ -1125,7 +1137,7 @@ public partial class MainViewModel : ObservableObject
         return (int)Categorias.Bache;
     }
 
-    private string ObtenerTextoEstado(int idEstado)
+    private string GetTextoEstado(int idEstado)
     {
         if (idEstado == (int)Estados.Pendiente) return "Pendiente";
         if (idEstado == (int)Estados.En_Progreso) return "En progreso";
@@ -1133,7 +1145,7 @@ public partial class MainViewModel : ObservableObject
         return "Pendiente";
     }
 
-    private int ObtenerIdEstado(string estado)
+    private int GetIdEstado(string estado)
     {
         if (estado == "Pendiente") return (int)Estados.Pendiente;
         if (estado == "En progreso") return (int)Estados.En_Progreso;
@@ -1157,20 +1169,16 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     private async Task GuardarEdicionReporte()
     {
-        if (IsBusy || ReporteDetalle is null)
+        if (IsBusy || ReporteDetalle == null)
         {
             return;
         }
 
-        if (string.IsNullOrWhiteSpace(TituloDetalle))
-        {
-            Mensaje = "Ingrese un título para el reporte.";
-            return;
-        }
+        var mensajeValidacion = ValidacionReporte(TituloDetalle, DescripcionDetalle, ReporteDetalle.Direccion);
 
-        if (string.IsNullOrWhiteSpace(DescripcionDetalle))
+        if (!string.IsNullOrWhiteSpace(mensajeValidacion))
         {
-            Mensaje = "Ingrese una descripción para el reporte.";
+            Mensaje = mensajeValidacion;
             return;
         }
 
@@ -1195,7 +1203,7 @@ public partial class MainViewModel : ObservableObject
                 Direccion = ReporteDetalle.Direccion,
                 Foto = fotoBase64,
                 IdUsuario = idUsuario,
-                IdCategoria = ObtenerIdCategoria(CategoriaDetalle)
+                IdCategoria = GetIdCategoria(CategoriaDetalle)
             };
 
             if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
@@ -1206,7 +1214,7 @@ public partial class MainViewModel : ObservableObject
 
             var respuesta = await reportesService.EditarReporteAsync(ReporteDetalle.Id, reporteEditado);
 
-            if (respuesta is null)
+            if (respuesta == null)
             {
                 var apiDisponible = await reportesService.ApiDisponibleAsync();
 
@@ -1221,7 +1229,7 @@ public partial class MainViewModel : ObservableObject
                 return;
             }
 
-            if (!respuesta.Success || respuesta.Data is null)
+            if (!respuesta.Success || respuesta.Data == null)
             {
                 Mensaje = respuesta.Message;
                 return;
@@ -1241,7 +1249,7 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     private async Task EliminarReporte()
     {
-        if (IsBusy || ReporteDetalle is null)
+        if (IsBusy || ReporteDetalle == null)
         {
             return;
         }
@@ -1274,7 +1282,7 @@ public partial class MainViewModel : ObservableObject
 
             var respuesta = await reportesService.EliminarReporteAsync(ReporteDetalle.Id, idUsuario);
 
-            if (respuesta is null)
+            if (respuesta == null)
             {
                 var apiDisponible = await reportesService.ApiDisponibleAsync();
 
@@ -1401,7 +1409,7 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     private async Task EliminarReporteAdmin()
     {
-        if (IsBusy || ReporteDetalle is null)
+        if (IsBusy || ReporteDetalle == null)
         {
             return;
         }
@@ -1434,7 +1442,7 @@ public partial class MainViewModel : ObservableObject
 
             var respuesta = await reportesService.EliminarReporteAsync(ReporteDetalle.Id, idUsuario);
 
-            if (respuesta is null)
+            if (respuesta == null)
             {
                 var apiDisponible = await reportesService.ApiDisponibleAsync();
 
@@ -1470,7 +1478,7 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     private async Task CambiarEstadoReporte()
     {
-        if (IsBusy || ReporteDetalle is null)
+        if (IsBusy || ReporteDetalle == null)
         {
             return;
         }
@@ -1490,7 +1498,7 @@ public partial class MainViewModel : ObservableObject
 
             var cambiarEstadoDto = new CambiarEstadoReporteDto
             {
-                IdEstado = ObtenerIdEstado(EstadoSeleccionado),
+                IdEstado = GetIdEstado(EstadoSeleccionado),
                 IdUsuario = idUsuario
             };
 
@@ -1502,7 +1510,7 @@ public partial class MainViewModel : ObservableObject
 
             var respuesta = await reportesService.CambiarEstadoAsync(ReporteDetalle.Id, cambiarEstadoDto);
 
-            if (respuesta is null)
+            if (respuesta == null)
             {
                 var apiDisponible = await reportesService.ApiDisponibleAsync();
 
@@ -1517,7 +1525,7 @@ public partial class MainViewModel : ObservableObject
                 return;
             }
 
-            if (!respuesta.Success || respuesta.Data is null)
+            if (!respuesta.Success || respuesta.Data == null)
             {
                 Mensaje = respuesta.Message;
                 return;
@@ -1612,7 +1620,24 @@ public partial class MainViewModel : ObservableObject
         {
             IsBusy = true;
             await authService.CerrarSesionAsync();
-            LimpiarDatosSesion();
+            reportesCargados.Clear();
+            reportesPropiosCargados.Clear();
+            Reportes.Clear();
+            MisReportes.Clear();
+            ReporteDetalle = null;
+            NombreUsuario = "";
+            TotalMisReportes = 0;
+            ReportesAtendidos = 0;
+            ReportesPendientesUsuario = 0;
+            ActualizarTextoConteosPerfil();
+            reportesSaltados = 0;
+            reportesPropiosSaltados = 0;
+            elementosMostrados = 0;
+            elementosPropiosMostrados = 0;
+            EstadoFiltroSeleccionado = "Todos";
+            CategoriaFiltroSeleccionada = "Todos";
+            Mensaje = "";
+
             await Shell.Current.GoToAsync("//login");
         }
         finally
@@ -1621,24 +1646,4 @@ public partial class MainViewModel : ObservableObject
         }
     }
 
-    private void LimpiarDatosSesion()
-    {
-        reportesCargados.Clear();
-        reportesPropiosCargados.Clear();
-        Reportes.Clear();
-        MisReportes.Clear();
-        ReporteDetalle = null;
-        NombreUsuario = "";
-        TotalMisReportes = 0;
-        ReportesAtendidos = 0;
-        ReportesPendientesUsuario = 0;
-        ActualizarTextoConteosPerfil();
-        reportesSaltados = 0;
-        reportesPropiosSaltados = 0;
-        elementosMostrados = 0;
-        elementosPropiosMostrados = 0;
-        EstadoFiltroSeleccionado = "Todos";
-        CategoriaFiltroSeleccionada = "Todos";
-        Mensaje = "";
-    }
 }

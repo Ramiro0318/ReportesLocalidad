@@ -16,15 +16,27 @@
                 <Label Text="Buenos Días" TextColor="LightGray" FontSize="15"></Label>
                 <Label Text="{Binding NombreUsuario}" TextColor="White" FontSize="20" FontAttributes="Bold"></Label>
             </VerticalStackLayout>
-           
+
         </Grid>
-                
+
         <RefreshView Grid.Row="1"  IsRefreshing="{Binding IsRefreshing}" Command="{Binding CargarReportesCommand}">
             <Grid RowDefinitions="auto,*" Padding="5">
                 <CollectionView ItemsSource="{Binding Reportes}" Grid.Row="1">
                     <CollectionView.Header>
                         <Label Text="Reportes de la comunidad" TextColor="#E6E6C7" Margin="10,0,0,0" HorizontalTextAlignment="Center"  FontSize="15" FontAttributes="Bold"></Label>
                     </CollectionView.Header>
+                    
+                    <CollectionView.Footer>
+                        <Grid Padding="0,12,0,20">
+                            <Border WidthRequest="48" HeightRequest="48" StrokeShape="RoundRectangle 24" BackgroundColor="#F54927" Stroke="Transparent" HorizontalOptions="Center">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding CargarMasReportesCommand}"></TapGestureRecognizer>
+                                </Border.GestureRecognizers>
+                                <Label Text="+" TextColor="White" FontSize="28" FontAttributes="Bold" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"></Label>
+                            </Border>
+                        </Grid>
+                    </CollectionView.Footer>
+                    
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <Grid>
@@ -134,7 +146,7 @@
                 </CollectionView>
             </Grid>
         </RefreshView>
-                
+
         <Grid Grid.Row="2" HeightRequest="70" BackgroundColor="#2B2B29" ColumnDefinitions="*,*,*,*">
             <VerticalStackLayout Grid.Column="0" HorizontalOptions="Center" VerticalOptions="Center" Spacing="2" MinimumWidthRequest="60">
                 <Image Source="inicio.png"  WidthRequest="25"></Image>
