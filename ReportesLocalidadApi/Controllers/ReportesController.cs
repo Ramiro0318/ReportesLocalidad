@@ -73,18 +73,18 @@ public class ReportesController : ControllerBase
         return Ok(respuesta);
     }
 
-    [HttpGet("getReporteEditar/{id}")]
-    public async Task<IActionResult> GetReporteEditar(int id)
-    {
-        var respuesta = await reporteService.GetReporteEditarAsync(id);
+    //[HttpGet("getReporteEditar/{id}")]
+    //public async Task<IActionResult> GetReporteEditar(int id)
+    //{
+    //    var respuesta = await reporteService.GetReporteEditarAsync(id);
 
-        if (!respuesta.Success)
-        {
-            return NotFound(respuesta);
-        }
+    //    if (!respuesta.Success)
+    //    {
+    //        return NotFound(respuesta);
+    //    }
 
-        return Ok(respuesta);
-    }
+    //    return Ok(respuesta);
+    //}
 
 
     [HttpPut("editarReporte/{id}")]
@@ -147,11 +147,6 @@ public class ReportesController : ControllerBase
     {
         var idUsuarioToken = GetIdUsuarioToken();
         var idRolToken = GetIdRolToken();
-
-        if (idUsuarioToken != idUsuario && idRolToken != 2)
-        {
-            return Forbid();
-        }
 
         var respuesta = await reporteService.GetByUsuarioAsync(idUsuario, skip, take);
 

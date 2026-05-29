@@ -257,8 +257,7 @@ public class ReporteService
 
         reporte.IdEstado = cambiarEstadoDto.IdEstado;
         reporte.FechaEdicion = DateTime.Now;
-        var tokenFirebase = await context.Usuarios
-            .Where(usuario => usuario.Id == reporte.IdUsuario)
+        var tokenFirebase = await context.Usuarios.Where(usuario => usuario.Id == reporte.IdUsuario)
             .Select(usuario => usuario.TokenFirebase)
             .FirstOrDefaultAsync();
 

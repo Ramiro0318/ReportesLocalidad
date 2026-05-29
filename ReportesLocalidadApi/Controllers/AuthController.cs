@@ -9,11 +9,11 @@ namespace ReportesLocalidadApi.Controllers;
 [Route("api/[controller]")]
 public class AuthController : ControllerBase
 {
-    private readonly UsuarioService _usuarioService;
+    private readonly UsuarioService usuarioService;
 
     public AuthController(UsuarioService usuarioService)
     {
-        _usuarioService = usuarioService;
+        this.usuarioService = usuarioService;
     }
 
     [HttpPost("registro")]
@@ -31,7 +31,7 @@ public class AuthController : ControllerBase
             });
         }
 
-        var respuesta = await _usuarioService.RegistrarAsync(registroDto);
+        var respuesta = await usuarioService.RegistrarAsync(registroDto);
 
         if (!respuesta.Success)
         {
@@ -56,7 +56,7 @@ public class AuthController : ControllerBase
             });
         }
 
-        var respuesta = await _usuarioService.LoginAsync(loginDto);
+        var respuesta = await usuarioService.LoginAsync(loginDto);
 
         if (!respuesta.Success)
         {
@@ -69,7 +69,7 @@ public class AuthController : ControllerBase
     [HttpPost("refresh")]
     public async Task<IActionResult> Refresh([FromBody] RefreshTokenDto refreshTokenDto)
     {
-        var respuesta = await _usuarioService.RefreshAsync(refreshTokenDto);
+        var respuesta = await usuarioService.RefreshAsync(refreshTokenDto);
 
         if (!respuesta.Success)
         {

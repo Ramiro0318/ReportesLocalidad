@@ -11,11 +11,11 @@ namespace ReportesLocalidadApi.Controllers;
 [Route("api/[controller]")]
 public class UsuariosController : ControllerBase
 {
-    private readonly UsuarioService _usuarioService;
+    private readonly UsuarioService usuarioService;
 
     public UsuariosController(UsuarioService usuarioService)
     {
-        _usuarioService = usuarioService;
+        this.usuarioService = usuarioService;
     }
 
     private int GetIdUsuarioToken()
@@ -27,7 +27,7 @@ public class UsuariosController : ControllerBase
     [HttpPost("logout")]
     public async Task<IActionResult> Logout([FromBody] LogoutDto logoutDto)
     {
-        var respuesta = await _usuarioService.LogoutAsync(logoutDto);
+        var respuesta = await usuarioService.LogoutAsync(logoutDto);
 
         if (!respuesta.Success)
         {
@@ -40,7 +40,7 @@ public class UsuariosController : ControllerBase
     [HttpPost("guardarTokenFirebase")]
     public async Task<IActionResult> GuardarTokenFirebase([FromBody] TokenFirebaseDto tokenFirebaseDto)
     {
-        var respuesta = await _usuarioService.GuardarTokenFirebaseAsync(GetIdUsuarioToken(), tokenFirebaseDto);
+        var respuesta = await usuarioService.GuardarTokenFirebaseAsync(GetIdUsuarioToken(), tokenFirebaseDto);
 
         if (!respuesta.Success)
         {
