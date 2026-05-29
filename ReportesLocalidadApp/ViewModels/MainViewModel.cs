@@ -933,7 +933,7 @@ public partial class MainViewModel : ObservableObject
                     continue;
                 }
 
-                if (!string.IsNullOrWhiteSpace(respuesta.Message) && respuesta.Message.Contains("demasiado grande", StringComparison.OrdinalIgnoreCase) || respuesta.Message.Contains("formato", StringComparison.OrdinalIgnoreCase) || respuesta.Message.Contains("base64", StringComparison.OrdinalIgnoreCase) || respuesta.Message.Contains("Categoria", StringComparison.OrdinalIgnoreCase) || respuesta.Message.Contains("Reporte no encontrado", StringComparison.OrdinalIgnoreCase) || respuesta.Message.Contains("Acción pendiente no válida", StringComparison.OrdinalIgnoreCase) || respuesta.Message.Contains("No puedes", StringComparison.OrdinalIgnoreCase) || respuesta.Message.Contains("Solo un administrador", StringComparison.OrdinalIgnoreCase))
+                if (!string.IsNullOrWhiteSpace(respuesta.Message) && (respuesta.Message.Contains("demasiado grande", StringComparison.OrdinalIgnoreCase) || respuesta.Message.Contains("formato", StringComparison.OrdinalIgnoreCase) || respuesta.Message.Contains("base64", StringComparison.OrdinalIgnoreCase) || respuesta.Message.Contains("Categoria", StringComparison.OrdinalIgnoreCase) || respuesta.Message.Contains("Reporte no encontrado", StringComparison.OrdinalIgnoreCase) || respuesta.Message.Contains("Acción pendiente no válida", StringComparison.OrdinalIgnoreCase) || respuesta.Message.Contains("No puedes", StringComparison.OrdinalIgnoreCase) || respuesta.Message.Contains("Solo un administrador", StringComparison.OrdinalIgnoreCase)))
                 {
 
                     await reportePendienteService.EliminarAccionPendienteAsync(accionPendiente.IdPendiente);

@@ -115,36 +115,36 @@ public class ReporteService
     }
 
 
-    public async Task<ApiResponse<ReporteAEditarDto>> GetReporteEditarAsync(int id)
-    {
-        var reporte = await context.Reportes.AsNoTracking().Where(reporte => reporte.Id == id)
-            .Select(reporte => new ReporteAEditarDto
-            {
-                Id = reporte.Id,
-                Titulo = reporte.Titulo,
-                Descripcion = reporte.Descripcion,
-                Direccion = reporte.Direccion,
-                ImgUrl = reporte.ImgUrl,
-                IdUsuario = reporte.IdUsuario,
-                IdCategoria = reporte.IdCategoria
-            }).FirstOrDefaultAsync();
+    //public async Task<ApiResponse<ReporteAEditarDto>> GetReporteEditarAsync(int id)
+    //{
+    //    var reporte = await context.Reportes.AsNoTracking().Where(reporte => reporte.Id == id)
+    //        .Select(reporte => new ReporteAEditarDto
+    //        {
+    //            Id = reporte.Id,
+    //            Titulo = reporte.Titulo,
+    //            Descripcion = reporte.Descripcion,
+    //            Direccion = reporte.Direccion,
+    //            ImgUrl = reporte.ImgUrl,
+    //            IdUsuario = reporte.IdUsuario,
+    //            IdCategoria = reporte.IdCategoria
+    //        }).FirstOrDefaultAsync();
 
-        if (reporte is null)
-        {
-            return new ApiResponse<ReporteAEditarDto>
-            {
-                Success = false,
-                Message = "Reporte no encontrado."
-            };
-        }
+    //    if (reporte is null)
+    //    {
+    //        return new ApiResponse<ReporteAEditarDto>
+    //        {
+    //            Success = false,
+    //            Message = "Reporte no encontrado."
+    //        };
+    //    }
 
-        return new ApiResponse<ReporteAEditarDto>
-        {
-            Success = true,
-            Message = "Reporte obtenido para edición.",
-            Data = reporte
-        };
-    }
+    //    return new ApiResponse<ReporteAEditarDto>
+    //    {
+    //        Success = true,
+    //        Message = "Reporte obtenido para edición.",
+    //        Data = reporte
+    //    };
+    //}
 
     public async Task<ApiResponse<Reportes>> EditarAsync(int id, EditarReporteDto editarReporteDto)
     {

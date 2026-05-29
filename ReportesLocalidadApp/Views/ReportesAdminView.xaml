@@ -48,7 +48,7 @@
             </VerticalStackLayout>
         </Grid>
 
-        <RefreshView Grid.Row="2"  IsRefreshing="{Binding IsRefreshing}" Command="{Binding CargarReportesCommand}">
+        <RefreshView Grid.Row="2"  IsRefreshing="{Binding IsRefreshing}" Command="{Binding CargarReportesAdminCommand}">
             <Grid RowDefinitions="auto,*" Padding="5">
                 <CollectionView ItemsSource="{Binding Reportes}" Grid.Row="1">
                     
