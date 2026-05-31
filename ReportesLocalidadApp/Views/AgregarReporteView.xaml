@@ -41,7 +41,7 @@
                             <TapGestureRecognizer Command="{Binding TomarFotoCommand}"></TapGestureRecognizer>
                         </Border.GestureRecognizers>
                         <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="6">
-                            <Label Text="Icono" TextColor="#E6E6C7" FontSize="12" HorizontalTextAlignment="Center"></Label>
+                            <Image Source="camara.png" WidthRequest="30" HeightRequest="30"></Image>
                             <Label Text="Cámara" TextColor="#E6E6C7" FontSize="12" HorizontalTextAlignment="Center"></Label>
                         </VerticalStackLayout>
                     </Border>
@@ -50,7 +50,7 @@
                             <TapGestureRecognizer Command="{Binding SeleccionarFotoCommand}"></TapGestureRecognizer>
                         </Border.GestureRecognizers>
                         <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="6">
-                            <Label Text="Icono" TextColor="#E6E6C7" FontSize="12" HorizontalTextAlignment="Center"></Label>
+                            <Image Source="galeria.png" WidthRequest="30" HeightRequest="30"></Image>
                             <Label Text="Galería" TextColor="#E6E6C7" FontSize="12" HorizontalTextAlignment="Center"></Label>
                         </VerticalStackLayout>
                     </Border>
